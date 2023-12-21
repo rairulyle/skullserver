@@ -6,10 +6,11 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ${DEFAULT_VOLUME}/${APP_DATA}/watchtower/config.json:/config.json
-    command: adguardhome adguardhome-sync jellyfin radarr sonarr prowlarr qbittorrent
+    command: adguardhome adguardhome-sync speedtest-tracker jellyfin radarr sonarr prowlarr qbittorrent
     environment:
       WATCHTOWER_NOTIFICATIONS: shoutrrr
       WATCHTOWER_NOTIFICATION_URL: "discord://${DISCORD_TOKEN}@${DISCORD_ID}"
+      WATCHTOWER_SCHEDULE: "0 0 * * *" # every 12:00 AM every day
     restart: unless-stopped
 
   adguardhome:
@@ -24,18 +25,50 @@ services:
       - 80:80/tcp
       - 443:443/tcp
     volumes:
-      - ${DEFAULT_VOLUME}/${APP_DATA}/adguardhome:/opt/adguardhome/work
-      - ${DEFAULT_VOLUME}/${APP_DATA}/adguardhome:/opt/adguardhome/conf
+      - ${DEFAULT_VOLUME}/${APP_DATA}/adguardhome/work:/opt/adguardhome/work
+      - ${DEFAULT_VOLUME}/${APP_DATA}/adguardhome/conf:/opt/adguardhome/conf
     restart: unless-stopped
 
   adguardhome-sync:
-    image: lscr.io/linuxserver/adguardhome-sync:latest
     container_name: adguardhome-sync
+    image: lscr.io/linuxserver/adguardhome-sync:latest
     volumes:
       - "${DEFAULT_VOLUME}/${APP_DATA}/adguardsync:/config"
     ports:
       - 8082:8080
     restart: unless-stopped
+
+  speedtest-tracker:
+    container_name: speedtest-tracker
+    image: "ghcr.io/alexjustesen/speedtest-tracker:latest"
+    ports:
+      - "8081:80"
+      - "8443:443"
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - DB_CONNECTION=pgsql
+      - DB_HOST=speedtest-tracker-db
+      - DB_PORT=5432
+      - DB_DATABASE=speedtest_tracker
+      - DB_USERNAME=speedy
+      - DB_PASSWORD=password
+    volumes:
+      - ${DEFAULT_VOLUME}/${APP_DATA}/speedtest-tracker/config:/config
+      - ${DEFAULT_VOLUME}/${APP_DATA}/speedtest-tracker/etc/ssl/web:/etc/ssl/web
+    restart: unless-stopped
+    depends_on:
+      - speedtest-tracker-db
+  speedtest-tracker-db:
+    container_name: speedtest-tracker-db
+    image: postgres:15
+    restart: always
+    environment:
+      - POSTGRES_DB=speedtest_tracker
+      - POSTGRES_USER=speedy
+      - POSTGRES_PASSWORD=password
+    volumes:
+      - ${DEFAULT_VOLUME}/${APP_DATA}/speedtest-tracker/postgres:/var/lib/postgresql/data
 
   jellyfin:
     container_name: jellyfin
@@ -56,8 +89,8 @@ services:
     restart: unless-stopped
 
   radarr:
-    image: lscr.io/linuxserver/radarr:latest
     container_name: radarr
+    image: lscr.io/linuxserver/radarr:latest
     environment:
       - PUID=1000
       - PGID=1000
@@ -70,8 +103,8 @@ services:
     restart: unless-stopped
 
   sonarr:
-    image: lscr.io/linuxserver/sonarr:latest
     container_name: sonarr
+    image: lscr.io/linuxserver/sonarr:latest
     environment:
       - PUID=1000
       - PGID=1000
@@ -84,8 +117,8 @@ services:
     restart: unless-stopped
 
   prowlarr:
-    image: lscr.io/linuxserver/prowlarr:develop
     container_name: prowlarr
+    image: lscr.io/linuxserver/prowlarr:develop
     environment:
       - PUID=1000
       - PGID=1000
