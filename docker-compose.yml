@@ -45,9 +45,22 @@ services:
     container_name: adguardhome-sync
     image: lscr.io/linuxserver/adguardhome-sync:latest
     volumes:
-      - "${DEFAULT_VOLUME}/${APP_DATA}/adguardsync:/config"
+      - ${DEFAULT_VOLUME}/${APP_DATA}/adguardsync:/config
     ports:
       - 8082:8080
+    restart: unless-stopped
+
+  ha-fusion:
+    container_name: ha-fusion
+    image: ghcr.io/matt8707/ha-fusion
+    volumes:
+      - ${DEFAULT_VOLUME}/${APP_DATA}/ha-fusion:/app/data
+    network_mode: bridge
+    ports:
+      - 5050:5050
+    environment:
+      TZ: Asia/Manila
+      HASS_URL: http://192.168.0.10:8123
     restart: unless-stopped
 
   speedtest-tracker:
