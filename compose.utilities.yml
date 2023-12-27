@@ -1,0 +1,47 @@
+version: "3.8"
+services:
+  watchtower:
+    container_name: watchtower
+    image: containrrr/watchtower:latest
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ${DEFAULT_VOLUME}/${APP_DATA}/watchtower/config.json:/config.json
+    command: homepage nginx-proxy-manager adguardhome adguardhome-sync speedtest-tracker jellyfin radarr sonarr prowlarr qbittorrent
+    environment:
+      WATCHTOWER_NOTIFICATIONS: shoutrrr
+      WATCHTOWER_NOTIFICATION_URL: "discord://${DISCORD_TOKEN}@${DISCORD_ID}"
+      WATCHTOWER_SCHEDULE: "0 0 * * *" # every 12:00 AM every day
+      TZ: ${TZ}
+    restart: unless-stopped
+
+  speedtest-tracker:
+    container_name: speedtest-tracker
+    image: "ghcr.io/alexjustesen/speedtest-tracker:latest"
+    ports:
+      - "8081:80"
+      - "8443:443"
+    environment:
+      PUID: 1000
+      PGID: 1000
+      DB_CONNECTION: pgsql
+      DB_HOST: speedtest-tracker-db
+      DB_PORT: 5432
+      DB_DATABASE: speedtest_tracker
+      DB_USERNAME: speedy
+      DB_PASSWORD: password
+    volumes:
+      - ${DEFAULT_VOLUME}/${APP_DATA}/speedtest-tracker/config:/config
+      - ${DEFAULT_VOLUME}/${APP_DATA}/speedtest-tracker/etc/ssl/web:/etc/ssl/web
+    restart: unless-stopped
+    depends_on:
+      - speedtest-tracker-db
+  speedtest-tracker-db:
+    container_name: speedtest-tracker-db
+    image: postgres:15
+    restart: always
+    environment:
+      POSTGRES_DB: speedtest_tracker
+      POSTGRES_USER: speedy
+      POSTGRES_PASSWORD: password
+    volumes:
+      - ${DEFAULT_VOLUME}/${APP_DATA}/speedtest-tracker/postgres:/var/lib/postgresql/data

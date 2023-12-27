@@ -1,0 +1,51 @@
+version: "3.8"
+services:
+  homepage:
+    container_name: homepage
+    image: ghcr.io/gethomepage/homepage:latest
+    environment:
+      PUID: 1000
+      PGID: 999
+    ports:
+      - 3000:3000
+    volumes:
+      - ${DEFAULT_VOLUME}/${APP_DATA}/homepage:/app/config # Make sure your local config directory exists
+      - /var/run/docker.sock:/var/run/docker.sock # optional, for docker integrations
+    restart: unless-stopped
+
+  nginx-proxy-manager:
+    container_name: nginx-proxy-manager
+    image: "jc21/nginx-proxy-manager:latest"
+    ports:
+      - "80:80"
+      - "81:81"
+      - "443:443"
+    volumes:
+      - ${DEFAULT_VOLUME}/${APP_DATA}/nginx-proxy-manager/data:/data
+      - ${DEFAULT_VOLUME}/${APP_DATA}/nginx-proxy-manager/letsencrypt:/etc/letsencrypt
+    restart: unless-stopped
+
+  adguardhome:
+    container_name: adguardhome
+    image: adguard/adguardhome:latest
+    ports:
+      - 53:53/tcp
+      - 53:53/udp
+      - 784:784/udp
+      - 853:853/tcp
+      # - 3000:3000/tcp
+      - 2080:80/tcp
+      - 2443:443/tcp
+    volumes:
+      - ${DEFAULT_VOLUME}/${APP_DATA}/adguardhome/work:/opt/adguardhome/work
+      - ${DEFAULT_VOLUME}/${APP_DATA}/adguardhome/conf:/opt/adguardhome/conf
+    restart: unless-stopped
+
+  adguardhome-sync:
+    container_name: adguardhome-sync
+    image: lscr.io/linuxserver/adguardhome-sync:latest
+    volumes:
+      - ${DEFAULT_VOLUME}/${APP_DATA}/adguardsync:/config
+    ports:
+      - 8082:8080
+    restart: unless-stopped

@@ -1,0 +1,75 @@
+version: "3.8"
+services:
+  jellyfin:
+    container_name: jellyfin
+    image: lscr.io/linuxserver/jellyfin:latest
+    ports:
+      - 8096:8096
+    group_add:
+      - "110"
+    environment:
+      PUID: 1000
+      PGID: 1000
+      TZ: ${TZ}
+    devices:
+      - /dev/dri:/dev/dri
+    volumes:
+      - ${DEFAULT_VOLUME}/${APP_DATA}/jellyfin:/config
+      - ${DEFAULT_VOLUME}/${DATA}/media:/data
+    restart: unless-stopped
+
+  radarr:
+    container_name: radarr
+    image: lscr.io/linuxserver/radarr:latest
+    environment:
+      PUID: 1000
+      PGID: 1000
+      TZ: ${TZ}
+    volumes:
+      - ${DEFAULT_VOLUME}/${APP_DATA}/radarr:/config
+      - ${DEFAULT_VOLUME}/${DATA}:/data
+    ports:
+      - 7878:7878
+    restart: unless-stopped
+
+  sonarr:
+    container_name: sonarr
+    image: lscr.io/linuxserver/sonarr:latest
+    environment:
+      PUID: 1000
+      PGID: 1000
+      TZ: ${TZ}
+    volumes:
+      - ${DEFAULT_VOLUME}/${APP_DATA}/sonarr:/config
+      - ${DEFAULT_VOLUME}/${DATA}:/data
+    ports:
+      - 8989:8989
+    restart: unless-stopped
+
+  prowlarr:
+    container_name: prowlarr
+    image: lscr.io/linuxserver/prowlarr:latest
+    environment:
+      PUID: 1000
+      PGID: 1000
+      TZ: ${TZ}
+    volumes:
+      - ${DEFAULT_VOLUME}/${APP_DATA}/prowlarr:/config
+    ports:
+      - 9696:9696
+    restart: unless-stopped
+
+  qbittorrent:
+    container_name: qbittorrent
+    image: cr.hotio.dev/hotio/qbittorrent:release
+    ports:
+      - 8080:8080
+    environment:
+      PUID: 1000
+      PGID: 1000
+      UMASK: 002
+      TZ: ${TZ}
+    volumes:
+      - ${DEFAULT_VOLUME}/${APP_DATA}/qbittorrent:/config
+      - ${DEFAULT_VOLUME}/${DATA}/torrents:/data/torrents
+    restart: unless-stopped
