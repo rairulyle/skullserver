@@ -28,9 +28,6 @@ services:
       TZ: ${TZ}
     ports:
       - 5055:5055
-    dns:
-      - 8.8.8.8
-      - 8.8.4.4
     volumes:
       - ${DEFAULT_VOLUME}/${APP_DATA}/jellyseerr:/app/config
     restart: unless-stopped
