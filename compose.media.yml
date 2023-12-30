@@ -18,6 +18,23 @@ services:
       - ${DEFAULT_VOLUME}/${DATA}/media:/data
     restart: unless-stopped
 
+  jellyseerr:
+    image: fallenbagel/jellyseerr:latest
+    container_name: jellyseerr
+    environment:
+      PUID: 1000
+      PGID: 1000
+      LOG_LEVEL: debug
+      TZ: ${TZ}
+    ports:
+      - 5055:5055
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+    volumes:
+      - ${DEFAULT_VOLUME}/${APP_DATA}/jellyseerr:/app/config
+    restart: unless-stopped
+
   radarr:
     container_name: radarr
     image: lscr.io/linuxserver/radarr:latest
@@ -28,13 +45,15 @@ services:
     volumes:
       - ${DEFAULT_VOLUME}/${APP_DATA}/radarr:/config
       - ${DEFAULT_VOLUME}/${DATA}:/data
+      - ${DEFAULT_VOLUME}/${APP_DATA}/radarr/custom-services.d:/custom-services.d
+      - ${DEFAULT_VOLUME}/${APP_DATA}/radarr/custom-cont-init.d:/custom-cont-init.d
     ports:
       - 7878:7878
     restart: unless-stopped
 
   sonarr:
     container_name: sonarr
-    image: lscr.io/linuxserver/sonarr:latest
+    image: lscr.io/linuxserver/sonarr:develop
     environment:
       PUID: 1000
       PGID: 1000
@@ -42,8 +61,26 @@ services:
     volumes:
       - ${DEFAULT_VOLUME}/${APP_DATA}/sonarr:/config
       - ${DEFAULT_VOLUME}/${DATA}:/data
+      - ${DEFAULT_VOLUME}/${APP_DATA}/sonarr/custom-services.d:/custom-services.d
+      - ${DEFAULT_VOLUME}/${APP_DATA}/sonarr/custom-cont-init.d:/custom-cont-init.d
     ports:
       - 8989:8989
+    restart: unless-stopped
+
+  lidarr:
+    image: lscr.io/linuxserver/lidarr:latest
+    container_name: lidarr
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+    volumes:
+      - ${DEFAULT_VOLUME}/${APP_DATA}/lidarr:/config
+      - ${DEFAULT_VOLUME}/${DATA}:/data
+      - ${DEFAULT_VOLUME}/${APP_DATA}/lidarr/custom-services.d:/custom-services.d
+      - ${DEFAULT_VOLUME}/${APP_DATA}/lidarr/custom-cont-init.d:/custom-cont-init.d
+    ports:
+      - 8686:8686
     restart: unless-stopped
 
   prowlarr:
