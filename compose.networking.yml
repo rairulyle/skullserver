@@ -1,18 +1,5 @@
 version: "3.8"
 services:
-  homepage:
-    container_name: homepage
-    image: ghcr.io/gethomepage/homepage:latest
-    environment:
-      PUID: 1000
-      PGID: 999
-    ports:
-      - 3000:3000
-    volumes:
-      - ${DEFAULT_VOLUME}/${APP_DATA}/homepage:/app/config # Make sure your local config directory exists
-      - /var/run/docker.sock:/var/run/docker.sock # optional, for docker integrations
-    restart: unless-stopped
-
   nginx-proxy-manager:
     container_name: nginx-proxy-manager
     image: "jc21/nginx-proxy-manager:latest"

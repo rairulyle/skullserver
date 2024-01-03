@@ -1,5 +1,19 @@
 version: "3.8"
 services:
+  homepage:
+    container_name: homepage
+    image: ghcr.io/gethomepage/homepage:latest
+    environment:
+      PUID: 1000
+      PGID: 999
+    ports:
+      - 3000:3000
+    volumes:
+      - ${DEFAULT_VOLUME}/${APP_DATA}/homepage:/app/config
+      - ${DEFAULT_VOLUME}:/media
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: unless-stopped
+
   watchtower:
     container_name: watchtower
     image: containrrr/watchtower:latest
@@ -37,11 +51,11 @@ services:
       - speedtest-tracker-db
   speedtest-tracker-db:
     container_name: speedtest-tracker-db
-    image: postgres:15
+    image: postgres:latest
     restart: always
     environment:
       POSTGRES_DB: speedtest_tracker
       POSTGRES_USER: speedy
       POSTGRES_PASSWORD: password
     volumes:
-      - ${DEFAULT_VOLUME}/${APP_DATA}/speedtest-tracker/postgres:/var/lib/postgresql/data
+      - /mnt/sda1/${APP_DATA}/speedtest-tracker/postgres:/var/lib/postgresql/data
