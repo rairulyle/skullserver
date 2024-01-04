@@ -95,7 +95,7 @@ services:
 
   qbittorrent:
     container_name: qbittorrent
-    image: cr.hotio.dev/hotio/qbittorrent:release
+    image: ghcr.io/hotio/qbittorrent:latest
     ports:
       - 8080:8080
     environment:
