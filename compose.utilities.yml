@@ -47,6 +47,13 @@ services:
       - ${DEFAULT_VOLUME}/${APP_DATA}/speedtest-tracker/config:/config
       - ${DEFAULT_VOLUME}/${APP_DATA}/speedtest-tracker/etc/ssl/web:/etc/ssl/web
     restart: unless-stopped
+    labels:
+      - homepage.group=Network
+      - homepage.name=Speedtest
+      - homepage.icon=librespeed.png
+      - homepage.href=http://speedtest.${DOMAIN_NAME}
+      - homepage.widget.type=speedtest
+      - homepage.widget.url=http://${IP_ADDRESS}:8081
     depends_on:
       - speedtest-tracker-db
   speedtest-tracker-db:

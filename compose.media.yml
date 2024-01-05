@@ -17,6 +17,14 @@ services:
       - ${DEFAULT_VOLUME}/${APP_DATA}/jellyfin:/config
       - ${DEFAULT_VOLUME}/${DATA}/media:/data
     restart: unless-stopped
+    labels:
+      - homepage.group=Media
+      - homepage.name=Jellyfin
+      - homepage.icon=jellyfin.png
+      - homepage.href=http://media.${DOMAIN_NAME}
+      - homepage.widget.type=jellyfin
+      - homepage.widget.url=http://${IP_ADDRESS}:8096
+      - homepage.widget.key=${JELLYFIN_API_KEY}
 
   jellyseerr:
     image: fallenbagel/jellyseerr:latest
@@ -31,6 +39,14 @@ services:
     volumes:
       - ${DEFAULT_VOLUME}/${APP_DATA}/jellyseerr:/app/config
     restart: unless-stopped
+    labels:
+      - homepage.group=Media
+      - homepage.name=Jellyseerr
+      - homepage.icon=jellyseerr.png
+      - homepage.href=http://request.${DOMAIN_NAME}
+      - homepage.widget.type=jellyseerr
+      - homepage.widget.url=http://${IP_ADDRESS}:5055
+      - homepage.widget.key=${JELLYSEERR_API_KEY}
 
   radarr:
     container_name: radarr
@@ -47,6 +63,14 @@ services:
     ports:
       - 7878:7878
     restart: unless-stopped
+    labels:
+      - homepage.group=MediaService
+      - homepage.name=Radarr
+      - homepage.icon=radarr.png
+      - homepage.href=http://radarr.${DOMAIN_NAME}
+      - homepage.widget.type=radarr
+      - homepage.widget.url=http://${IP_ADDRESS}:7878
+      - homepage.widget.key=${RADARR_API_KEY}
 
   sonarr:
     container_name: sonarr
@@ -63,6 +87,14 @@ services:
     ports:
       - 8989:8989
     restart: unless-stopped
+    labels:
+      - homepage.group=MediaService
+      - homepage.name=Sonarr
+      - homepage.icon=sonarr.png
+      - homepage.href=http://sonarr.${DOMAIN_NAME}
+      - homepage.widget.type=sonarr
+      - homepage.widget.url=http://${IP_ADDRESS}:8989
+      - homepage.widget.key=${SONARR_API_KEY}
 
   lidarr:
     image: lscr.io/linuxserver/lidarr:latest
@@ -79,6 +111,14 @@ services:
     ports:
       - 8686:8686
     restart: unless-stopped
+    labels:
+      - homepage.group=MediaService
+      - homepage.name=Lidarr
+      - homepage.icon=lidarr.png
+      - homepage.href=http://lidarr.${DOMAIN_NAME}
+      - homepage.widget.type=lidarr
+      - homepage.widget.url=http://${IP_ADDRESS}:8686
+      - homepage.widget.key=${LIDARR_API_KEY}
 
   prowlarr:
     container_name: prowlarr
@@ -107,3 +147,12 @@ services:
       - ${DEFAULT_VOLUME}/${APP_DATA}/qbittorrent:/config
       - ${DEFAULT_VOLUME}/${DATA}/torrents:/data/torrents
     restart: unless-stopped
+    labels:
+      - homepage.group=Media
+      - homepage.name=qBittorrent
+      - homepage.icon=qbittorrent.png
+      - homepage.href=http://torrent.${DOMAIN_NAME}
+      - homepage.widget.type=qbittorrent
+      - homepage.widget.url=http://${IP_ADDRESS}:8080
+      - homepage.widget.username=${DEFAULT_APP_USERNAME}
+      - homepage.widget.password=${DEFAULT_APP_PASSWORD}
