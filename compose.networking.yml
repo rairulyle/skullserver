@@ -24,6 +24,8 @@ services:
   adguardhome:
     container_name: adguardhome
     image: adguard/adguardhome:latest
+    cap_add:
+      - NET_ADMIN
     ports:
       - 53:53/tcp
       - 53:53/udp
