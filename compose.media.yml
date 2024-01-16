@@ -5,6 +5,9 @@ services:
     image: lscr.io/linuxserver/jellyfin:latest
     ports:
       - 8096:8096
+      - 8920:8920
+      - 7359:7359/udp
+      - 1900:1900/udp
     group_add:
       - "110"
     environment:
@@ -25,6 +28,28 @@ services:
       - homepage.widget.type=jellyfin
       - homepage.widget.url=http://${IP_ADDRESS}:8096
       - homepage.widget.key=${JELLYFIN_API_KEY}
+
+  navidrome:
+    image: deluan/navidrome:latest
+    container_name: navidrome
+    user: 1000:1000
+    ports:
+      - 4533:4533
+    environment:
+      ND_DEFAULTTHEME: Spotify-ish
+      ND_LASTFM_ENABLED: true
+      ND_LASTFM_APIKEY: ${LASTFM_API_KEY}
+      ND_LASTFM_SECRET: ${LASTFM_SECRET_KEY}
+      ND_SPOTIFY_ID: ${SPOTIFY_API_KEY}
+      ND_SPOTIFY_SECRET: ${SPOTIFY_SECRET_KEY}
+      ND_ARTISTARTPRIORITY: external, artist.*, album/artist.*
+      ND_COVERARTPRIORITY: embedded, folder.*, cover.*, front.*, external
+      ND_SCANSCHEDULE: 1h
+      ND_LOGLEVEL: info
+    restart: unless-stopped
+    volumes:
+      - ${DEFAULT_VOLUME}/${APP_DATA}/navidrome:/data
+      - ${DEFAULT_VOLUME}/${DATA}/media/music:/music:ro
 
   jellyseerr:
     image: fallenbagel/jellyseerr:latest
