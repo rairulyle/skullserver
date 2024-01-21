@@ -21,7 +21,7 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ${DEFAULT_VOLUME}/${APP_DATA}/watchtower/config.json:/config.json
-    command: homepage nginx-proxy-manager adguardhome adguardhome-sync speedtest-tracker jellyfin radarr sonarr lidarr prowlarr qbittorrent
+    command: scrutiny homepage nginx-proxy-manager adguardhome adguardhome-sync speedtest-tracker jellyfin radarr sonarr lidarr prowlarr qbittorrent
     environment:
       WATCHTOWER_NOTIFICATIONS: shoutrrr
       WATCHTOWER_NOTIFICATION_URL: "discord://${DISCORD_TOKEN}@${DISCORD_ID}"
@@ -67,3 +67,28 @@ services:
       POSTGRES_PASSWORD: password
     volumes:
       - /mnt/sda1/${APP_DATA}/speedtest-tracker/postgres:/var/lib/postgresql/data
+
+  scrutiny:
+    container_name: scrutiny
+    image: ghcr.io/analogj/scrutiny:master-omnibus
+    cap_add:
+      - SYS_RAWIO
+    ports:
+      - "8083:8080" # webapp
+      - "8086:8086" # influxDB admin
+    volumes:
+      - /run/udev:/run/udev:ro
+      - ${DEFAULT_VOLUME}/${APP_DATA}/scrutiny/config:/opt/scrutiny/config
+      - ${DEFAULT_VOLUME}/${APP_DATA}/scrutiny/influxdb:/opt/scrutiny/influxdb
+    devices:
+      - "/dev/sda"
+      - "/dev/sdb"
+      - "/dev/sdc"
+    restart: unless-stopped
+    labels:
+      - homepage.group=Health
+      - homepage.name=S.M.A.R.T Monitoring
+      - homepage.icon=scrutiny.png
+      - homepage.href=http://scrutiny.${DOMAIN_NAME}
+      - homepage.widget.type=scrutiny
+      - homepage.widget.url=http://${IP_ADDRESS}:8083
