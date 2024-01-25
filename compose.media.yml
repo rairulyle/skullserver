@@ -1,55 +1,49 @@
 version: "3.8"
 services:
-  jellyfin:
-    container_name: jellyfin
-    image: lscr.io/linuxserver/jellyfin:latest
-    ports:
-      - 8096:8096
-      - 8920:8920
-      - 7359:7359/udp
-      - 1900:1900/udp
-    group_add:
-      - "110"
+  plex:
+    image: lscr.io/linuxserver/plex:latest
+    container_name: plex
+    network_mode: host
+    devices:
+      - /dev/dri:/dev/dri
     environment:
       PUID: 1000
       PGID: 1000
       TZ: ${TZ}
-    devices:
-      - /dev/dri:/dev/dri
+      VERSION: docker
     volumes:
-      - ${DEFAULT_VOLUME}/${APP_DATA}/jellyfin:/config
+      - ${DEFAULT_VOLUME}/${APP_DATA}/plex:/config
       - ${DEFAULT_VOLUME}/${DATA}/media:/data
     restart: unless-stopped
     labels:
       - homepage.group=Media
-      - homepage.name=Jellyfin
-      - homepage.icon=jellyfin.png
+      - homepage.name=Plex
+      - homepage.icon=plex.png
       - homepage.href=http://media.${DOMAIN_NAME}
-      - homepage.widget.type=jellyfin
-      - homepage.widget.url=http://${IP_ADDRESS}:8096
-      - homepage.widget.key=${JELLYFIN_API_KEY}
+      - homepage.widget.type=plex
+      - homepage.widget.url=http://${IP_ADDRESS}:32400
+      - homepage.widget.key=${PLEX_API_KEY}
 
-  jellyseerr:
-    image: fallenbagel/jellyseerr:latest
-    container_name: jellyseerr
+  overseerr:
+    image: lscr.io/linuxserver/overseerr:latest
+    container_name: overseerr
     environment:
-      PUID: 1000
-      PGID: 1000
-      LOG_LEVEL: debug
-      TZ: ${TZ}
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+    volumes:
+      - ${DEFAULT_VOLUME}/${APP_DATA}/overseerr:/config
     ports:
       - 5055:5055
-    volumes:
-      - ${DEFAULT_VOLUME}/${APP_DATA}/jellyseerr:/app/config
     restart: unless-stopped
     labels:
       - homepage.group=Media
-      - homepage.name=Jellyseerr
-      - homepage.icon=jellyseerr.png
+      - homepage.name=Overseerr
+      - homepage.icon=overseerr.png
       - homepage.href=http://request.${DOMAIN_NAME}
-      - homepage.widget.type=jellyseerr
+      - homepage.widget.type=overseerr
       - homepage.widget.url=http://${IP_ADDRESS}:5055
-      - homepage.widget.key=${JELLYSEERR_API_KEY}
+      - homepage.widget.key=${OVERSEERR_API_KEY}
 
   radarr:
     container_name: radarr
