@@ -13,7 +13,7 @@ services:
       VERSION: docker
     volumes:
       - ${DEFAULT_VOLUME}/${APP_DATA}/plex:/config
-      - ${DEFAULT_VOLUME}/${DATA}/media:/data
+      - ${DEFAULT_VOLUME}/${DATA}:/data
     restart: unless-stopped
     labels:
       - homepage.group=Media
