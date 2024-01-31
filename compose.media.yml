@@ -24,6 +24,17 @@ services:
       - homepage.widget.url=http://${IP_ADDRESS}:32400
       - homepage.widget.key=${PLEX_API_KEY}
 
+  plextraktsync:
+    image: lscr.io/linuxserver-labs/plextraktsync:latest
+    container_name: plextraktsync
+    environment:
+      PUID: 1000
+      PGID: 1000
+      TZ: ${TZ}
+    volumes:
+      - ${DEFAULT_VOLUME}/${APP_DATA}/plextraktsync:/config
+    restart: unless-stopped
+
   overseerr:
     image: lscr.io/linuxserver/overseerr:latest
     container_name: overseerr

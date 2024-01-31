@@ -21,11 +21,12 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ${DEFAULT_VOLUME}/${APP_DATA}/watchtower/config.json:/config.json
-    command: scrutiny homepage nginx-proxy-manager adguardhome adguardhome-sync speedtest-tracker jellyfin radarr sonarr lidarr prowlarr qbittorrent
+    command: scrutiny homepage nginx-proxy-manager adguardhome adguardhome-sync speedtest-tracker plex overseerr radarr sonarr lidarr prowlarr qbittorrent
     environment:
       WATCHTOWER_NOTIFICATIONS: shoutrrr
       WATCHTOWER_NOTIFICATION_URL: "discord://${DISCORD_TOKEN}@${DISCORD_ID}"
       WATCHTOWER_SCHEDULE: "0 0 * * *" # every 12:00 AM every day
+      WATCHTOWER_CLEANUP: true
       TZ: ${TZ}
     restart: unless-stopped
 
