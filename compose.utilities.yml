@@ -1,4 +1,3 @@
-version: "3.8"
 services:
   homepage:
     container_name: homepage
@@ -32,22 +31,16 @@ services:
 
   speedtest-tracker:
     container_name: speedtest-tracker
-    image: "ghcr.io/alexjustesen/speedtest-tracker:latest"
+    image: lscr.io/linuxserver/speedtest-tracker:latest
     ports:
       - "8081:80"
-      - "8443:443"
     environment:
       PUID: 1000
       PGID: 1000
-      DB_CONNECTION: pgsql
-      DB_HOST: speedtest-tracker-db
-      DB_PORT: 5432
-      DB_DATABASE: speedtest_tracker
-      DB_USERNAME: speedy
-      DB_PASSWORD: password
+      TZ: ${TZ}
+      APP_KEY: ${SPEEDTEST_APP_KEY}
     volumes:
       - ${DEFAULT_VOLUME}/${APP_DATA}/speedtest-tracker/config:/config
-      - ${DEFAULT_VOLUME}/${APP_DATA}/speedtest-tracker/etc/ssl/web:/etc/ssl/web
     restart: unless-stopped
     labels:
       - homepage.group=Network
@@ -56,18 +49,6 @@ services:
       - homepage.href=http://speedtest.${DOMAIN_NAME}
       - homepage.widget.type=speedtest
       - homepage.widget.url=http://${IP_ADDRESS}:8081
-    depends_on:
-      - speedtest-tracker-db
-  speedtest-tracker-db:
-    container_name: speedtest-tracker-db
-    image: postgres:latest
-    restart: always
-    environment:
-      POSTGRES_DB: speedtest_tracker
-      POSTGRES_USER: speedy
-      POSTGRES_PASSWORD: password
-    volumes:
-      - /mnt/sda1/${APP_DATA}/speedtest-tracker/postgres:/var/lib/postgresql/data
 
   scrutiny:
     container_name: scrutiny

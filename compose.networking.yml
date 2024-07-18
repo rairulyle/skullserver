@@ -1,4 +1,3 @@
-version: "3.8"
 services:  
   nginx-proxy-manager:
     container_name: nginx-proxy-manager
