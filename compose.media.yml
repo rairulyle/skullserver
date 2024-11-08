@@ -54,7 +54,25 @@ services:
       - homepage.widget.type=overseerr
       - homepage.widget.url=http://${IP_ADDRESS}:5055
       - homepage.widget.key=${OVERSEERR_API_KEY}
-
+  music-assistant:
+    image: ghcr.io/music-assistant/server:beta
+    container_name: music-assistant
+    # Network mode must be set to host for MA to work correctly
+    network_mode: host
+    # privileged caps (and security-opt) needed to mount smb folders within the container
+    cap_add:
+      - SYS_ADMIN
+      - DAC_READ_SEARCH
+    security_opt:
+      - apparmor:unconfined
+    environment:
+      - LOG_LEVEL=info
+    volumes:
+      - ${DEFAULT_VOLUME}/${APP_DATA}/music-assistant:/data
+    ports:
+      - 8097:8097
+    restart: unless-stopped
+    
   radarr:
     container_name: radarr
     image: lscr.io/linuxserver/radarr:latest
