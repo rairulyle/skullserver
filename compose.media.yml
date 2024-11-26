@@ -69,8 +69,9 @@ services:
       - LOG_LEVEL=info
     volumes:
       - ${DEFAULT_VOLUME}/${APP_DATA}/music-assistant:/data
-    ports:
-      - 8097:8097
+      - ${DEFAULT_VOLUME}/${DATA}/media/music:/music
+    # ports:
+    #   - 8095:8095
     restart: unless-stopped
     
   radarr:
