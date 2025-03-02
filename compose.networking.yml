@@ -55,3 +55,15 @@ services:
     ports:
       - 8082:8080 
     restart: unless-stopped
+    
+  flaresolverr:
+    image: ghcr.io/flaresolverr/flaresolverr:latest
+    container_name: flaresolverr
+    environment:
+      LOG_LEVEL: info
+      LOG_HTML: false
+      CAPTCHA_SOLVER: none
+      TZ: ${TZ}
+    ports:
+      - "8191:8191"
+    restart: unless-stopped
