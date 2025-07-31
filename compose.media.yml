@@ -123,7 +123,7 @@ services:
       - homepage.widget.key=${SONARR_API_KEY}
 
   lidarr:
-    image: lscr.io/linuxserver/lidarr:latest
+    image: ghcr.io/hotio/lidarr:pr-plugins
     container_name: lidarr
     environment:
       - PUID=1000
@@ -131,6 +131,7 @@ services:
       - TZ=Etc/UTC
     volumes:
       - ${DEFAULT_VOLUME}/${APP_DATA}/lidarr:/config
+      - ${DEFAULT_VOLUME}/${APP_DATA}/lidarr/downloads:/downloads
       - ${DEFAULT_VOLUME}/${DATA}:/data
       - ${DEFAULT_VOLUME}/${APP_DATA}/lidarr/custom-services.d:/custom-services.d
       - ${DEFAULT_VOLUME}/${APP_DATA}/lidarr/custom-cont-init.d:/custom-cont-init.d
