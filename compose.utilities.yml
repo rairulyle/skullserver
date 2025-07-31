@@ -5,6 +5,7 @@ services:
     environment:
       PUID: 1000
       PGID: 999
+      HOMEPAGE_ALLOWED_HOSTS: ${DOMAIN_NAME}
     ports:
       - 3000:3000
     volumes:
@@ -37,6 +38,8 @@ services:
     environment:
       PUID: 1000
       PGID: 1000
+      SPEEDTEST_SCHEDULE: 0 */2 * * *
+      PRUNE_RESULTS_OLDER_THAN: 90
       TZ: ${TZ}
       APP_KEY: ${SPEEDTEST_APP_KEY}
     volumes:
