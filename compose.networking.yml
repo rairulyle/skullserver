@@ -7,8 +7,8 @@ services:
       - "81:81"
       - "443:443"
     volumes:
-      - ${DEFAULT_VOLUME}/${APP_DATA}/nginx-proxy-manager/data:/data
-      - ${DEFAULT_VOLUME}/${APP_DATA}/nginx-proxy-manager/letsencrypt:/etc/letsencrypt
+      - ${APP_DATA}/nginx-proxy-manager/data:/data
+      - ${APP_DATA}/nginx-proxy-manager/letsencrypt:/etc/letsencrypt
     restart: unless-stopped
     labels:
       - homepage.group=Network
@@ -34,8 +34,8 @@ services:
       - 2080:80/tcp
       - 2443:443/tcp
     volumes:
-      - ${DEFAULT_VOLUME}/${APP_DATA}/adguardhome/work:/opt/adguardhome/work
-      - ${DEFAULT_VOLUME}/${APP_DATA}/adguardhome/conf:/opt/adguardhome/conf
+      - ${APP_DATA}/adguardhome/work:/opt/adguardhome/work
+      - ${APP_DATA}/adguardhome/conf:/opt/adguardhome/conf
     restart: unless-stopped
     labels:
       - homepage.group=Adguard DNS
@@ -51,7 +51,7 @@ services:
     container_name: adguardhome-sync
     image: lscr.io/linuxserver/adguardhome-sync:latest
     volumes:
-      - ${DEFAULT_VOLUME}/${APP_DATA}/adguardsync:/config
+      - ${APP_DATA}/adguardsync:/config
     ports:
       - 8082:8080 
     restart: unless-stopped

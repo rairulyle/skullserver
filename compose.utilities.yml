@@ -9,7 +9,7 @@ services:
     ports:
       - 3000:3000
     volumes:
-      - ${DEFAULT_VOLUME}/${APP_DATA}/homepage:/app/config
+      - ${APP_DATA}/homepage:/app/config
       - ${DEFAULT_VOLUME}:/media
       - /var/run/docker.sock:/var/run/docker.sock
     restart: unless-stopped
@@ -20,7 +20,7 @@ services:
     image: containrrr/watchtower:latest
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - ${DEFAULT_VOLUME}/${APP_DATA}/watchtower/config.json:/config.json
+      - ${APP_DATA}/watchtower/config.json:/config.json
     command: scrutiny homepage nginx-proxy-manager adguardhome adguardhome-sync speedtest-tracker plex plextraktsync overseerr radarr sonarr lidarr prowlarr qbittorrent music-assistant flaresolverr watchtower
     environment:
       WATCHTOWER_NOTIFICATIONS: shoutrrr
@@ -43,7 +43,7 @@ services:
       TZ: ${TZ}
       APP_KEY: ${SPEEDTEST_APP_KEY}
     volumes:
-      - ${DEFAULT_VOLUME}/${APP_DATA}/speedtest-tracker/config:/config
+      - ${APP_DATA}/speedtest-tracker/config:/config
     restart: unless-stopped
     labels:
       - homepage.group=Network
@@ -63,8 +63,8 @@ services:
       - "8086:8086" # influxDB admin
     volumes:
       - /run/udev:/run/udev:ro
-      - ${DEFAULT_VOLUME}/${APP_DATA}/scrutiny/config:/opt/scrutiny/config
-      - ${DEFAULT_VOLUME}/${APP_DATA}/scrutiny/influxdb:/opt/scrutiny/influxdb
+      - ${APP_DATA}/scrutiny/config:/opt/scrutiny/config
+      - ${APP_DATA}/scrutiny/influxdb:/opt/scrutiny/influxdb
     devices:
       - "/dev/sda"
       - "/dev/sdb"

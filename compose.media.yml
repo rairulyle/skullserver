@@ -11,7 +11,7 @@ services:
       TZ: ${TZ}
       VERSION: docker
     volumes:
-      - ${DEFAULT_VOLUME}/${APP_DATA}/plex:/config
+      - ${APP_DATA}/plex:/config
       - ${DEFAULT_VOLUME}/${DATA}:/data
     restart: unless-stopped
     labels:
@@ -31,7 +31,7 @@ services:
       PGID: 1000
       TZ: ${TZ}
     volumes:
-      - ${DEFAULT_VOLUME}/${APP_DATA}/plextraktsync:/config
+      - ${APP_DATA}/plextraktsync:/config
     restart: unless-stopped
 
   overseerr:
@@ -42,7 +42,7 @@ services:
       - PGID=1000
       - TZ=Etc/UTC
     volumes:
-      - ${DEFAULT_VOLUME}/${APP_DATA}/overseerr:/config
+      - ${APP_DATA}/overseerr:/config
     ports:
       - 5055:5055
     restart: unless-stopped
@@ -54,25 +54,26 @@ services:
       - homepage.widget.type=overseerr
       - homepage.widget.url=http://${IP_ADDRESS}:5055
       - homepage.widget.key=${OVERSEERR_API_KEY}
-  music-assistant:
-    image: ghcr.io/music-assistant/server:beta
-    container_name: music-assistant
-    # Network mode must be set to host for MA to work correctly
-    network_mode: host
-    # privileged caps (and security-opt) needed to mount smb folders within the container
-    cap_add:
-      - SYS_ADMIN
-      - DAC_READ_SEARCH
-    security_opt:
-      - apparmor:unconfined
-    environment:
-      - LOG_LEVEL=info
-    volumes:
-      - ${DEFAULT_VOLUME}/${APP_DATA}/music-assistant:/data
-      - ${DEFAULT_VOLUME}/${DATA}/media/music:/music
-    # ports:
-    #   - 8095:8095
-    restart: unless-stopped
+      
+  # music-assistant:
+  #   image: ghcr.io/music-assistant/server:beta
+  #   container_name: music-assistant
+  #   # Network mode must be set to host for MA to work correctly
+  #   network_mode: host
+  #   # privileged caps (and security-opt) needed to mount smb folders within the container
+  #   cap_add:
+  #     - SYS_ADMIN
+  #     - DAC_READ_SEARCH
+  #   security_opt:
+  #     - apparmor:unconfined
+  #   environment:
+  #     - LOG_LEVEL=info
+  #   volumes:
+  #     - ${APP_DATA}/music-assistant:/data
+  #     - ${DEFAULT_VOLUME}/${DATA}/media/music:/music
+  #   # ports:
+  #   #   - 8095:8095
+  #   restart: unless-stopped
     
   radarr:
     container_name: radarr
@@ -82,10 +83,10 @@ services:
       PGID: 1000
       TZ: ${TZ}
     volumes:
-      - ${DEFAULT_VOLUME}/${APP_DATA}/radarr:/config
+      - ${APP_DATA}/radarr:/config
       - ${DEFAULT_VOLUME}/${DATA}:/data
-      - ${DEFAULT_VOLUME}/${APP_DATA}/radarr/custom-services.d:/custom-services.d
-      - ${DEFAULT_VOLUME}/${APP_DATA}/radarr/custom-cont-init.d:/custom-cont-init.d
+      - ${APP_DATA}/radarr/custom-services.d:/custom-services.d
+      - ${APP_DATA}/radarr/custom-cont-init.d:/custom-cont-init.d
     ports:
       - 7878:7878
     restart: unless-stopped
@@ -106,10 +107,10 @@ services:
       PGID: 1000
       TZ: ${TZ}
     volumes:
-      - ${DEFAULT_VOLUME}/${APP_DATA}/sonarr:/config
+      - ${APP_DATA}/sonarr:/config
       - ${DEFAULT_VOLUME}/${DATA}:/data
-      - ${DEFAULT_VOLUME}/${APP_DATA}/sonarr/custom-services.d:/custom-services.d
-      - ${DEFAULT_VOLUME}/${APP_DATA}/sonarr/custom-cont-init.d:/custom-cont-init.d
+      - ${APP_DATA}/sonarr/custom-services.d:/custom-services.d
+      - ${APP_DATA}/sonarr/custom-cont-init.d:/custom-cont-init.d
     ports:
       - 8989:8989
     restart: unless-stopped
@@ -130,11 +131,11 @@ services:
       - PGID=1000
       - TZ=Etc/UTC
     volumes:
-      - ${DEFAULT_VOLUME}/${APP_DATA}/lidarr:/config
-      - ${DEFAULT_VOLUME}/${APP_DATA}/lidarr/downloads:/downloads
+      - ${APP_DATA}/lidarr:/config
+      - ${APP_DATA}/lidarr/downloads:/downloads
       - ${DEFAULT_VOLUME}/${DATA}:/data
-      - ${DEFAULT_VOLUME}/${APP_DATA}/lidarr/custom-services.d:/custom-services.d
-      - ${DEFAULT_VOLUME}/${APP_DATA}/lidarr/custom-cont-init.d:/custom-cont-init.d
+      - ${APP_DATA}/lidarr/custom-services.d:/custom-services.d
+      - ${APP_DATA}/lidarr/custom-cont-init.d:/custom-cont-init.d
     ports:
       - 8686:8686
     restart: unless-stopped
@@ -155,7 +156,7 @@ services:
       PGID: 1000
       TZ: ${TZ}
     volumes:
-      - ${DEFAULT_VOLUME}/${APP_DATA}/prowlarr:/config
+      - ${APP_DATA}/prowlarr:/config
     ports:
       - 9696:9696
     restart: unless-stopped
@@ -171,7 +172,7 @@ services:
       UMASK: 002
       TZ: ${TZ}
     volumes:
-      - ${DEFAULT_VOLUME}/${APP_DATA}/qbittorrent:/config
+      - ${APP_DATA}/qbittorrent:/config
       - ${DEFAULT_VOLUME}/${DATA}/torrents:/data/torrents
     restart: unless-stopped
     labels:
