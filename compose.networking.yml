@@ -1,7 +1,7 @@
 services:  
   nginx-proxy-manager:
     container_name: nginx-proxy-manager
-    image: "jc21/nginx-proxy-manager:2.12.3"
+    image: "docker.io/jc21/nginx-proxy-manager:latest"
     ports:
       - "80:80"
       - "81:81"

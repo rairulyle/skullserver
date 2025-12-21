@@ -77,3 +77,12 @@ services:
       - homepage.href=http://scrutiny.${DOMAIN_NAME}
       - homepage.widget.type=scrutiny
       - homepage.widget.url=http://${IP_ADDRESS}:8083
+
+    meralco-api:
+        image: ghcr.io/rairulyle/meralco-ph:latest
+        container_name: meralco-ph
+        ports:
+          - "5000:5000"
+        environment:
+          TZ: ${TZ} 
+        restart: unless-stopped
