@@ -132,7 +132,6 @@ services:
       - TZ=Etc/UTC
     volumes:
       - ${APP_DATA}/lidarr:/config
-      - ${APP_DATA}/lidarr/downloads:/downloads
       - ${DEFAULT_VOLUME}/${DATA}:/data
       - ${APP_DATA}/lidarr/custom-services.d:/custom-services.d
       - ${APP_DATA}/lidarr/custom-cont-init.d:/custom-cont-init.d
@@ -184,3 +183,25 @@ services:
       - homepage.widget.url=http://${IP_ADDRESS}:8080
       - homepage.widget.username=${DEFAULT_APP_USERNAME}
       - homepage.widget.password=${DEFAULT_APP_PASSWORD}
+
+  slskd:
+    image: slskd/slskd
+    container_name: slskd
+    ports:
+      - "5030:5030"
+      - "5031:5031"
+      - "50300:50300"
+    environment:
+      - SLSKD_USERNAME=${DEFAULT_APP_USERNAME}
+      - SLSKD_PASSWORD=${DEFAULT_APP_PASSWORD}
+      - SLSKD_SLSK_USERNAME=${SOULSEEK_USERNAME}
+      - SLSKD_SLSK_PASSWORD=${SOULSEEK_PASSWORD}
+      - SLSKD_REMOTE_CONFIGURATION=true
+      - SLSKD_UMASK=022
+      - SLSKD_DOWNLOADS_DIR=/data/slskd/downloads
+      - SLSKD_INCOMPLETE_DIR=/data/slskd/incomplete
+    volumes:
+      - ${APP_DATA}/slskd:/app
+      - ${DEFAULT_VOLUME}/${DATA}:/data
+    restart: unless-stopped
+    user: 1000:1000
