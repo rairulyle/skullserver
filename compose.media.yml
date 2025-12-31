@@ -124,12 +124,12 @@ services:
       - homepage.widget.key=${SONARR_API_KEY}
 
   lidarr:
-    image: ghcr.io/hotio/lidarr:pr-plugins
+    image: ghcr.io/linuxserver-labs/prarr:lidarr-plugins
     container_name: lidarr
     environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Etc/UTC
+      PUID: 1000
+      PGID: 1000
+      TZ: ${TZ}
     volumes:
       - ${APP_DATA}/lidarr:/config
       - ${DEFAULT_VOLUME}/${DATA}:/data
@@ -205,3 +205,17 @@ services:
       - ${DEFAULT_VOLUME}/${DATA}:/data
     restart: unless-stopped
     user: 1000:1000
+
+  plexmuse:
+    image: ghcr.io/rairulyle/plexmuse:latest
+    container_name: plexmuse
+    environment:
+      TZ: ${TZ}
+      PLEX_BASE_URL: http://${IP_ADDRESS}:32400
+      PLEX_TOKEN: ${PLEX_API_KEY}
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      GEMINI_API_KEY: ${GEMINI_API_KEY}
+      # ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
+    ports:
+      - 8000:8000
+    restart: unless-stopped
