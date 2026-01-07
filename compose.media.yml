@@ -198,6 +198,18 @@ services:
       - homepage.widget.username=${DEFAULT_APP_USERNAME}
       - homepage.widget.password=${DEFAULT_APP_PASSWORD}
 
+  qui:
+    image: ghcr.io/autobrr/qui:latest
+    container_name: qui
+    restart: unless-stopped
+    ports:
+      - "7476:7476"
+    volumes:
+      - ${APP_DATA}/qui:/config
+      - ${DATA}/torrents:/data/torrents
+    environment:
+      TZ: ${TZ}
+
   slskd:
     image: slskd/slskd
     container_name: slskd
