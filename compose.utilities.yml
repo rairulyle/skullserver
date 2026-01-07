@@ -10,7 +10,7 @@ services:
       - 3000:3000
     volumes:
       - ${APP_DATA}/homepage:/app/config
-      - ${DEFAULT_VOLUME}:/media
+      - ${DATA}:/media
       - /var/run/docker.sock:/var/run/docker.sock
     restart: unless-stopped
 
@@ -21,7 +21,7 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ${APP_DATA}/watchtower/config.json:/config.json
-    command: scrutiny homepage nginx-proxy-manager adguardhome adguardhome-sync speedtest-tracker plex plextraktsync overseerr radarr sonarr lidarr prowlarr qbittorrent music-assistant flaresolverr watchtower meralco-ph
+    command: scrutiny homepage nginx-proxy-manager adguardhome adguardhome-sync speedtest-tracker plex plextraktsync overseerr radarr sonarr lidarr bazarr prowlarr qbittorrent music-assistant flaresolverr watchtower meralco-ph qui slskd plexmuse upsnap
     environment:
       WATCHTOWER_NOTIFICATIONS: shoutrrr
       WATCHTOWER_NOTIFICATION_URL: "discord://${DISCORD_TOKEN}@${DISCORD_ID}"

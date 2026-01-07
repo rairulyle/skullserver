@@ -12,7 +12,7 @@ services:
       VERSION: docker
     volumes:
       - ${APP_DATA}/plex:/config
-      - ${DEFAULT_VOLUME}/${DATA}:/data
+      - ${DATA}:/data
     restart: unless-stopped
     labels:
       - homepage.group=Media
@@ -70,7 +70,7 @@ services:
   #     - LOG_LEVEL=info
   #   volumes:
   #     - ${APP_DATA}/music-assistant:/data
-  #     - ${DEFAULT_VOLUME}/${DATA}/media/music:/music
+  #     - ${DATA}/media/music:/music
   #   # ports:
   #   #   - 8095:8095
   #   restart: unless-stopped
@@ -84,7 +84,7 @@ services:
       TZ: ${TZ}
     volumes:
       - ${APP_DATA}/radarr:/config
-      - ${DEFAULT_VOLUME}/${DATA}:/data
+      - ${DATA}:/data
       - ${APP_DATA}/radarr/custom-services.d:/custom-services.d
       - ${APP_DATA}/radarr/custom-cont-init.d:/custom-cont-init.d
     ports:
@@ -108,7 +108,7 @@ services:
       TZ: ${TZ}
     volumes:
       - ${APP_DATA}/sonarr:/config
-      - ${DEFAULT_VOLUME}/${DATA}:/data
+      - ${DATA}:/data
       - ${APP_DATA}/sonarr/custom-services.d:/custom-services.d
       - ${APP_DATA}/sonarr/custom-cont-init.d:/custom-cont-init.d
     ports:
@@ -132,7 +132,7 @@ services:
       TZ: ${TZ}
     volumes:
       - ${APP_DATA}/lidarr:/config
-      - ${DEFAULT_VOLUME}/${DATA}:/data
+      - ${DATA}:/data
       - ${APP_DATA}/lidarr/custom-services.d:/custom-services.d
       - ${APP_DATA}/lidarr/custom-cont-init.d:/custom-cont-init.d
     ports:
@@ -186,7 +186,7 @@ services:
       TZ: ${TZ}
     volumes:
       - ${APP_DATA}/qbittorrent:/config
-      - ${DEFAULT_VOLUME}/${DATA}/torrents:/data/torrents
+      - ${DATA}/torrents:/data/torrents
     restart: unless-stopped
     labels:
       - homepage.group=Media
@@ -226,9 +226,10 @@ services:
       - SLSKD_UMASK=022
       - SLSKD_DOWNLOADS_DIR=/data/slskd/downloads
       - SLSKD_INCOMPLETE_DIR=/data/slskd/incomplete
+      - TZ=${TZ}
     volumes:
       - ${APP_DATA}/slskd:/app
-      - ${DEFAULT_VOLUME}/${DATA}:/data
+      - ${DATA}:/data
     restart: unless-stopped
     user: 1000:1000
 
