@@ -147,6 +147,20 @@ services:
       - homepage.widget.url=http://${IP_ADDRESS}:8686
       - homepage.widget.key=${LIDARR_API_KEY}
 
+  bazarr:
+      image: lscr.io/linuxserver/bazarr:latest
+      container_name: bazarr
+      environment:
+        PUID: 1000
+        PGID: 1000
+        TZ: ${TZ}
+      volumes:
+        - ${APP_DATA}/lidarr:/config
+        - ${DATA}:/data
+      ports:
+        - 6767:6767
+      restart: unless-stopped
+
   prowlarr:
     container_name: prowlarr
     image: lscr.io/linuxserver/prowlarr:latest
