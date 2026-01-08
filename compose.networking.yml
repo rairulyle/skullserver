@@ -1,5 +1,6 @@
 services:  
   nginx-proxy-manager:
+    container_name: nginx-proxy-manager
     image: "docker.io/jc21/nginx-proxy-manager:latest"
     ports:
       - "80:80"
@@ -20,6 +21,7 @@ services:
       homepage.widget.password: ${DEFAULT_APP_PASSWORD}
 
   adguardhome:
+    container_name: adguardhome
     image: adguard/adguardhome:latest
     cap_add:
       - NET_ADMIN
@@ -46,6 +48,7 @@ services:
       homepage.widget.password: ${DEFAULT_APP_PASSWORD}
 
   adguardhome-sync:
+    container_name: adguardhome-sync
     image: lscr.io/linuxserver/adguardhome-sync:latest
     ports:
       - 8082:8080
@@ -54,6 +57,7 @@ services:
     restart: unless-stopped
     
   flaresolverr:
+    container_name: flaresolverr
     image: ghcr.io/flaresolverr/flaresolverr:latest
     ports:
       - "8191:8191"

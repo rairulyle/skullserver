@@ -1,5 +1,6 @@
 services:
   homepage:
+    container_name: homepage
     image: ghcr.io/gethomepage/homepage:latest
     ports:
       - 3000:3000
@@ -14,6 +15,7 @@ services:
     restart: unless-stopped
 
   watchtower:
+    container_name: watchtower
     image: containrrr/watchtower:latest
     hostname: SKULLSERVER
     command: scrutiny homepage nginx-proxy-manager adguardhome adguardhome-sync speedtest-tracker plex plextraktsync overseerr radarr sonarr lidarr bazarr prowlarr qbittorrent music-assistant flaresolverr watchtower meralco-ph qui slskd lidify upsnap
@@ -29,6 +31,7 @@ services:
     restart: unless-stopped
 
   speedtest-tracker:
+    container_name: speedtest-tracker
     image: lscr.io/linuxserver/speedtest-tracker:latest
     ports:
       - "8081:80"
@@ -51,6 +54,7 @@ services:
       homepage.widget.url: http://${IP_ADDRESS}:8081
 
   scrutiny:
+    container_name: scrutiny
     image: ghcr.io/analogj/scrutiny:master-omnibus
     cap_add:
       - SYS_RAWIO
@@ -75,6 +79,7 @@ services:
       homepage.widget.url: http://${IP_ADDRESS}:8083
 
   meralco-ph:
+    container_name: meralco-ph
     image: ghcr.io/rairulyle/meralco-ph:latest
     ports:
       - "5000:5000"
@@ -83,6 +88,7 @@ services:
     restart: unless-stopped
 
   upsnap:
+    container_name: upsnap
     image: ghcr.io/seriousm4x/upsnap:5
     network_mode: host
     environment:
@@ -92,6 +98,7 @@ services:
     restart: unless-stopped 
 
   tautulli:
+    container_name: tautulli
     image: lscr.io/linuxserver/tautulli:latest
     ports:
       - 8181:8181

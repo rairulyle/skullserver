@@ -15,7 +15,7 @@ Services must follow this property order:
 ```yaml
 services:
   {service-name}:
-    # container_name: {custom-name}         # Optional: only if different from service name
+    container_name: {service-name}
     image: {image:tag}
     # hostname: {hostname}                  # Optional: only if needed
     # network_mode: {mode}                  # Optional: only if needed (e.g., host)
@@ -106,25 +106,26 @@ services:
 
 ### 5. Service Names & Container Names
 - Use lowercase with hyphens for multi-word names
-- **Omit `container_name`** if it matches the service name (Docker Compose will use the service name by default)
-- **Only include `container_name`** if you need a different name than the service name
+- **Always include `container_name`** - it should match the service name for consistency
+- **Why?** Without `container_name`, Docker Compose generates names like `skullpluggery-server-homepage-1` instead of just `homepage`
+- This ensures explicit naming and avoids issues with Docker Compose automatic naming
 - **Examples**:
   ```yaml
-  # ✅ CORRECT - container_name omitted (same as service name)
-  services:
-    plex:
-      image: lscr.io/linuxserver/plex:latest
-
-  # ✅ CORRECT - container_name specified (different from service name)
-  services:
-    npm:
-      container_name: nginx-proxy-manager
-      image: jc21/nginx-proxy-manager:latest
-
-  # ❌ WRONG - Redundant container_name
+  # ✅ CORRECT - container_name explicitly set
   services:
     plex:
       container_name: plex
+      image: lscr.io/linuxserver/plex:latest
+
+  # ✅ CORRECT - container_name matches service name
+  services:
+    nginx-proxy-manager:
+      container_name: nginx-proxy-manager
+      image: jc21/nginx-proxy-manager:latest
+
+  # ❌ WRONG - Missing container_name
+  services:
+    plex:
       image: lscr.io/linuxserver/plex:latest
   ```
 

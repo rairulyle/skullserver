@@ -1,5 +1,6 @@
 services:
   plex:
+    container_name: plex
     image: lscr.io/linuxserver/plex:latest
     network_mode: host
     devices:
@@ -23,6 +24,7 @@ services:
       homepage.widget.key: ${PLEX_API_KEY}
 
   plextraktsync:
+    container_name: plextraktsync
     image: lscr.io/linuxserver-labs/plextraktsync:latest
     environment:
       PGID: 1000
@@ -33,6 +35,7 @@ services:
     restart: unless-stopped
 
   overseerr:
+    container_name: overseerr
     image: lscr.io/linuxserver/overseerr:latest
     ports:
       - 5055:5055
@@ -73,6 +76,7 @@ services:
   #   restart: unless-stopped
     
   radarr:
+    container_name: radarr
     image: lscr.io/linuxserver/radarr:latest
     ports:
       - 7878:7878
@@ -96,6 +100,7 @@ services:
       homepage.widget.key: ${RADARR_API_KEY}
 
   sonarr:
+    container_name: sonarr
     image: lscr.io/linuxserver/sonarr:develop
     ports:
       - 8989:8989
@@ -119,6 +124,7 @@ services:
       homepage.widget.key: ${SONARR_API_KEY}
 
   lidarr:
+    container_name: lidarr
     image: ghcr.io/linuxserver-labs/prarr:lidarr-plugins
     ports:
       - 8686:8686
@@ -142,6 +148,7 @@ services:
       homepage.widget.key: ${LIDARR_API_KEY}
 
   bazarr:
+    container_name: bazarr
     image: lscr.io/linuxserver/bazarr:latest
     ports:
       - 6767:6767
@@ -155,6 +162,7 @@ services:
     restart: unless-stopped
 
   prowlarr:
+    container_name: prowlarr
     image: lscr.io/linuxserver/prowlarr:latest
     ports:
       - 9696:9696
@@ -166,7 +174,20 @@ services:
       - ${APP_DATA}/prowlarr:/config
     restart: unless-stopped
 
+  agregarr:
+    container_name: agregarr
+    image: agregarr/agregarr:latest
+    ports:
+      - 7171:7171
+    environment:
+      TZ: ${TZ}
+    volumes:
+      - ${APP_DATA}/agregarr:/app/config
+      - ${DATA}:/data
+    restart: unless-stopped
+
   qbittorrent:
+    container_name: qbittorrent
     image: ghcr.io/hotio/qbittorrent:latest
     ports:
       - 8080:8080
@@ -190,6 +211,7 @@ services:
       homepage.widget.password: ${DEFAULT_APP_PASSWORD}
 
   qui:
+    container_name: qui
     image: ghcr.io/autobrr/qui:latest
     ports:
       - "7476:7476"
@@ -201,8 +223,8 @@ services:
     restart: unless-stopped
 
   slskd:
+    container_name: slskd
     image: slskd/slskd
-    user: 1000:1000
     ports:
       - "5030:5030"
       - "5031:5031"
@@ -223,6 +245,7 @@ services:
     restart: unless-stopped
 
   lidify:
+    container_name: lidify
     image: chevron7locked/lidify:latest
     ports:
       - "3030:3030"
