@@ -21,7 +21,7 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ${APP_DATA}/watchtower/config.json:/config.json
-    command: scrutiny homepage nginx-proxy-manager adguardhome adguardhome-sync speedtest-tracker plex plextraktsync overseerr radarr sonarr lidarr bazarr prowlarr qbittorrent music-assistant flaresolverr watchtower meralco-ph qui slskd plexmuse upsnap
+    command: scrutiny homepage nginx-proxy-manager adguardhome adguardhome-sync speedtest-tracker plex plextraktsync overseerr radarr sonarr lidarr bazarr prowlarr qbittorrent music-assistant flaresolverr watchtower meralco-ph qui slskd lidify upsnap
     environment:
       WATCHTOWER_NOTIFICATIONS: shoutrrr
       WATCHTOWER_NOTIFICATION_URL: "discord://${DISCORD_TOKEN}@${DISCORD_ID}"
@@ -43,7 +43,7 @@ services:
       TZ: ${TZ}
       APP_KEY: ${SPEEDTEST_APP_KEY}
     volumes:
-      - ${APP_DATA}/speedtest-tracker/config:/config
+      - ${APP_DATA}/speedtest-tracker:/config
     restart: unless-stopped
     labels:
       - homepage.group=Network
@@ -78,7 +78,7 @@ services:
       - homepage.widget.type=scrutiny
       - homepage.widget.url=http://${IP_ADDRESS}:8083
 
-  meralco-api:
+  meralco-ph:
       image: ghcr.io/rairulyle/meralco-ph:latest
       container_name: meralco-ph
       ports:
@@ -96,3 +96,16 @@ services:
       - ${APP_DATA}/upsnap:/app/pb_data
     environment:
       TZ: ${TZ} 
+
+  tautulli:
+    image: lscr.io/linuxserver/tautulli:latest
+    container_name: tautulli
+    environment:
+      PUID: 1000
+      PGID: 1000
+      TZ: ${TZ}
+    volumes:
+      - ${APP_DATA}/tautulli:/config
+    ports:
+      - 8181:8181
+    restart: unless-stopped
