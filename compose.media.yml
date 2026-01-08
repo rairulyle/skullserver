@@ -233,16 +233,19 @@ services:
     restart: unless-stopped
     user: 1000:1000
 
-  plexmuse:
-    image: ghcr.io/rairulyle/plexmuse:latest
-    container_name: plexmuse
-    environment:
-      TZ: ${TZ}
-      PLEX_BASE_URL: http://${IP_ADDRESS}:32400
-      PLEX_TOKEN: ${PLEX_API_KEY}
-      OPENAI_API_KEY: ${OPENAI_API_KEY}
-      GEMINI_API_KEY: ${GEMINI_API_KEY}
-      # ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
+  lidify:
+    image: chevron7locked/lidify:latest
+    container_name: lidify
     ports:
-      - 8000:8000
+        - "3030:3030"
+    volumes:
+        - ${APP_DATA}/lidify:/data
+        - ${DATA}:/disk
+    environment:
+        TZ: ${TZ}
+        LIDIFY_CALLBACK_URL: http://${IP_ADDRESS}:3030
+        SESSION_SECRET: ${SESSION_SECRET}
+        SETTINGS_ENCRYPTION_KEY: ${ENCRYPTION_KEY}
+    extra_hosts:
+        - "host.docker.internal:host-gateway"
     restart: unless-stopped
