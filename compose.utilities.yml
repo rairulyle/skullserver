@@ -1,13 +1,12 @@
 services:
   homepage:
-    container_name: homepage
     image: ghcr.io/gethomepage/homepage:latest
+    ports:
+      - 3000:3000
     environment:
       PUID: 1000
       PGID: 999
       HOMEPAGE_ALLOWED_HOSTS: ${DOMAIN_NAME}
-    ports:
-      - 3000:3000
     volumes:
       - ${APP_DATA}/homepage:/app/config
       - ${DATA}:/media
@@ -15,23 +14,21 @@ services:
     restart: unless-stopped
 
   watchtower:
-    container_name: watchtower
-    hostname: SKULLSERVER
     image: containrrr/watchtower:latest
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - ${APP_DATA}/watchtower/config.json:/config.json
+    hostname: SKULLSERVER
     command: scrutiny homepage nginx-proxy-manager adguardhome adguardhome-sync speedtest-tracker plex plextraktsync overseerr radarr sonarr lidarr bazarr prowlarr qbittorrent music-assistant flaresolverr watchtower meralco-ph qui slskd lidify upsnap
     environment:
+      WATCHTOWER_CLEANUP: true
       WATCHTOWER_NOTIFICATIONS: shoutrrr
       WATCHTOWER_NOTIFICATION_URL: "discord://${DISCORD_TOKEN}@${DISCORD_ID}"
       WATCHTOWER_SCHEDULE: "0 0 * * *" # every 12:00 AM every day
-      WATCHTOWER_CLEANUP: true
       TZ: ${TZ}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ${APP_DATA}/watchtower/config.json:/config.json
     restart: unless-stopped
 
   speedtest-tracker:
-    container_name: speedtest-tracker
     image: lscr.io/linuxserver/speedtest-tracker:latest
     ports:
       - "8081:80"
@@ -46,18 +43,21 @@ services:
       - ${APP_DATA}/speedtest-tracker:/config
     restart: unless-stopped
     labels:
-      - homepage.group=Network
-      - homepage.name=Speedtest
-      - homepage.icon=librespeed.png
-      - homepage.href=http://speedtest.${DOMAIN_NAME}
-      - homepage.widget.type=speedtest
-      - homepage.widget.url=http://${IP_ADDRESS}:8081
+      homepage.group: Network
+      homepage.name: Speedtest
+      homepage.icon: librespeed.png
+      homepage.href: http://speedtest.${DOMAIN_NAME}
+      homepage.widget.type: speedtest
+      homepage.widget.url: http://${IP_ADDRESS}:8081
 
   scrutiny:
-    container_name: scrutiny
     image: ghcr.io/analogj/scrutiny:master-omnibus
     cap_add:
       - SYS_RAWIO
+    devices:
+      - "/dev/sda"
+      - "/dev/sdb"
+      - "/dev/sdc"
     ports:
       - "8083:8080" # webapp
       - "8086:8086" # influxDB admin
@@ -65,47 +65,40 @@ services:
       - /run/udev:/run/udev:ro
       - ${APP_DATA}/scrutiny/config:/opt/scrutiny/config
       - ${APP_DATA}/scrutiny/influxdb:/opt/scrutiny/influxdb
-    devices:
-      - "/dev/sda"
-      - "/dev/sdb"
-      - "/dev/sdc"
     restart: unless-stopped
     labels:
-      - homepage.group=Health
-      - homepage.name=S.M.A.R.T Monitoring
-      - homepage.icon=scrutiny.png
-      - homepage.href=http://scrutiny.${DOMAIN_NAME}
-      - homepage.widget.type=scrutiny
-      - homepage.widget.url=http://${IP_ADDRESS}:8083
+      homepage.group: Health
+      homepage.name: S.M.A.R.T Monitoring
+      homepage.icon: scrutiny.png
+      homepage.href: http://scrutiny.${DOMAIN_NAME}
+      homepage.widget.type: scrutiny
+      homepage.widget.url: http://${IP_ADDRESS}:8083
 
   meralco-ph:
-      image: ghcr.io/rairulyle/meralco-ph:latest
-      container_name: meralco-ph
-      ports:
-        - "5000:5000"
-      environment:
-        TZ: ${TZ} 
-      restart: unless-stopped
+    image: ghcr.io/rairulyle/meralco-ph:latest
+    ports:
+      - "5000:5000"
+    environment:
+      TZ: ${TZ}
+    restart: unless-stopped
 
   upsnap:
-    container_name: upsnap
     image: ghcr.io/seriousm4x/upsnap:5
     network_mode: host
-    restart: unless-stopped
+    environment:
+      TZ: ${TZ}
     volumes:
       - ${APP_DATA}/upsnap:/app/pb_data
-    environment:
-      TZ: ${TZ} 
+    restart: unless-stopped 
 
   tautulli:
     image: lscr.io/linuxserver/tautulli:latest
-    container_name: tautulli
+    ports:
+      - 8181:8181
     environment:
       PUID: 1000
       PGID: 1000
       TZ: ${TZ}
     volumes:
       - ${APP_DATA}/tautulli:/config
-    ports:
-      - 8181:8181
     restart: unless-stopped

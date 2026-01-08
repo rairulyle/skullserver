@@ -15,7 +15,7 @@ Services must follow this property order:
 ```yaml
 services:
   {service-name}:
-    container_name: {service-name}
+    # container_name: {custom-name}         # Optional: only if different from service name
     image: {image:tag}
     # hostname: {hostname}                  # Optional: only if needed
     # network_mode: {mode}                  # Optional: only if needed (e.g., host)
@@ -104,14 +104,28 @@ services:
     - ${APP_DATA}/scrutiny/influxdb:/opt/scrutiny/influxdb
   ```
 
-### 5. Service Names
+### 5. Service Names & Container Names
 - Use lowercase with hyphens for multi-word names
-- Container name should match service name
-- **Example**:
+- **Omit `container_name`** if it matches the service name (Docker Compose will use the service name by default)
+- **Only include `container_name`** if you need a different name than the service name
+- **Examples**:
   ```yaml
+  # ✅ CORRECT - container_name omitted (same as service name)
   services:
-    nginx-proxy-manager:
+    plex:
+      image: lscr.io/linuxserver/plex:latest
+
+  # ✅ CORRECT - container_name specified (different from service name)
+  services:
+    npm:
       container_name: nginx-proxy-manager
+      image: jc21/nginx-proxy-manager:latest
+
+  # ❌ WRONG - Redundant container_name
+  services:
+    plex:
+      container_name: plex
+      image: lscr.io/linuxserver/plex:latest
   ```
 
 ## Environment Variables

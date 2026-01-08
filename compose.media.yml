@@ -1,13 +1,12 @@
 services:
   plex:
     image: lscr.io/linuxserver/plex:latest
-    container_name: plex
     network_mode: host
     devices:
       - /dev/dri:/dev/dri
     environment:
-      PUID: 1000
       PGID: 1000
+      PUID: 1000
       TZ: ${TZ}
       VERSION: docker
     volumes:
@@ -15,20 +14,19 @@ services:
       - ${DATA}:/data
     restart: unless-stopped
     labels:
-      - homepage.group=Media
-      - homepage.name=Plex
-      - homepage.icon=plex.png
-      - homepage.href=http://plex.${DOMAIN_NAME}
-      - homepage.widget.type=plex
-      - homepage.widget.url=http://${IP_ADDRESS}:32400
-      - homepage.widget.key=${PLEX_API_KEY}
+      homepage.group: Media
+      homepage.name: Plex
+      homepage.icon: plex.png
+      homepage.href: http://plex.${DOMAIN_NAME}
+      homepage.widget.type: plex
+      homepage.widget.url: http://${IP_ADDRESS}:32400
+      homepage.widget.key: ${PLEX_API_KEY}
 
   plextraktsync:
     image: lscr.io/linuxserver-labs/plextraktsync:latest
-    container_name: plextraktsync
     environment:
-      PUID: 1000
       PGID: 1000
+      PUID: 1000
       TZ: ${TZ}
     volumes:
       - ${APP_DATA}/plextraktsync:/config
@@ -36,24 +34,23 @@ services:
 
   overseerr:
     image: lscr.io/linuxserver/overseerr:latest
-    container_name: overseerr
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Etc/UTC
-    volumes:
-      - ${APP_DATA}/overseerr:/config
     ports:
       - 5055:5055
+    environment:
+      PGID: 1000
+      PUID: 1000
+      TZ: Etc/UTC
+    volumes:
+      - ${APP_DATA}/overseerr:/config
     restart: unless-stopped
     labels:
-      - homepage.group=Media
-      - homepage.name=Overseerr
-      - homepage.icon=overseerr.png
-      - homepage.href=http://request.${DOMAIN_NAME}
-      - homepage.widget.type=overseerr
-      - homepage.widget.url=http://${IP_ADDRESS}:5055
-      - homepage.widget.key=${OVERSEERR_API_KEY}
+      homepage.group: Media
+      homepage.name: Overseerr
+      homepage.icon: overseerr.png
+      homepage.href: http://request.${DOMAIN_NAME}
+      homepage.widget.type: overseerr
+      homepage.widget.url: http://${IP_ADDRESS}:5055
+      homepage.widget.key: ${OVERSEERR_API_KEY}
       
   # music-assistant:
   #   image: ghcr.io/music-assistant/server:beta
@@ -76,176 +73,167 @@ services:
   #   restart: unless-stopped
     
   radarr:
-    container_name: radarr
     image: lscr.io/linuxserver/radarr:latest
+    ports:
+      - 7878:7878
     environment:
-      PUID: 1000
       PGID: 1000
+      PUID: 1000
       TZ: ${TZ}
     volumes:
       - ${APP_DATA}/radarr:/config
       - ${DATA}:/data
       - ${APP_DATA}/radarr/custom-services.d:/custom-services.d
       - ${APP_DATA}/radarr/custom-cont-init.d:/custom-cont-init.d
-    ports:
-      - 7878:7878
     restart: unless-stopped
     labels:
-      - homepage.group=MediaService
-      - homepage.name=Radarr
-      - homepage.icon=radarr.png
-      - homepage.href=http://radarr.${DOMAIN_NAME}
-      - homepage.widget.type=radarr
-      - homepage.widget.url=http://${IP_ADDRESS}:7878
-      - homepage.widget.key=${RADARR_API_KEY}
+      homepage.group: MediaService
+      homepage.name: Radarr
+      homepage.icon: radarr.png
+      homepage.href: http://radarr.${DOMAIN_NAME}
+      homepage.widget.type: radarr
+      homepage.widget.url: http://${IP_ADDRESS}:7878
+      homepage.widget.key: ${RADARR_API_KEY}
 
   sonarr:
-    container_name: sonarr
     image: lscr.io/linuxserver/sonarr:develop
+    ports:
+      - 8989:8989
     environment:
-      PUID: 1000
       PGID: 1000
+      PUID: 1000
       TZ: ${TZ}
     volumes:
       - ${APP_DATA}/sonarr:/config
       - ${DATA}:/data
       - ${APP_DATA}/sonarr/custom-services.d:/custom-services.d
       - ${APP_DATA}/sonarr/custom-cont-init.d:/custom-cont-init.d
-    ports:
-      - 8989:8989
     restart: unless-stopped
     labels:
-      - homepage.group=MediaService
-      - homepage.name=Sonarr
-      - homepage.icon=sonarr.png
-      - homepage.href=http://sonarr.${DOMAIN_NAME}
-      - homepage.widget.type=sonarr
-      - homepage.widget.url=http://${IP_ADDRESS}:8989
-      - homepage.widget.key=${SONARR_API_KEY}
+      homepage.group: MediaService
+      homepage.name: Sonarr
+      homepage.icon: sonarr.png
+      homepage.href: http://sonarr.${DOMAIN_NAME}
+      homepage.widget.type: sonarr
+      homepage.widget.url: http://${IP_ADDRESS}:8989
+      homepage.widget.key: ${SONARR_API_KEY}
 
   lidarr:
     image: ghcr.io/linuxserver-labs/prarr:lidarr-plugins
-    container_name: lidarr
+    ports:
+      - 8686:8686
     environment:
-      PUID: 1000
       PGID: 1000
+      PUID: 1000
       TZ: ${TZ}
     volumes:
       - ${APP_DATA}/lidarr:/config
       - ${DATA}:/data
       - ${APP_DATA}/lidarr/custom-services.d:/custom-services.d
       - ${APP_DATA}/lidarr/custom-cont-init.d:/custom-cont-init.d
-    ports:
-      - 8686:8686
     restart: unless-stopped
     labels:
-      - homepage.group=MediaService
-      - homepage.name=Lidarr
-      - homepage.icon=lidarr.png
-      - homepage.href=http://lidarr.${DOMAIN_NAME}
-      - homepage.widget.type=lidarr
-      - homepage.widget.url=http://${IP_ADDRESS}:8686
-      - homepage.widget.key=${LIDARR_API_KEY}
+      homepage.group: MediaService
+      homepage.name: Lidarr
+      homepage.icon: lidarr.png
+      homepage.href: http://lidarr.${DOMAIN_NAME}
+      homepage.widget.type: lidarr
+      homepage.widget.url: http://${IP_ADDRESS}:8686
+      homepage.widget.key: ${LIDARR_API_KEY}
 
   bazarr:
-      image: lscr.io/linuxserver/bazarr:latest
-      container_name: bazarr
-      environment:
-        PUID: 1000
-        PGID: 1000
-        TZ: ${TZ}
-      volumes:
-        - ${APP_DATA}/lidarr:/config
-        - ${DATA}:/data
-      ports:
-        - 6767:6767
-      restart: unless-stopped
+    image: lscr.io/linuxserver/bazarr:latest
+    ports:
+      - 6767:6767
+    environment:
+      PGID: 1000
+      PUID: 1000
+      TZ: ${TZ}
+    volumes:
+      - ${APP_DATA}/lidarr:/config
+      - ${DATA}:/data
+    restart: unless-stopped
 
   prowlarr:
-    container_name: prowlarr
     image: lscr.io/linuxserver/prowlarr:latest
+    ports:
+      - 9696:9696
     environment:
-      PUID: 1000
       PGID: 1000
+      PUID: 1000
       TZ: ${TZ}
     volumes:
       - ${APP_DATA}/prowlarr:/config
-    ports:
-      - 9696:9696
     restart: unless-stopped
 
   qbittorrent:
-    container_name: qbittorrent
     image: ghcr.io/hotio/qbittorrent:latest
     ports:
       - 8080:8080
     environment:
-      PUID: 1000
       PGID: 1000
-      UMASK: 002
+      PUID: 1000
       TZ: ${TZ}
+      UMASK: 002
     volumes:
       - ${APP_DATA}/qbittorrent:/config
       - ${DATA}/torrents:/data/torrents
     restart: unless-stopped
     labels:
-      - homepage.group=Media
-      - homepage.name=qBittorrent
-      - homepage.icon=qbittorrent.png
-      - homepage.href=http://torrent.${DOMAIN_NAME}
-      - homepage.widget.type=qbittorrent
-      - homepage.widget.url=http://${IP_ADDRESS}:8080
-      - homepage.widget.username=${DEFAULT_APP_USERNAME}
-      - homepage.widget.password=${DEFAULT_APP_PASSWORD}
+      homepage.group: Media
+      homepage.name: qBittorrent
+      homepage.icon: qbittorrent.png
+      homepage.href: http://torrent.${DOMAIN_NAME}
+      homepage.widget.type: qbittorrent
+      homepage.widget.url: http://${IP_ADDRESS}:8080
+      homepage.widget.username: ${DEFAULT_APP_USERNAME}
+      homepage.widget.password: ${DEFAULT_APP_PASSWORD}
 
   qui:
     image: ghcr.io/autobrr/qui:latest
-    container_name: qui
-    restart: unless-stopped
     ports:
       - "7476:7476"
+    environment:
+      TZ: ${TZ}
     volumes:
       - ${APP_DATA}/qui:/config
       - ${DATA}/torrents:/data/torrents
-    environment:
-      TZ: ${TZ}
+    restart: unless-stopped
 
   slskd:
     image: slskd/slskd
-    container_name: slskd
+    user: 1000:1000
     ports:
       - "5030:5030"
       - "5031:5031"
       - "50300:50300"
     environment:
-      - SLSKD_USERNAME=${DEFAULT_APP_USERNAME}
-      - SLSKD_PASSWORD=${DEFAULT_APP_PASSWORD}
-      - SLSKD_SLSK_USERNAME=${SOULSEEK_USERNAME}
-      - SLSKD_SLSK_PASSWORD=${SOULSEEK_PASSWORD}
-      - SLSKD_REMOTE_CONFIGURATION=true
-      - SLSKD_UMASK=022
-      - SLSKD_DOWNLOADS_DIR=/data/slskd/downloads
-      - SLSKD_INCOMPLETE_DIR=/data/slskd/incomplete
-      - TZ=${TZ}
+      SLSKD_DOWNLOADS_DIR: /data/slskd/downloads
+      SLSKD_INCOMPLETE_DIR: /data/slskd/incomplete
+      SLSKD_PASSWORD: ${DEFAULT_APP_PASSWORD}
+      SLSKD_REMOTE_CONFIGURATION: true
+      SLSKD_SLSK_PASSWORD: ${SOULSEEK_PASSWORD}
+      SLSKD_SLSK_USERNAME: ${SOULSEEK_USERNAME}
+      SLSKD_UMASK: 022
+      SLSKD_USERNAME: ${DEFAULT_APP_USERNAME}
+      TZ: ${TZ}
     volumes:
       - ${APP_DATA}/slskd:/app
       - ${DATA}:/data
     restart: unless-stopped
-    user: 1000:1000
 
   lidify:
     image: chevron7locked/lidify:latest
-    container_name: lidify
     ports:
-        - "3030:3030"
-    volumes:
-        - ${APP_DATA}/lidify:/data
-        - ${DATA}:/disk
+      - "3030:3030"
     environment:
-        TZ: ${TZ}
-        LIDIFY_CALLBACK_URL: http://${IP_ADDRESS}:3030
-        SESSION_SECRET: ${SESSION_SECRET}
-        SETTINGS_ENCRYPTION_KEY: ${ENCRYPTION_KEY}
+      LIDIFY_CALLBACK_URL: http://${IP_ADDRESS}:3030
+      SESSION_SECRET: ${SESSION_SECRET}
+      SETTINGS_ENCRYPTION_KEY: ${ENCRYPTION_KEY}
+      TZ: ${TZ}
+    volumes:
+      - ${APP_DATA}/lidify:/data
+      - ${DATA}:/disk
     extra_hosts:
-        - "host.docker.internal:host-gateway"
+      - "host.docker.internal:host-gateway"
     restart: unless-stopped
