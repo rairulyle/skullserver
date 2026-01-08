@@ -19,6 +19,27 @@ services:
       homepage.widget.url: http://${IP_ADDRESS}:81
       homepage.widget.username: ${NPM_USERNAME}
       homepage.widget.password: ${DEFAULT_APP_PASSWORD}
+      npm.proxy.domain: nginx.${DOMAIN_NAME}
+      npm.proxy.port: "81"
+
+  npm-docker-sync:
+    container_name: npm-docker-sync
+    image: ghcr.io/redth/npm-docker-sync:latest
+    environment:
+      DOCKER_HOST: unix:///var/run/docker.sock
+      DOCKER_HOST_IP: ${IP_ADDRESS}
+      NPM_URL: http://${IP_ADDRESS}:81
+      NPM_EMAIL: ${NPM_USERNAME}
+      NPM_PASSWORD: ${DEFAULT_APP_PASSWORD}
+      NPM_PROXY_SSL_FORCE: true
+      NPM_PROXY_BLOCK_EXPLOITS: true
+      NPM_PROXY_WEBSOCKETS: true
+      NPM_PROXY_HTTP2: true
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    restart: unless-stopped
+    depends_on:
+      - nginx-proxy-manager
 
   adguardhome:
     container_name: adguardhome
@@ -46,6 +67,8 @@ services:
       homepage.widget.url: http://${IP_ADDRESS}:2080
       homepage.widget.username: ${ADGUARD_USERNAME}
       homepage.widget.password: ${DEFAULT_APP_PASSWORD}
+      npm.proxy.domain: adguard.${DOMAIN_NAME}
+      npm.proxy.port: "2080"
 
   adguardhome-sync:
     container_name: adguardhome-sync
@@ -55,6 +78,9 @@ services:
     volumes:
       - ${APP_DATA}/adguardsync:/config
     restart: unless-stopped
+    labels:
+      npm.proxy.domain: adguard-sync.${DOMAIN_NAME}
+      npm.proxy.port: "8082"
     
   flaresolverr:
     container_name: flaresolverr

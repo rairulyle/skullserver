@@ -44,6 +44,8 @@ services:
       homepage.widget.type: {widget-type}
       homepage.widget.url: http://${IP_ADDRESS}:{port}
       homepage.widget.key: ${API_KEY}
+      npm.proxy.domain: {subdomain}.${DOMAIN_NAME}
+      npm.proxy.port: "{port}"
 ```
 
 ## Formatting Rules
@@ -77,12 +79,18 @@ services:
 ### 3. Labels
 - **Format**: Non-array (key-value pairs)
 - **No hyphens/dashes** before label keys
+- **Label Order**:
+  1. Homepage labels (if service has web UI)
+  2. NPM proxy labels (for frequently accessed services)
 - **Example**:
   ```yaml
   labels:
     homepage.group: Media
     homepage.name: Plex
     homepage.icon: plex.png
+    homepage.href: http://plex.${DOMAIN_NAME}
+    npm.proxy.domain: plex.${DOMAIN_NAME}
+    npm.proxy.port: "32400"
   ```
 
 ### 4. Volumes
@@ -163,6 +171,27 @@ labels:
   homepage.widget.url: http://${IP_ADDRESS}:{port}
 ```
 
+### Nginx Proxy Manager (NPM) Auto-Configuration
+For services with web UIs that you frequently access, add npm labels to automatically configure reverse proxy via npm-docker-sync:
+
+```yaml
+labels:
+  npm.proxy.domain: {subdomain}.${DOMAIN_NAME}
+  npm.proxy.port: "{internal-port}"
+```
+
+**When to add NPM labels:**
+- Services with web interfaces that you access regularly
+- Services that need SSL/HTTPS access
+- **Do NOT add** for internal-only services or services without web UIs
+
+**Notes:**
+- The `npm.proxy.domain` should match the subdomain used in `homepage.href`
+- The `npm.proxy.port` should be the internal container port (not the host port)
+- These labels work with the `npm-docker-sync` service to automatically create/update proxy hosts
+- Default settings (Force SSL, Block Common Exploits, WebSockets, HTTP/2) are configured in the `npm-docker-sync` service and apply to all proxies automatically
+- You can override defaults on a per-service basis by adding specific labels like `npm.proxy.ssl.force: "false"` if needed
+
 ### Restart Policy
 - Always use: `restart: unless-stopped`
 
@@ -187,3 +216,4 @@ Document any exceptions with inline comments explaining why.
 - [ ] PUID/PGID set to 1000 (if applicable)
 - [ ] TZ set to `${TZ}` (if applicable)
 - [ ] Homepage labels added (if service has web UI)
+- [ ] NPM proxy labels added (if service is frequently accessed via web)

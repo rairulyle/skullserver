@@ -22,6 +22,8 @@ services:
       homepage.widget.type: plex
       homepage.widget.url: http://${IP_ADDRESS}:32400
       homepage.widget.key: ${PLEX_API_KEY}
+      npm.proxy.domain: plex.${DOMAIN_NAME}
+      npm.proxy.port: "32400"
 
   plextraktsync:
     container_name: plextraktsync
@@ -54,6 +56,8 @@ services:
       homepage.widget.type: overseerr
       homepage.widget.url: http://${IP_ADDRESS}:5055
       homepage.widget.key: ${OVERSEERR_API_KEY}
+      npm.proxy.domain: request.${DOMAIN_NAME}
+      npm.proxy.port: "5055"
       
   # music-assistant:
   #   image: ghcr.io/music-assistant/server:beta
@@ -98,6 +102,8 @@ services:
       homepage.widget.type: radarr
       homepage.widget.url: http://${IP_ADDRESS}:7878
       homepage.widget.key: ${RADARR_API_KEY}
+      npm.proxy.domain: radarr.${DOMAIN_NAME}
+      npm.proxy.port: "7878"
 
   sonarr:
     container_name: sonarr
@@ -122,6 +128,8 @@ services:
       homepage.widget.type: sonarr
       homepage.widget.url: http://${IP_ADDRESS}:8989
       homepage.widget.key: ${SONARR_API_KEY}
+      npm.proxy.domain: sonarr.${DOMAIN_NAME}
+      npm.proxy.port: "8989"
 
   lidarr:
     container_name: lidarr
@@ -146,6 +154,8 @@ services:
       homepage.widget.type: lidarr
       homepage.widget.url: http://${IP_ADDRESS}:8686
       homepage.widget.key: ${LIDARR_API_KEY}
+      npm.proxy.domain: lidarr.${DOMAIN_NAME}
+      npm.proxy.port: "8686"
 
   bazarr:
     container_name: bazarr
@@ -160,6 +170,9 @@ services:
       - ${APP_DATA}/lidarr:/config
       - ${DATA}:/data
     restart: unless-stopped
+    labels:
+      npm.proxy.domain: bazarr.${DOMAIN_NAME}
+      npm.proxy.port: "6767"
 
   prowlarr:
     container_name: prowlarr
@@ -173,6 +186,9 @@ services:
     volumes:
       - ${APP_DATA}/prowlarr:/config
     restart: unless-stopped
+    labels:
+      npm.proxy.domain: prowlarr.${DOMAIN_NAME}
+      npm.proxy.port: "9696"
 
   agregarr:
     container_name: agregarr
@@ -185,6 +201,9 @@ services:
       - ${APP_DATA}/agregarr:/app/config
       - ${DATA}:/data
     restart: unless-stopped
+    labels:
+      npm.proxy.domain: agregarr.${DOMAIN_NAME}
+      npm.proxy.port: "7171"
 
   qbittorrent:
     container_name: qbittorrent
@@ -209,6 +228,8 @@ services:
       homepage.widget.url: http://${IP_ADDRESS}:8080
       homepage.widget.username: ${DEFAULT_APP_USERNAME}
       homepage.widget.password: ${DEFAULT_APP_PASSWORD}
+      npm.proxy.domain: torrent.${DOMAIN_NAME}
+      npm.proxy.port: "8080"
 
   qui:
     container_name: qui
@@ -221,6 +242,9 @@ services:
       - ${APP_DATA}/qui:/config
       - ${DATA}/torrents:/data/torrents
     restart: unless-stopped
+    labels:
+      npm.proxy.domain: qui.${DOMAIN_NAME}
+      npm.proxy.port: "7476"
 
   slskd:
     container_name: slskd
@@ -236,13 +260,15 @@ services:
       SLSKD_REMOTE_CONFIGURATION: true
       SLSKD_SLSK_PASSWORD: ${SOULSEEK_PASSWORD}
       SLSKD_SLSK_USERNAME: ${SOULSEEK_USERNAME}
-      SLSKD_UMASK: 022
       SLSKD_USERNAME: ${DEFAULT_APP_USERNAME}
       TZ: ${TZ}
     volumes:
       - ${APP_DATA}/slskd:/app
       - ${DATA}:/data
     restart: unless-stopped
+    labels:
+      npm.proxy.domain: slskd.${DOMAIN_NAME}
+      npm.proxy.port: "5030"
 
   lidify:
     container_name: lidify
@@ -260,3 +286,6 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
     restart: unless-stopped
+    labels:
+      npm.proxy.domain: lidify.${DOMAIN_NAME}
+      npm.proxy.port: "3030"

@@ -13,12 +13,15 @@ services:
       - ${DATA}:/media
       - /var/run/docker.sock:/var/run/docker.sock
     restart: unless-stopped
+    labels:
+      npm.proxy.domain: ${DOMAIN_NAME}
+      npm.proxy.port: "3000"
 
   watchtower:
     container_name: watchtower
     image: containrrr/watchtower:latest
     hostname: SKULLSERVER
-    command: scrutiny homepage nginx-proxy-manager adguardhome adguardhome-sync speedtest-tracker plex plextraktsync overseerr radarr sonarr lidarr bazarr prowlarr qbittorrent music-assistant flaresolverr watchtower meralco-ph qui slskd lidify upsnap
+    command: nginx-proxy-manager npm-docker-sync adguardhome adguardhome-sync flaresolverr homepage speedtest-tracker scrutiny meralco-ph upsnap tautulli plex plextraktsync overseerr radarr sonarr lidarr bazarr prowlarr agregarr qbittorrent qui slskd lidify watchtower
     environment:
       WATCHTOWER_CLEANUP: true
       WATCHTOWER_NOTIFICATIONS: shoutrrr
@@ -52,6 +55,8 @@ services:
       homepage.href: http://speedtest.${DOMAIN_NAME}
       homepage.widget.type: speedtest
       homepage.widget.url: http://${IP_ADDRESS}:8081
+      npm.proxy.domain: speedtest.${DOMAIN_NAME}
+      npm.proxy.port: "8081"
 
   scrutiny:
     container_name: scrutiny
@@ -77,6 +82,8 @@ services:
       homepage.href: http://scrutiny.${DOMAIN_NAME}
       homepage.widget.type: scrutiny
       homepage.widget.url: http://${IP_ADDRESS}:8083
+      npm.proxy.domain: scrutiny.${DOMAIN_NAME}
+      npm.proxy.port: "8083"
 
   meralco-ph:
     container_name: meralco-ph
@@ -95,7 +102,10 @@ services:
       TZ: ${TZ}
     volumes:
       - ${APP_DATA}/upsnap:/app/pb_data
-    restart: unless-stopped 
+    restart: unless-stopped
+    labels:
+      npm.proxy.domain: upsnap.${DOMAIN_NAME}
+      npm.proxy.port: "8090"
 
   tautulli:
     container_name: tautulli
@@ -109,3 +119,6 @@ services:
     volumes:
       - ${APP_DATA}/tautulli:/config
     restart: unless-stopped
+    labels:
+      npm.proxy.domain: tautulli.${DOMAIN_NAME}
+      npm.proxy.port: "8181"
