@@ -1,3 +1,5 @@
+name: media
+
 services:
   plex:
     container_name: plex

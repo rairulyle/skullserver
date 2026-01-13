@@ -1,3 +1,5 @@
+name: network
+
 services:
   nginx-proxy-manager:
     container_name: nginx-proxy-manager
