@@ -34,12 +34,6 @@ services:
       - ${APP_DATA}/speedtest-tracker:/config
     restart: unless-stopped
     labels:
-      homepage.group: Network
-      homepage.name: Speedtest
-      homepage.icon: librespeed.png
-      homepage.href: http://speedtest.${DOMAIN_NAME}
-      homepage.widget.type: speedtest
-      homepage.widget.url: http://${IP_ADDRESS}:8081
       npm.proxy.domain: speedtest.${DOMAIN_NAME}
       npm.proxy.port: "8081"
       net.unraid.docker.icon: https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/png/speedtest-tracker.png

@@ -17,13 +17,6 @@ services:
       - ${DATA}:/data
     restart: unless-stopped
     labels:
-      homepage.group: Media
-      homepage.name: Plex
-      homepage.icon: plex.png
-      homepage.href: http://plex.${DOMAIN_NAME}
-      homepage.widget.type: plex
-      homepage.widget.url: http://${IP_ADDRESS}:32400
-      homepage.widget.key: ${PLEX_API_KEY}
       npm.proxy.domain: plex.${DOMAIN_NAME}
       npm.proxy.port: "32400"
       net.unraid.docker.icon: https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/png/plex.png
@@ -53,13 +46,6 @@ services:
       - ${APP_DATA}/overseerr:/config
     restart: unless-stopped
     labels:
-      homepage.group: Media
-      homepage.name: Overseerr
-      homepage.icon: overseerr.png
-      homepage.href: http://request.${DOMAIN_NAME}
-      homepage.widget.type: overseerr
-      homepage.widget.url: http://${IP_ADDRESS}:5055
-      homepage.widget.key: ${OVERSEERR_API_KEY}
       npm.proxy.domain: request.${DOMAIN_NAME}
       npm.proxy.port: "5055"
       net.unraid.docker.icon: https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/png/overseerr.png
@@ -101,13 +87,6 @@ services:
       - ${APP_DATA}/radarr/custom-cont-init.d:/custom-cont-init.d
     restart: unless-stopped
     labels:
-      homepage.group: MediaService
-      homepage.name: Radarr
-      homepage.icon: radarr.png
-      homepage.href: http://radarr.${DOMAIN_NAME}
-      homepage.widget.type: radarr
-      homepage.widget.url: http://${IP_ADDRESS}:7878
-      homepage.widget.key: ${RADARR_API_KEY}
       npm.proxy.domain: radarr.${DOMAIN_NAME}
       npm.proxy.port: "7878"
       net.unraid.docker.icon: https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/png/radarr.png
@@ -129,13 +108,6 @@ services:
       - ${APP_DATA}/sonarr/custom-cont-init.d:/custom-cont-init.d
     restart: unless-stopped
     labels:
-      homepage.group: MediaService
-      homepage.name: Sonarr
-      homepage.icon: sonarr.png
-      homepage.href: http://sonarr.${DOMAIN_NAME}
-      homepage.widget.type: sonarr
-      homepage.widget.url: http://${IP_ADDRESS}:8989
-      homepage.widget.key: ${SONARR_API_KEY}
       npm.proxy.domain: sonarr.${DOMAIN_NAME}
       npm.proxy.port: "8989"
       net.unraid.docker.icon: https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/png/sonarr.png
@@ -157,13 +129,6 @@ services:
       - ${APP_DATA}/lidarr/custom-cont-init.d:/custom-cont-init.d
     restart: unless-stopped
     labels:
-      homepage.group: MediaService
-      homepage.name: Lidarr
-      homepage.icon: lidarr.png
-      homepage.href: http://lidarr.${DOMAIN_NAME}
-      homepage.widget.type: lidarr
-      homepage.widget.url: http://${IP_ADDRESS}:8686
-      homepage.widget.key: ${LIDARR_API_KEY}
       npm.proxy.domain: lidarr.${DOMAIN_NAME}
       npm.proxy.port: "8686"
       net.unraid.docker.icon: https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/png/lidarr.png
@@ -238,14 +203,6 @@ services:
       - ${DATA}/torrents:/data/torrents
     restart: unless-stopped
     labels:
-      homepage.group: Media
-      homepage.name: qBittorrent
-      homepage.icon: qbittorrent.png
-      homepage.href: http://torrent.${DOMAIN_NAME}
-      homepage.widget.type: qbittorrent
-      homepage.widget.url: http://${IP_ADDRESS}:8080
-      homepage.widget.username: ${DEFAULT_APP_USERNAME}
-      homepage.widget.password: ${DEFAULT_APP_PASSWORD}
       npm.proxy.domain: torrent.${DOMAIN_NAME}
       npm.proxy.port: "8080"
       net.unraid.docker.icon: https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/png/qbittorrent.png

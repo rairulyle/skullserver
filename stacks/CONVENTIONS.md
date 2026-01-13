@@ -37,15 +37,10 @@ services:
       - ${DATA}:{container-data-path}
     restart: unless-stopped
     labels:
-      homepage.group: {Group Name}
-      homepage.name: {Display Name}
-      homepage.icon: {icon}.png
-      homepage.href: http://{subdomain}.${DOMAIN_NAME}
-      homepage.widget.type: {widget-type}
-      homepage.widget.url: http://${IP_ADDRESS}:{port}
-      homepage.widget.key: ${API_KEY}
       npm.proxy.domain: {subdomain}.${DOMAIN_NAME}
       npm.proxy.port: "{port}"
+      net.unraid.docker.icon: https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/png/{icon}.png
+      net.unraid.docker.webui: http://{subdomain}.${DOMAIN_NAME}
 ```
 
 ## Formatting Rules
@@ -80,17 +75,15 @@ services:
 - **Format**: Non-array (key-value pairs)
 - **No hyphens/dashes** before label keys
 - **Label Order**:
-  1. Homepage labels (if service has web UI)
-  2. NPM proxy labels (for frequently accessed services)
+  1. NPM proxy labels (for frequently accessed services)
+  2. Unraid docker labels (icon and webui)
 - **Example**:
   ```yaml
   labels:
-    homepage.group: Media
-    homepage.name: Plex
-    homepage.icon: plex.png
-    homepage.href: http://plex.${DOMAIN_NAME}
     npm.proxy.domain: plex.${DOMAIN_NAME}
     npm.proxy.port: "32400"
+    net.unraid.docker.icon: https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/png/plex.png
+    net.unraid.docker.webui: http://plex.${DOMAIN_NAME}
   ```
 
 ### 4. Volumes
@@ -160,16 +153,17 @@ environment:
   PGID: 1000
 ```
 
-### Homepage Integration
+### Unraid Docker Labels
 ```yaml
 labels:
-  homepage.group: {Category}
-  homepage.name: {Service Name}
-  homepage.icon: {icon-name}.png
-  homepage.href: http://{subdomain}.${DOMAIN_NAME}
-  homepage.widget.type: {widget-type}
-  homepage.widget.url: http://${IP_ADDRESS}:{port}
+  net.unraid.docker.icon: https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/png/{icon}.png
+  net.unraid.docker.webui: http://{subdomain}.${DOMAIN_NAME}
 ```
+
+**Notes:**
+- Icons are sourced from the homarr-labs dashboard-icons repository
+- The webui URL should match the service's domain URL
+- Use PNG format for icons (path: `.../png/{icon}.png`)
 
 ### Nginx Proxy Manager (NPM) Auto-Configuration
 For services with web UIs that you frequently access, add npm labels to automatically configure reverse proxy via npm-docker-sync:
@@ -215,5 +209,5 @@ Document any exceptions with inline comments explaining why.
 - [ ] `restart: unless-stopped` is set
 - [ ] PUID/PGID set to 1000 (if applicable)
 - [ ] TZ set to `${TZ}` (if applicable)
-- [ ] Homepage labels added (if service has web UI)
+- [ ] Unraid docker labels added (icon and webui)
 - [ ] NPM proxy labels added (if service is frequently accessed via web)

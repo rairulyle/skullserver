@@ -13,14 +13,6 @@ services:
       - ${APP_DATA}/nginx-proxy-manager/letsencrypt:/etc/letsencrypt
     restart: unless-stopped
     labels:
-      homepage.group: Network
-      homepage.name: Nginx Proxy Manager
-      homepage.icon: nginx-proxy-manager.png
-      homepage.href: http://nginx.${DOMAIN_NAME}
-      homepage.widget.type: npm
-      homepage.widget.url: http://${IP_ADDRESS}:81
-      homepage.widget.username: ${NPM_USERNAME}
-      homepage.widget.password: ${DEFAULT_APP_PASSWORD}
       npm.proxy.domain: nginx.${DOMAIN_NAME}
       npm.proxy.port: "81"
       net.unraid.docker.icon: https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/png/nginx-proxy-manager.png
@@ -65,14 +57,6 @@ services:
       - ${APP_DATA}/adguardhome/conf:/opt/adguardhome/conf
     restart: unless-stopped
     labels:
-      homepage.group: Adguard DNS
-      homepage.name: Primary
-      homepage.icon: azure-dns.png
-      homepage.href: http://adguard.${DOMAIN_NAME}
-      homepage.widget.type: adguard
-      homepage.widget.url: http://${IP_ADDRESS}:2080
-      homepage.widget.username: ${ADGUARD_USERNAME}
-      homepage.widget.password: ${DEFAULT_APP_PASSWORD}
       npm.proxy.domain: adguard.${DOMAIN_NAME}
       npm.proxy.port: "2080"
       net.unraid.docker.icon: https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/png/adguard-home.png
