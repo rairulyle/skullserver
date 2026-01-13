@@ -19,7 +19,7 @@ services:
 
   watchtower:
     container_name: watchtower
-    image: containrrr/watchtower:latest
+    image: nickfedor/watchtower:latest
     hostname: SKULLSERVER
     command: nginx-proxy-manager npm-docker-sync adguardhome adguardhome-sync flaresolverr homepage speedtest-tracker scrutiny meralco-ph upsnap tautulli plex plextraktsync overseerr radarr sonarr lidarr bazarr prowlarr agregarr qbittorrent qui slskd lidify watchtower
     environment:
