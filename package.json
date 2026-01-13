@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "rairulyle's personal nas",
   "scripts": {
+    "init-network": "docker network create skullserver",
     "clean": "docker image prune -a -f",
     "sync-env": "node scripts/sync-env.js"
   },

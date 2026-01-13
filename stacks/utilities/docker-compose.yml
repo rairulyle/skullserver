@@ -1,5 +1,10 @@
 name: utilities
 
+networks:
+  default:
+    name: ${NETWORK_NAME}
+    external: true
+
 services:
   watchtower:
     container_name: watchtower

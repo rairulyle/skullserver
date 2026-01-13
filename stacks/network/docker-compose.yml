@@ -1,5 +1,10 @@
 name: network
 
+networks:
+  default:
+    name: ${NETWORK_NAME}
+    external: true
+
 services:
   nginx-proxy-manager:
     container_name: nginx-proxy-manager

@@ -1,5 +1,10 @@
 name: media
 
+networks:
+  default:
+    name: ${NETWORK_NAME}
+    external: true
+
 services:
   plex:
     container_name: plex
@@ -207,23 +212,6 @@ services:
       npm.proxy.port: "8080"
       net.unraid.docker.icon: https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/png/qbittorrent.png
       net.unraid.docker.webui: http://torrent.${DOMAIN_NAME}
-
-  qui:
-    container_name: qui
-    image: ghcr.io/autobrr/qui:latest
-    ports:
-      - "7476:7476"
-    environment:
-      TZ: ${TZ}
-    volumes:
-      - ${APP_DATA}/qui:/config
-      - ${DATA}/torrents:/data/torrents
-    restart: unless-stopped
-    labels:
-      npm.proxy.domain: qui.${DOMAIN_NAME}
-      npm.proxy.port: "7476"
-      net.unraid.docker.icon: https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/png/qui.png
-      net.unraid.docker.webui: http://qui.${DOMAIN_NAME}
 
   slskd:
     container_name: slskd
