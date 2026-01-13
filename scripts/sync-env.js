@@ -14,13 +14,15 @@ const path = require("path");
  * Main sync function
  */
 function syncEnvFiles() {
-  const stacksDir = path.join(__dirname, "../stacks");
+  const projectRoot = path.join(__dirname, "..");
+  const stacksDir = path.join(projectRoot, "stacks");
 
   if (!fs.existsSync(stacksDir)) {
     console.error(`Error: ${stacksDir} does not exist`);
     return;
   }
 
+  // Use stacks/.env for global variables
   const globalEnv = path.join(stacksDir, ".env");
 
   // Check if global .env exists
@@ -29,6 +31,9 @@ function syncEnvFiles() {
     console.log("Please create stacks/.env file first");
     return;
   }
+
+  console.log(`Using global .env from: ${globalEnv}`);
+  console.log();
 
   // Read global .env file
   const globalEnvContent = fs.readFileSync(globalEnv, "utf8");
@@ -74,14 +79,16 @@ function syncEnvFiles() {
 
     // Write merged .env file
     fs.writeFileSync(stackEnv, mergedEnv, "utf8");
-    console.log("  ✓ Synced .env")
+    console.log("  ✓ Synced .env");
 
     console.log();
   }
 
   console.log("✓ All stacks synced successfully!");
   console.log("\nNote: Edit stacks/.env for global variables");
-  console.log("      Edit stacks/<stack>/.env.local for stack-specific variables");
+  console.log(
+    "      Edit stacks/<stack>/.env.local for stack-specific variables"
+  );
   console.log("      Run 'npm run sync-env' to regenerate merged .env files");
 }
 

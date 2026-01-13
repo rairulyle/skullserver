@@ -23,7 +23,6 @@ services:
     container_name: watchtower
     image: nickfedor/watchtower:latest
     hostname: SKULLSERVER
-    command: nginx-proxy-manager npm-docker-sync adguardhome adguardhome-sync flaresolverr homepage speedtest-tracker scrutiny meralco-ph upsnap tautulli plex plextraktsync overseerr radarr sonarr lidarr bazarr prowlarr agregarr qbittorrent qui slskd lidify watchtower
     environment:
       WATCHTOWER_CLEANUP: true
       WATCHTOWER_NOTIFICATIONS: shoutrrr
@@ -59,33 +58,6 @@ services:
       homepage.widget.url: http://${IP_ADDRESS}:8081
       npm.proxy.domain: speedtest.${DOMAIN_NAME}
       npm.proxy.port: "8081"
-
-  scrutiny:
-    container_name: scrutiny
-    image: ghcr.io/analogj/scrutiny:master-omnibus
-    cap_add:
-      - SYS_RAWIO
-    devices:
-      - "/dev/sda"
-      - "/dev/sdb"
-      - "/dev/sdc"
-    ports:
-      - "8083:8080" # webapp
-      - "8086:8086" # influxDB admin
-    volumes:
-      - /run/udev:/run/udev:ro
-      - ${APP_DATA}/scrutiny/config:/opt/scrutiny/config
-      - ${APP_DATA}/scrutiny/influxdb:/opt/scrutiny/influxdb
-    restart: unless-stopped
-    labels:
-      homepage.group: Health
-      homepage.name: S.M.A.R.T Monitoring
-      homepage.icon: scrutiny.png
-      homepage.href: http://scrutiny.${DOMAIN_NAME}
-      homepage.widget.type: scrutiny
-      homepage.widget.url: http://${IP_ADDRESS}:8083
-      npm.proxy.domain: scrutiny.${DOMAIN_NAME}
-      npm.proxy.port: "8083"
 
   meralco-ph:
     container_name: meralco-ph

@@ -3,9 +3,6 @@
   "version": "1.0.0",
   "description": "rairulyle's personal nas",
   "scripts": {
-    "start": "docker compose up -d",
-    "stop": "docker compose down",
-    "update": "docker compose pull",
     "clean": "docker image prune -a -f",
     "sync-env": "node scripts/sync-env.js"
   },

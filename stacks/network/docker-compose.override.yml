@@ -1,0 +1,31 @@
+services:
+  nginx-proxy-manager:
+    labels:
+      net.unraid.docker.managed: 'composeman'
+      net.unraid.docker.icon: ''
+      net.unraid.docker.webui: ''
+      net.unraid.docker.shell: ''
+  npm-docker-sync:
+    labels:
+      net.unraid.docker.managed: 'composeman'
+      net.unraid.docker.icon: ''
+      net.unraid.docker.webui: ''
+      net.unraid.docker.shell: ''
+  adguardhome:
+    labels:
+      net.unraid.docker.managed: 'composeman'
+      net.unraid.docker.icon: ''
+      net.unraid.docker.webui: ''
+      net.unraid.docker.shell: ''
+  adguardhome-sync:
+    labels:
+      net.unraid.docker.managed: 'composeman'
+      net.unraid.docker.icon: ''
+      net.unraid.docker.webui: ''
+      net.unraid.docker.shell: ''
+  flaresolverr:
+    labels:
+      net.unraid.docker.managed: 'composeman'
+      net.unraid.docker.icon: ''
+      net.unraid.docker.webui: ''
+      net.unraid.docker.shell: ''
