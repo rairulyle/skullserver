@@ -1,24 +1,6 @@
 name: utilities
 
 services:
-  homepage:
-    container_name: homepage
-    image: ghcr.io/gethomepage/homepage:latest
-    ports:
-      - 3000:3000
-    environment:
-      PUID: 1000
-      PGID: 999
-      HOMEPAGE_ALLOWED_HOSTS: ${DOMAIN_NAME}
-    volumes:
-      - ${APP_DATA}/homepage:/app/config
-      - ${DATA}:/media
-      - /var/run/docker.sock:/var/run/docker.sock
-    restart: unless-stopped
-    labels:
-      npm.proxy.domain: ${DOMAIN_NAME}
-      npm.proxy.port: "3000"
-
   watchtower:
     container_name: watchtower
     image: nickfedor/watchtower:latest
@@ -33,6 +15,8 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - ${APP_DATA}/watchtower/config.json:/config.json
     restart: unless-stopped
+    labels:
+      net.unraid.docker.icon: https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/png/watchtower.png
 
   speedtest-tracker:
     container_name: speedtest-tracker
@@ -58,6 +42,8 @@ services:
       homepage.widget.url: http://${IP_ADDRESS}:8081
       npm.proxy.domain: speedtest.${DOMAIN_NAME}
       npm.proxy.port: "8081"
+      net.unraid.docker.icon: https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/png/speedtest-tracker.png
+      net.unraid.docker.webui: http://speedtest.${DOMAIN_NAME}
 
   meralco-ph:
     container_name: meralco-ph
@@ -80,6 +66,8 @@ services:
     labels:
       npm.proxy.domain: upsnap.${DOMAIN_NAME}
       npm.proxy.port: "8090"
+      net.unraid.docker.icon: https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/png/upsnap.png
+      net.unraid.docker.webui: http://upsnap.${DOMAIN_NAME}
 
   tautulli:
     container_name: tautulli
@@ -96,3 +84,5 @@ services:
     labels:
       npm.proxy.domain: tautulli.${DOMAIN_NAME}
       npm.proxy.port: "8181"
+      net.unraid.docker.icon: https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/png/tautulli.png
+      net.unraid.docker.webui: http://tautulli.${DOMAIN_NAME}

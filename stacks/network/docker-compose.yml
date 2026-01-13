@@ -23,6 +23,8 @@ services:
       homepage.widget.password: ${DEFAULT_APP_PASSWORD}
       npm.proxy.domain: nginx.${DOMAIN_NAME}
       npm.proxy.port: "81"
+      net.unraid.docker.icon: https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/png/nginx-proxy-manager.png
+      net.unraid.docker.webui: http://nginx.${DOMAIN_NAME}
 
   npm-docker-sync:
     container_name: npm-docker-sync
@@ -42,6 +44,8 @@ services:
     restart: unless-stopped
     depends_on:
       - nginx-proxy-manager
+    labels:
+      net.unraid.docker.icon: https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/png/nginx-proxy-manager.png
 
   adguardhome:
     container_name: adguardhome
@@ -71,6 +75,8 @@ services:
       homepage.widget.password: ${DEFAULT_APP_PASSWORD}
       npm.proxy.domain: adguard.${DOMAIN_NAME}
       npm.proxy.port: "2080"
+      net.unraid.docker.icon: https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/png/adguard-home.png
+      net.unraid.docker.webui: http://adguard.${DOMAIN_NAME}
 
   adguardhome-sync:
     container_name: adguardhome-sync
@@ -83,6 +89,8 @@ services:
     labels:
       npm.proxy.domain: adguard-sync.${DOMAIN_NAME}
       npm.proxy.port: "8082"
+      net.unraid.docker.icon: https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/png/adguard-home.png
+      net.unraid.docker.webui: http://adguard-sync.${DOMAIN_NAME}
     
   flaresolverr:
     container_name: flaresolverr
@@ -95,3 +103,5 @@ services:
       LOG_LEVEL: info
       TZ: ${TZ}
     restart: unless-stopped
+    labels:
+      net.unraid.docker.icon: https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/png/flaresolverr.png
