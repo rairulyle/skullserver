@@ -8,7 +8,7 @@ networks:
 services:
   watchtower:
     container_name: watchtower
-    image: nickfedor/watchtower:latest
+    image: nickfedor/watchtower:1.12.5
     hostname: SKULLSERVER
     environment:
       WATCHTOWER_CLEANUP: true
@@ -29,8 +29,8 @@ services:
     ports:
       - "8081:80"
     environment:
-      PUID: 1000
-      PGID: 1000
+      PUID: ${PUID}
+      PGID: ${PGID}
       SPEEDTEST_SCHEDULE: 0 */2 * * *
       PRUNE_RESULTS_OLDER_THAN: 90
       TZ: ${TZ}
@@ -74,8 +74,8 @@ services:
     ports:
       - 8181:8181
     environment:
-      PUID: 1000
-      PGID: 1000
+      PUID: ${PUID}
+      PGID: ${PGID}
       TZ: ${TZ}
     volumes:
       - ${APP_DATA}/tautulli:/config

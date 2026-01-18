@@ -28,8 +28,8 @@ services:
     ports:
       - "{host}:{container}"
     environment:
-      PUID: 1000
-      PGID: 1000
+      PUID: ${PUID}
+      PGID: ${PGID}
       TZ: ${TZ}
       {OTHER_ENV_VARS}
     volumes:
@@ -57,15 +57,15 @@ services:
 ### 2. Environment Variables
 - **Format**: Non-array (key-value pairs)
 - **Order**:
-  1. `PUID: 1000` (if applicable)
-  2. `PGID: 1000` (if applicable)
+  1. `PUID: ${PUID}` (if applicable)
+  2. `PGID: ${PGID}` (if applicable)
   3. `TZ: ${TZ}` (if applicable)
   4. Other variables in alphabetical order
 - **Example**:
   ```yaml
   environment:
-    PUID: 1000
-    PGID: 1000
+    PUID: ${PUID}
+    PGID: ${PGID}
     TZ: ${TZ}
     APP_KEY: ${SOME_KEY}
     VERSION: docker
@@ -149,8 +149,8 @@ services:
 ### Standard User/Group
 ```yaml
 environment:
-  PUID: 1000
-  PGID: 1000
+  PUID: ${PUID}
+  PGID: ${PGID}
 ```
 
 ### Unraid Docker Labels
@@ -207,7 +207,7 @@ Document any exceptions with inline comments explaining why.
 - [ ] Labels use non-array format (no hyphens)
 - [ ] Volumes follow `${APP_DATA}/{service-name}` convention
 - [ ] `restart: unless-stopped` is set
-- [ ] PUID/PGID set to 1000 (if applicable)
+- [ ] PUID/PGID set to `${PUID}`/`${PGID}` (if applicable)
 - [ ] TZ set to `${TZ}` (if applicable)
 - [ ] Unraid docker labels added (icon and webui)
 - [ ] NPM proxy labels added (if service is frequently accessed via web)

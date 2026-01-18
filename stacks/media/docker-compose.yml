@@ -13,8 +13,8 @@ services:
     devices:
       - /dev/dri:/dev/dri
     environment:
-      PGID: 1000
-      PUID: 1000
+      PGID: ${PGID}
+      PUID: ${PUID}
       TZ: ${TZ}
       VERSION: docker
     volumes:
@@ -31,12 +31,14 @@ services:
     container_name: plextraktsync
     image: lscr.io/linuxserver-labs/plextraktsync:latest
     environment:
-      PGID: 1000
-      PUID: 1000
+      PGID: ${PGID}
+      PUID: ${PUID}
       TZ: ${TZ}
     volumes:
       - ${APP_DATA}/plextraktsync:/config
     restart: unless-stopped
+    labels:
+      net.unraid.docker.icon: https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/png/trakt.png
 
   overseerr:
     container_name: overseerr
@@ -44,8 +46,8 @@ services:
     ports:
       - 5055:5055
     environment:
-      PGID: 1000
-      PUID: 1000
+      PGID: ${PGID}
+      PUID: ${PUID}
       TZ: Etc/UTC
     volumes:
       - ${APP_DATA}/overseerr:/config
@@ -82,8 +84,8 @@ services:
     ports:
       - 7878:7878
     environment:
-      PGID: 1000
-      PUID: 1000
+      PGID: ${PGID}
+      PUID: ${PUID}
       TZ: ${TZ}
     volumes:
       - ${APP_DATA}/radarr:/config
@@ -103,8 +105,8 @@ services:
     ports:
       - 8989:8989
     environment:
-      PGID: 1000
-      PUID: 1000
+      PGID: ${PGID}
+      PUID: ${PUID}
       TZ: ${TZ}
     volumes:
       - ${APP_DATA}/sonarr:/config
@@ -124,8 +126,8 @@ services:
     ports:
       - 8686:8686
     environment:
-      PGID: 1000
-      PUID: 1000
+      PGID: ${PGID}
+      PUID: ${PUID}
       TZ: ${TZ}
     volumes:
       - ${APP_DATA}/lidarr:/config
@@ -145,8 +147,8 @@ services:
     ports:
       - 6767:6767
     environment:
-      PGID: 1000
-      PUID: 1000
+      PGID: ${PGID}
+      PUID: ${PUID}
       TZ: ${TZ}
     volumes:
       - ${APP_DATA}/lidarr:/config
@@ -164,8 +166,8 @@ services:
     ports:
       - 9696:9696
     environment:
-      PGID: 1000
-      PUID: 1000
+      PGID: ${PGID}
+      PUID: ${PUID}
       TZ: ${TZ}
     volumes:
       - ${APP_DATA}/prowlarr:/config
@@ -199,8 +201,8 @@ services:
     ports:
       - 8080:8080
     environment:
-      PGID: 1000
-      PUID: 1000
+      PGID: ${PGID}
+      PUID: ${PUID}
       TZ: ${TZ}
       UMASK: 002
     volumes:
@@ -216,6 +218,7 @@ services:
   slskd:
     container_name: slskd
     image: slskd/slskd
+    user: ${PUID}:${PGID}
     ports:
       - "5030:5030"
       - "5031:5031"
@@ -238,25 +241,3 @@ services:
       npm.proxy.port: "5030"
       net.unraid.docker.icon: https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/png/slskd.png
       net.unraid.docker.webui: http://slskd.${DOMAIN_NAME}
-
-  lidify:
-    container_name: lidify
-    image: chevron7locked/lidify:latest
-    ports:
-      - "3030:3030"
-    environment:
-      LIDIFY_CALLBACK_URL: http://${IP_ADDRESS}:3030
-      SESSION_SECRET: ${SESSION_SECRET}
-      SETTINGS_ENCRYPTION_KEY: ${ENCRYPTION_KEY}
-      TZ: ${TZ}
-    volumes:
-      - ${APP_DATA}/lidify:/data
-      - ${DATA}:/disk
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    restart: unless-stopped
-    labels:
-      npm.proxy.domain: lidify.${DOMAIN_NAME}
-      npm.proxy.port: "3030"
-      net.unraid.docker.icon: https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/png/lidify.png
-      net.unraid.docker.webui: http://lidify.${DOMAIN_NAME}
