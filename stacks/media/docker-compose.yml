@@ -160,6 +160,26 @@ services:
       net.unraid.docker.icon: https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/png/bazarr.png
       net.unraid.docker.webui: http://bazarr.${DOMAIN_NAME}
 
+  suwayomi:
+    container_name: suwayomi
+    image: ghcr.io/suwayomi/suwayomi-server:preview
+    user: ${PUID}:${PGID}
+    environment:
+      TZ: ${TZ}
+      FLARESOLVERR_ENABLED: true
+      FLARESOLVERR_URL: http://flaresolverr:8191
+    volumes:
+      - ${APP_DATA}/suwayomi:/home/suwayomi/.local/share/Tachidesk
+      - ${DATA}:/data
+    ports:
+      - "4567:4567"
+    restart: unless-stopped
+    labels:
+      npm.proxy.domain: suwayomi.${DOMAIN_NAME}
+      npm.proxy.port: "4567"
+      net.unraid.docker.icon: https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/png/suwayomi.png
+      net.unraid.docker.webui: http://suwayomi.${DOMAIN_NAME}
+
   prowlarr:
     container_name: prowlarr
     image: lscr.io/linuxserver/prowlarr:latest
