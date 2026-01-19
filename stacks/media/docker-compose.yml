@@ -40,17 +40,17 @@ services:
     labels:
       net.unraid.docker.icon: https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/png/trakt.png
 
-  overseerr:
-    container_name: overseerr
-    image: lscr.io/linuxserver/overseerr:latest
+  seerr:
+    container_name: seerr
+    image: ghcr.io/seerr-team/seerr:develop
+    init: true
+    environment:
+      LOG_LEVEL: debug
+      TZ: ${TZ}
     ports:
       - 5055:5055
-    environment:
-      PGID: ${PGID}
-      PUID: ${PUID}
-      TZ: Etc/UTC
     volumes:
-      - ${APP_DATA}/overseerr:/config
+      - ${APP_DATA}/seerr:/app/config
     restart: unless-stopped
     labels:
       npm.proxy.domain: request.${DOMAIN_NAME}
@@ -101,7 +101,7 @@ services:
 
   sonarr:
     container_name: sonarr
-    image: lscr.io/linuxserver/sonarr:develop
+    image: lscr.io/linuxserver/sonarr:latest
     ports:
       - 8989:8989
     environment:
@@ -159,6 +159,18 @@ services:
       npm.proxy.port: "6767"
       net.unraid.docker.icon: https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/png/bazarr.png
       net.unraid.docker.webui: http://bazarr.${DOMAIN_NAME}
+
+  recyclarr:
+    container_name: recyclarr
+    image: ghcr.io/recyclarr/recyclarr
+    user: ${PUID}:${PGID}
+    volumes:
+      - ${APP_DATA}/recyclarr:/config
+    environment:
+      TZ: ${TZ}
+    restart: unless-stopped
+    labels:
+      net.unraid.docker.icon: https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/png/recyclarr.png
 
   suwayomi:
     container_name: suwayomi
