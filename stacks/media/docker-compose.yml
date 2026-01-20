@@ -176,6 +176,22 @@ services:
         net.unraid.docker.icon: https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/png/profilarr.png
         net.unraid.docker.webui: http://profilarr.${DOMAIN_NAME}
 
+  huntarr:
+    container_name: huntarr
+    image: huntarr/huntarr:latest
+    ports:
+      - "9705:9705"
+    volumes:
+      - ${APP_DATA}/huntarr:/config
+    environment:
+      TZ: ${TZ}
+    restart: unless-stopped
+    labels:
+      npm.proxy.domain: huntarr.${DOMAIN_NAME}
+      npm.proxy.port: "9705"
+      net.unraid.docker.icon: https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/png/huntarr.png
+      net.unraid.docker.webui: http://huntarr.${DOMAIN_NAME}
+
   suwayomi:
     container_name: suwayomi
     image: ghcr.io/suwayomi/suwayomi-server:preview
