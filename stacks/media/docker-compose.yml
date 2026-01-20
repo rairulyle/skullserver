@@ -160,17 +160,21 @@ services:
       net.unraid.docker.icon: https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/png/bazarr.png
       net.unraid.docker.webui: http://bazarr.${DOMAIN_NAME}
 
-  recyclarr:
-    container_name: recyclarr
-    image: ghcr.io/recyclarr/recyclarr
-    user: ${PUID}:${PGID}
-    volumes:
-      - ${APP_DATA}/recyclarr:/config
-    environment:
-      TZ: ${TZ}
-    restart: unless-stopped
-    labels:
-      net.unraid.docker.icon: https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/png/recyclarr.png
+  profilarr:
+      container_name: profilarr
+      image: santiagosayshey/profilarr:latest
+      ports:
+          - 6868:6868
+      volumes:
+          - ${APP_DATA}/profilarr:/config
+      environment:
+          TZ: ${TZ}
+      restart: unless-stopped
+      labels:
+        npm.proxy.domain: profilarr.${DOMAIN_NAME}
+        npm.proxy.port: "6868"
+        net.unraid.docker.icon: https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/png/profilarr.png
+        net.unraid.docker.webui: http://profilarr.${DOMAIN_NAME}
 
   suwayomi:
     container_name: suwayomi
