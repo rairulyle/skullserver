@@ -10,6 +10,10 @@ services:
     container_name: plex
     image: lscr.io/linuxserver/plex:latest
     network_mode: host
+    healthcheck:
+      disable: true
+    tmpfs:
+      - /tmp:size=4G
     devices:
       - /dev/dri:/dev/dri
     environment:
@@ -57,7 +61,23 @@ services:
       npm.proxy.port: "5055"
       net.unraid.docker.icon: https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/png/overseerr.png
       net.unraid.docker.webui: http://request.${DOMAIN_NAME}
-      
+
+  agregarr:
+    container_name: agregarr
+    image: agregarr/agregarr:latest
+    ports:
+      - 7171:7171
+    environment:
+      TZ: ${TZ}
+    volumes:
+      - ${APP_DATA}/agregarr:/app/config
+      - ${DATA}:/data
+    restart: unless-stopped
+    labels:
+      npm.proxy.domain: agregarr.${DOMAIN_NAME}
+      npm.proxy.port: "7171"
+      net.unraid.docker.icon: https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/png/agregarr.png
+      net.unraid.docker.webui: http://agregarr.${DOMAIN_NAME} 
   # music-assistant:
   #   image: ghcr.io/music-assistant/server:beta
   #   container_name: music-assistant
@@ -77,7 +97,25 @@ services:
   #   # ports:
   #   #   - 8095:8095
   #   restart: unless-stopped
-    
+
+  prowlarr:
+    container_name: prowlarr
+    image: lscr.io/linuxserver/prowlarr:latest
+    ports:
+      - 9696:9696
+    environment:
+      PGID: ${PGID}
+      PUID: ${PUID}
+      TZ: ${TZ}
+    volumes:
+      - ${APP_DATA}/prowlarr:/config
+    restart: unless-stopped
+    labels:
+      npm.proxy.domain: prowlarr.${DOMAIN_NAME}
+      npm.proxy.port: "9696"
+      net.unraid.docker.icon: https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/png/prowlarr.png
+      net.unraid.docker.webui: http://prowlarr.${DOMAIN_NAME}
+
   radarr:
     container_name: radarr
     image: lscr.io/linuxserver/radarr:latest
@@ -122,7 +160,7 @@ services:
 
   lidarr:
     container_name: lidarr
-    image: ghcr.io/linuxserver-labs/prarr:lidarr-plugins
+    image: lscr.io/linuxserver/lidarr:nightly
     ports:
       - 8686:8686
     environment:
@@ -160,38 +198,6 @@ services:
       net.unraid.docker.icon: https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/png/bazarr.png
       net.unraid.docker.webui: http://bazarr.${DOMAIN_NAME}
 
-  profilarr:
-      container_name: profilarr
-      image: santiagosayshey/profilarr:latest
-      ports:
-          - 6868:6868
-      volumes:
-          - ${APP_DATA}/profilarr:/config
-      environment:
-          TZ: ${TZ}
-      restart: unless-stopped
-      labels:
-        npm.proxy.domain: profilarr.${DOMAIN_NAME}
-        npm.proxy.port: "6868"
-        net.unraid.docker.icon: https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/png/profilarr.png
-        net.unraid.docker.webui: http://profilarr.${DOMAIN_NAME}
-
-  huntarr:
-    container_name: huntarr
-    image: huntarr/huntarr:latest
-    ports:
-      - "9705:9705"
-    volumes:
-      - ${APP_DATA}/huntarr:/config
-    environment:
-      TZ: ${TZ}
-    restart: unless-stopped
-    labels:
-      npm.proxy.domain: huntarr.${DOMAIN_NAME}
-      npm.proxy.port: "9705"
-      net.unraid.docker.icon: https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/png/huntarr.png
-      net.unraid.docker.webui: http://huntarr.${DOMAIN_NAME}
-
   suwayomi:
     container_name: suwayomi
     image: ghcr.io/suwayomi/suwayomi-server:preview
@@ -211,41 +217,6 @@ services:
       npm.proxy.port: "4567"
       net.unraid.docker.icon: https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/png/suwayomi.png
       net.unraid.docker.webui: http://suwayomi.${DOMAIN_NAME}
-
-  prowlarr:
-    container_name: prowlarr
-    image: lscr.io/linuxserver/prowlarr:latest
-    ports:
-      - 9696:9696
-    environment:
-      PGID: ${PGID}
-      PUID: ${PUID}
-      TZ: ${TZ}
-    volumes:
-      - ${APP_DATA}/prowlarr:/config
-    restart: unless-stopped
-    labels:
-      npm.proxy.domain: prowlarr.${DOMAIN_NAME}
-      npm.proxy.port: "9696"
-      net.unraid.docker.icon: https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/png/prowlarr.png
-      net.unraid.docker.webui: http://prowlarr.${DOMAIN_NAME}
-
-  agregarr:
-    container_name: agregarr
-    image: agregarr/agregarr:latest
-    ports:
-      - 7171:7171
-    environment:
-      TZ: ${TZ}
-    volumes:
-      - ${APP_DATA}/agregarr:/app/config
-      - ${DATA}:/data
-    restart: unless-stopped
-    labels:
-      npm.proxy.domain: agregarr.${DOMAIN_NAME}
-      npm.proxy.port: "7171"
-      net.unraid.docker.icon: https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/png/agregarr.png
-      net.unraid.docker.webui: http://agregarr.${DOMAIN_NAME}
 
   qbittorrent:
     container_name: qbittorrent

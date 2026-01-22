@@ -85,3 +85,72 @@ services:
       npm.proxy.port: "8181"
       net.unraid.docker.icon: https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/png/tautulli.png
       net.unraid.docker.webui: http://tautulli.${DOMAIN_NAME}
+
+  profilarr:
+    container_name: profilarr
+    image: santiagosayshey/profilarr:latest
+    ports:
+        - 6868:6868
+    volumes:
+        - ${APP_DATA}/profilarr:/config
+    environment:
+        TZ: ${TZ}
+    restart: unless-stopped
+    labels:
+      npm.proxy.domain: profilarr.${DOMAIN_NAME}
+      npm.proxy.port: "6868"
+      net.unraid.docker.icon: https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/png/profilarr.png
+      net.unraid.docker.webui: http://profilarr.${DOMAIN_NAME}
+
+  huntarr:
+    container_name: huntarr
+    image: huntarr/huntarr:latest
+    ports:
+      - "9705:9705"
+    volumes:
+      - ${APP_DATA}/huntarr:/config
+    environment:
+      TZ: ${TZ}
+    restart: unless-stopped
+    labels:
+      npm.proxy.domain: huntarr.${DOMAIN_NAME}
+      npm.proxy.port: "9705"
+      net.unraid.docker.icon: https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/png/huntarr.png
+      net.unraid.docker.webui: http://huntarr.${DOMAIN_NAME}
+      
+  tdarr:
+    container_name: tdarr
+    image: ghcr.io/haveagitgat/tdarr:latest
+    ports:
+      - 8265:8265 # webUI port
+      - 8266:8266 # server port
+    environment:
+      TZ: ${TZ}
+      PUID: ${PUID}
+      PGID: ${PGID}
+      UMASK_SET: 002
+      serverIP: 0.0.0.0
+      serverPort: 8266
+      webUIPort: 8265
+      internalNode: false
+      inContainer: true
+      ffmpegVersion: 7
+      auth: false
+      openBrowser: true
+      maxLogSizeMB: 10
+      cronPluginUpdate: ""
+      NVIDIA_DRIVER_CAPABILITIES: all
+      NVIDIA_VISIBLE_DEVICES: all
+    volumes:
+      - ${APP_DATA}/tdarr/server:/app/server
+      - ${APP_DATA}/tdarr/configs:/app/configs
+      - ${APP_DATA}/tdarr/logs:/app/logs
+      - ${DATA}:/mnt/data
+      - /mnt/user/mosou:/mnt/mosou
+      - ${DATA}/cache:/temp
+    restart: unless-stopped
+    labels:
+      npm.proxy.domain: tdarr.${DOMAIN_NAME}
+      npm.proxy.port: "8265"
+      net.unraid.docker.icon: https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/png/tdarr.png
+      net.unraid.docker.webui: http://tdarr.${DOMAIN_NAME}
