@@ -187,7 +187,7 @@ services:
       PUID: ${PUID}
       TZ: ${TZ}
     volumes:
-      - ${APP_DATA}/lidarr:/config
+      - ${APP_DATA}/bazarr:/config
       - ${DATA}:/data
     restart: unless-stopped
     labels:
