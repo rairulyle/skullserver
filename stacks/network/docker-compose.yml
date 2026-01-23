@@ -21,7 +21,7 @@ services:
       npm.proxy.domain: nginx.${DOMAIN_NAME}
       npm.proxy.port: "81"
       net.unraid.docker.icon: https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/png/nginx-proxy-manager.png
-      net.unraid.docker.webui: http://nginx.${DOMAIN_NAME}
+      net.unraid.docker.webui: https://nginx.${DOMAIN_NAME}
 
   npm-docker-sync:
     container_name: npm-docker-sync
@@ -65,7 +65,7 @@ services:
       npm.proxy.domain: adguard.${DOMAIN_NAME}
       npm.proxy.port: "2080"
       net.unraid.docker.icon: https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/png/adguard-home.png
-      net.unraid.docker.webui: http://adguard.${DOMAIN_NAME}
+      net.unraid.docker.webui: https://adguard.${DOMAIN_NAME}
 
   adguardhome-sync:
     container_name: adguardhome-sync
@@ -79,7 +79,7 @@ services:
       npm.proxy.domain: adguard-sync.${DOMAIN_NAME}
       npm.proxy.port: "8082"
       net.unraid.docker.icon: https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/png/adguard-home.png
-      net.unraid.docker.webui: http://adguard-sync.${DOMAIN_NAME}
+      net.unraid.docker.webui: https://adguard-sync.${DOMAIN_NAME}
     
   flaresolverr:
     container_name: flaresolverr

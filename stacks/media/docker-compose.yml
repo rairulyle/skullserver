@@ -20,7 +20,7 @@ services:
       PGID: ${PGID}
       PUID: ${PUID}
       TZ: ${TZ}
-      VERSION: docker
+      VERSION: latest
     volumes:
       - ${APP_DATA}/plex:/config
       - ${DATA}:/data
@@ -29,7 +29,7 @@ services:
       npm.proxy.domain: plex.${DOMAIN_NAME}
       npm.proxy.port: "32400"
       net.unraid.docker.icon: https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/png/plex.png
-      net.unraid.docker.webui: http://plex.${DOMAIN_NAME}
+      net.unraid.docker.webui: https://plex.${DOMAIN_NAME}
 
   plextraktsync:
     container_name: plextraktsync
@@ -51,8 +51,6 @@ services:
     environment:
       LOG_LEVEL: debug
       TZ: ${TZ}
-    ports:
-      - 5055:5055
     volumes:
       - ${APP_DATA}/seerr:/app/config
     restart: unless-stopped
@@ -60,7 +58,7 @@ services:
       npm.proxy.domain: request.${DOMAIN_NAME}
       npm.proxy.port: "5055"
       net.unraid.docker.icon: https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/png/overseerr.png
-      net.unraid.docker.webui: http://request.${DOMAIN_NAME}
+      net.unraid.docker.webui: https://request.${DOMAIN_NAME}
 
   agregarr:
     container_name: agregarr
@@ -77,7 +75,7 @@ services:
       npm.proxy.domain: agregarr.${DOMAIN_NAME}
       npm.proxy.port: "7171"
       net.unraid.docker.icon: https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/png/agregarr.png
-      net.unraid.docker.webui: http://agregarr.${DOMAIN_NAME} 
+      net.unraid.docker.webui: https://agregarr.${DOMAIN_NAME} 
   # music-assistant:
   #   image: ghcr.io/music-assistant/server:beta
   #   container_name: music-assistant
@@ -114,7 +112,7 @@ services:
       npm.proxy.domain: prowlarr.${DOMAIN_NAME}
       npm.proxy.port: "9696"
       net.unraid.docker.icon: https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/png/prowlarr.png
-      net.unraid.docker.webui: http://prowlarr.${DOMAIN_NAME}
+      net.unraid.docker.webui: https://prowlarr.${DOMAIN_NAME}
 
   radarr:
     container_name: radarr
@@ -135,7 +133,7 @@ services:
       npm.proxy.domain: radarr.${DOMAIN_NAME}
       npm.proxy.port: "7878"
       net.unraid.docker.icon: https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/png/radarr.png
-      net.unraid.docker.webui: http://radarr.${DOMAIN_NAME}
+      net.unraid.docker.webui: https://radarr.${DOMAIN_NAME}
 
   sonarr:
     container_name: sonarr
@@ -156,7 +154,7 @@ services:
       npm.proxy.domain: sonarr.${DOMAIN_NAME}
       npm.proxy.port: "8989"
       net.unraid.docker.icon: https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/png/sonarr.png
-      net.unraid.docker.webui: http://sonarr.${DOMAIN_NAME}
+      net.unraid.docker.webui: https://sonarr.${DOMAIN_NAME}
 
   lidarr:
     container_name: lidarr
@@ -177,7 +175,7 @@ services:
       npm.proxy.domain: lidarr.${DOMAIN_NAME}
       npm.proxy.port: "8686"
       net.unraid.docker.icon: https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/png/lidarr.png
-      net.unraid.docker.webui: http://lidarr.${DOMAIN_NAME}
+      net.unraid.docker.webui: https://lidarr.${DOMAIN_NAME}
 
   bazarr:
     container_name: bazarr
@@ -196,7 +194,7 @@ services:
       npm.proxy.domain: bazarr.${DOMAIN_NAME}
       npm.proxy.port: "6767"
       net.unraid.docker.icon: https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/png/bazarr.png
-      net.unraid.docker.webui: http://bazarr.${DOMAIN_NAME}
+      net.unraid.docker.webui: https://bazarr.${DOMAIN_NAME}
 
   suwayomi:
     container_name: suwayomi
@@ -216,7 +214,7 @@ services:
       npm.proxy.domain: suwayomi.${DOMAIN_NAME}
       npm.proxy.port: "4567"
       net.unraid.docker.icon: https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/png/suwayomi.png
-      net.unraid.docker.webui: http://suwayomi.${DOMAIN_NAME}
+      net.unraid.docker.webui: https://suwayomi.${DOMAIN_NAME}
 
   qbittorrent:
     container_name: qbittorrent
@@ -236,7 +234,7 @@ services:
       npm.proxy.domain: torrent.${DOMAIN_NAME}
       npm.proxy.port: "8080"
       net.unraid.docker.icon: https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/png/qbittorrent.png
-      net.unraid.docker.webui: http://torrent.${DOMAIN_NAME}
+      net.unraid.docker.webui: https://torrent.${DOMAIN_NAME}
 
   slskd:
     container_name: slskd
@@ -263,4 +261,4 @@ services:
       npm.proxy.domain: slskd.${DOMAIN_NAME}
       npm.proxy.port: "5030"
       net.unraid.docker.icon: https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/png/slskd.png
-      net.unraid.docker.webui: http://slskd.${DOMAIN_NAME}
+      net.unraid.docker.webui: https://slskd.${DOMAIN_NAME}

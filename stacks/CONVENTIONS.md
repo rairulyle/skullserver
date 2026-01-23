@@ -40,7 +40,7 @@ services:
       npm.proxy.domain: {subdomain}.${DOMAIN_NAME}
       npm.proxy.port: "{port}"
       net.unraid.docker.icon: https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/png/{icon}.png
-      net.unraid.docker.webui: http://{subdomain}.${DOMAIN_NAME}
+      net.unraid.docker.webui: https://{subdomain}.${DOMAIN_NAME}
 ```
 
 ## Formatting Rules
@@ -83,7 +83,7 @@ services:
     npm.proxy.domain: plex.${DOMAIN_NAME}
     npm.proxy.port: "32400"
     net.unraid.docker.icon: https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/png/plex.png
-    net.unraid.docker.webui: http://plex.${DOMAIN_NAME}
+    net.unraid.docker.webui: https://plex.${DOMAIN_NAME}
   ```
 
 ### 4. Volumes
@@ -157,7 +157,7 @@ environment:
 ```yaml
 labels:
   net.unraid.docker.icon: https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/png/{icon}.png
-  net.unraid.docker.webui: http://{subdomain}.${DOMAIN_NAME}
+  net.unraid.docker.webui: https://{subdomain}.${DOMAIN_NAME}
 ```
 
 **Notes:**
