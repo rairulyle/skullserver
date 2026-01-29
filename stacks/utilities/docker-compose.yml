@@ -8,13 +8,12 @@ networks:
 services:
   watchtower:
     container_name: watchtower
-    image: nickfedor/watchtower:1.12.5
+    image: nickfedor/watchtower:latest
     hostname: SKULLSERVER
     environment:
       WATCHTOWER_CLEANUP: true
       WATCHTOWER_NOTIFICATIONS: shoutrrr
       WATCHTOWER_NOTIFICATION_URL: "discord://${DISCORD_TOKEN}@${DISCORD_ID}"
-      WATCHTOWER_SCHEDULE: "0 0 * * *" # every 12:00 AM every day
       TZ: ${TZ}
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock

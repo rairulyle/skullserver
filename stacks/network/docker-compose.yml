@@ -9,10 +9,19 @@ services:
   nginx-proxy-manager:
     container_name: nginx-proxy-manager
     image: "docker.io/jc21/nginx-proxy-manager:latest"
+    dns:
+      - 192.168.0.10
+      - 192.168.10.10
+      - 8.8.8.8
+      - 1.1.1.1
     ports:
       - "80:80"
       - "81:81"
       - "443:443"
+    environment:
+      PGID: ${PGID}
+      PUID: ${PUID}
+      TZ: ${TZ}
     volumes:
       - ${APP_DATA}/nginx-proxy-manager/data:/data
       - ${APP_DATA}/nginx-proxy-manager/letsencrypt:/etc/letsencrypt
