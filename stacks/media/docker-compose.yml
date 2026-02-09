@@ -48,12 +48,14 @@ services:
     container_name: plexcache
     image: brandonhaney/plexcache-r:latest
     environment:
+      PGID: ${PGID}
+      PUID: ${PUID}
       TZ: ${TZ}
     ports:
       - 5757:5757
     volumes:
       - ${APP_DATA}/plexcache:/config
-      - /mnt/plexcache:/mnt/cache
+      - /mnt/cache:/mnt/cache
       - /mnt/user0:/mnt/user0
       - /mnt/user:/mnt/user
       - /usr/local/emhttp:/usr/local/emhttp
@@ -70,6 +72,8 @@ services:
     image: ghcr.io/seerr-team/seerr:develop
     init: true
     environment:
+      PGID: ${PGID}
+      PUID: ${PUID}
       LOG_LEVEL: debug
       TZ: ${TZ}
     ports:
