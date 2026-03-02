@@ -272,8 +272,8 @@ services:
       - "5031:5031"
       - "50300:50300"
     environment:
-      SLSKD_DOWNLOADS_DIR: /data/slskd/downloads
-      SLSKD_INCOMPLETE_DIR: /data/slskd/incomplete
+      SLSKD_DOWNLOADS_DIR: /data/downloads/slskd/complete
+      SLSKD_INCOMPLETE_DIR: /data/downloads/slskd/incomplete
       SLSKD_PASSWORD: ${DEFAULT_APP_PASSWORD}
       SLSKD_REMOTE_CONFIGURATION: true
       SLSKD_SLSK_PASSWORD: ${SOULSEEK_PASSWORD}
@@ -289,3 +289,22 @@ services:
       npm.proxy.port: "5030"
       net.unraid.docker.icon: https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/png/slskd.png
       net.unraid.docker.webui: https://slskd.${DOMAIN_NAME}
+
+  aurral:
+    container_name: aurral
+    image: ghcr.io/lklynet/aurral:latest
+    ports:
+      - 3001:3001
+    environment:
+      PUID: ${PUID}
+      PGID: ${PGID}
+      DOWNLOAD_FOLDER: ${DATA}/downloads/aurral
+    volumes:
+      - ${DATA}/downloads/aurral:/app/downloads
+      - ${APP_DATA}/aurral:/app/backend/data
+    restart: unless-stopped
+    labels:
+      npm.proxy.domain: aurral.${DOMAIN_NAME}
+      npm.proxy.port: "3001"
+      net.unraid.docker.icon: https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/png/musicbrainz.png
+      net.unraid.docker.webui: https://aurral.${DOMAIN_NAME}

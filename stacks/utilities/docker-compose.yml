@@ -93,6 +93,8 @@ services:
     volumes:
         - ${APP_DATA}/profilarr:/config
     environment:
+        PUID: ${PUID}
+        PGID: ${PGID}
         TZ: ${TZ}
     restart: unless-stopped
     labels:
@@ -100,23 +102,7 @@ services:
       npm.proxy.port: "6868"
       net.unraid.docker.icon: https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/png/profilarr.png
       net.unraid.docker.webui: https://profilarr.${DOMAIN_NAME}
-
-  huntarr:
-    container_name: huntarr
-    image: huntarr/huntarr:latest
-    ports:
-      - "9705:9705"
-    volumes:
-      - ${APP_DATA}/huntarr:/config
-    environment:
-      TZ: ${TZ}
-    restart: unless-stopped
-    labels:
-      npm.proxy.domain: huntarr.${DOMAIN_NAME}
-      npm.proxy.port: "9705"
-      net.unraid.docker.icon: https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/png/huntarr.png
-      net.unraid.docker.webui: https://huntarr.${DOMAIN_NAME}
-      
+    
   tdarr:
     container_name: tdarr
     image: ghcr.io/haveagitgat/tdarr:latest
@@ -153,3 +139,18 @@ services:
       npm.proxy.port: "8265"
       net.unraid.docker.icon: https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/png/tdarr.png
       net.unraid.docker.webui: https://tdarr.${DOMAIN_NAME}
+
+  qui:
+    container_name: qui
+    image: ghcr.io/autobrr/qui:latest
+    user: ${PUID}:${PGID}
+    ports:
+      - 7476:7476
+    volumes:
+      - ${APP_DATA}/qui:/config
+    restart: unless-stopped
+    labels:
+      npm.proxy.domain: qui.${DOMAIN_NAME}
+      npm.proxy.port: "7476"
+      net.unraid.docker.icon: https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/png/qui.png
+      net.unraid.docker.webui: https://qui.${DOMAIN_NAME}
