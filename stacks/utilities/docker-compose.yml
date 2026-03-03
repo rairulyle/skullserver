@@ -90,12 +90,12 @@ services:
     image: santiagosayshey/profilarr:latest
     ports:
         - 6868:6868
-    volumes:
-        - ${APP_DATA}/profilarr:/config
     environment:
         PUID: ${PUID}
         PGID: ${PGID}
         TZ: ${TZ}
+    volumes:
+        - ${APP_DATA}/profilarr:/config
     restart: unless-stopped
     labels:
       npm.proxy.domain: profilarr.${DOMAIN_NAME}
@@ -146,11 +146,26 @@ services:
     user: ${PUID}:${PGID}
     ports:
       - 7476:7476
+    environment:
+      TZ: ${TZ}
     volumes:
       - ${APP_DATA}/qui:/config
+      - ${DATA}:/data
     restart: unless-stopped
     labels:
       npm.proxy.domain: qui.${DOMAIN_NAME}
       npm.proxy.port: "7476"
       net.unraid.docker.icon: https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/png/qui.png
       net.unraid.docker.webui: https://qui.${DOMAIN_NAME}
+
+  autobrr:
+    container_name: autobrr
+    image: ghcr.io/autobrr/autobrr:latest
+    user: ${PUID}:${PGID}
+    ports:
+      - 7474:7474
+    environment:
+      TZ: ${TZ}
+    volumes:
+      - ${APP_DATA}/autobrr/config:/config
+    restart: unless-stopped
