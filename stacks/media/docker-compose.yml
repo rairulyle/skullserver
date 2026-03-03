@@ -71,13 +71,13 @@ services:
     container_name: seerr
     image: ghcr.io/seerr-team/seerr:develop
     init: true
+    ports:
+      - 5055:5055
     environment:
       PGID: ${PGID}
       PUID: ${PUID}
       LOG_LEVEL: debug
       TZ: ${TZ}
-    ports:
-      - 5055:5055
     volumes:
       - ${APP_DATA}/seerr:/app/config
     restart: unless-stopped
@@ -227,6 +227,8 @@ services:
     container_name: suwayomi
     image: ghcr.io/suwayomi/suwayomi-server:preview
     user: ${PUID}:${PGID}
+    ports:
+      - "4567:4567"
     environment:
       TZ: ${TZ}
       FLARESOLVERR_ENABLED: true
@@ -234,8 +236,6 @@ services:
     volumes:
       - ${APP_DATA}/suwayomi:/home/suwayomi/.local/share/Tachidesk
       - ${DATA}:/data
-    ports:
-      - "4567:4567"
     restart: unless-stopped
     labels:
       npm.proxy.domain: suwayomi.${DOMAIN_NAME}
@@ -255,7 +255,7 @@ services:
       UMASK: 002
     volumes:
       - ${APP_DATA}/qbittorrent:/config
-      - ${DATA}/torrents:/data/torrents
+      - ${DATA}:/data
     restart: unless-stopped
     labels:
       npm.proxy.domain: torrent.${DOMAIN_NAME}
