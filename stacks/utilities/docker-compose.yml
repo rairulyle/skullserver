@@ -167,5 +167,10 @@ services:
     environment:
       TZ: ${TZ}
     volumes:
-      - ${APP_DATA}/autobrr/config:/config
+      - ${APP_DATA}/autobrr:/config
     restart: unless-stopped
+    labels:
+      npm.proxy.domain: autobrr.${DOMAIN_NAME}
+      npm.proxy.port: "7474"
+      net.unraid.docker.icon: https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/png/autobrr.png
+      net.unraid.docker.webui: https://autobrr.${DOMAIN_NAME}

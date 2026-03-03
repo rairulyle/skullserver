@@ -79,6 +79,7 @@ services:
   adguardhome-sync:
     container_name: adguardhome-sync
     image: lscr.io/linuxserver/adguardhome-sync:latest
+    user: ${PUID}:${PGID}
     ports:
       - 8082:8080
     volumes:
