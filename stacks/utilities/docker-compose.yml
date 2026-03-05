@@ -20,7 +20,7 @@ services:
       - ${APP_DATA}/watchtower/config.json:/config.json
     restart: unless-stopped
     labels:
-      net.unraid.docker.icon: https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/png/watchtower.png
+      net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/watchtower.png
 
   speedtest-tracker:
     container_name: speedtest-tracker
@@ -40,7 +40,7 @@ services:
     labels:
       npm.proxy.domain: speedtest.${DOMAIN_NAME}
       npm.proxy.port: "8081"
-      net.unraid.docker.icon: https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/png/speedtest-tracker.png
+      net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/speedtest-tracker.png
       net.unraid.docker.webui: https://speedtest.${DOMAIN_NAME}
 
   meralco-ph:
@@ -64,7 +64,7 @@ services:
     labels:
       npm.proxy.domain: upsnap.${DOMAIN_NAME}
       npm.proxy.port: "8090"
-      net.unraid.docker.icon: https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/png/upsnap.png
+      net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/upsnap.png
       net.unraid.docker.webui: https://upsnap.${DOMAIN_NAME}
 
   tautulli:
@@ -82,7 +82,7 @@ services:
     labels:
       npm.proxy.domain: tautulli.${DOMAIN_NAME}
       npm.proxy.port: "8181"
-      net.unraid.docker.icon: https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/png/tautulli.png
+      net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/tautulli.png
       net.unraid.docker.webui: https://tautulli.${DOMAIN_NAME}
 
   profilarr:
@@ -100,7 +100,7 @@ services:
     labels:
       npm.proxy.domain: profilarr.${DOMAIN_NAME}
       npm.proxy.port: "6868"
-      net.unraid.docker.icon: https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/png/profilarr.png
+      net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/profilarr.png
       net.unraid.docker.webui: https://profilarr.${DOMAIN_NAME}
     
   tdarr:
@@ -137,7 +137,7 @@ services:
     labels:
       npm.proxy.domain: tdarr.${DOMAIN_NAME}
       npm.proxy.port: "8265"
-      net.unraid.docker.icon: https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/png/tdarr.png
+      net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/tdarr.png
       net.unraid.docker.webui: https://tdarr.${DOMAIN_NAME}
 
   qui:
@@ -155,7 +155,7 @@ services:
     labels:
       npm.proxy.domain: qui.${DOMAIN_NAME}
       npm.proxy.port: "7476"
-      net.unraid.docker.icon: https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/png/qui.png
+      net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/qui.png
       net.unraid.docker.webui: https://qui.${DOMAIN_NAME}
 
   autobrr:
@@ -172,5 +172,5 @@ services:
     labels:
       npm.proxy.domain: autobrr.${DOMAIN_NAME}
       npm.proxy.port: "7474"
-      net.unraid.docker.icon: https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/png/autobrr.png
+      net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/autobrr.png
       net.unraid.docker.webui: https://autobrr.${DOMAIN_NAME}
