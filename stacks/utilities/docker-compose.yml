@@ -51,6 +51,8 @@ services:
     environment:
       TZ: ${TZ}
     restart: unless-stopped
+    labels:
+      net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/xmr.png
 
   upsnap:
     container_name: upsnap

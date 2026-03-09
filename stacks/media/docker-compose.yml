@@ -247,8 +247,10 @@ services:
   qbittorrent:
     container_name: qbittorrent
     image: ghcr.io/hotio/qbittorrent:latest
-    ports:
-      - 8080:8080
+    network_mode: "service:gluetun"
+    depends_on:
+      gluetun:
+        condition: service_healthy
     environment:
       PGID: ${PGID}
       PUID: ${PUID}
@@ -263,6 +265,33 @@ services:
       npm.proxy.port: "8080"
       net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/qbittorrent.png
       net.unraid.docker.webui: https://torrent.${DOMAIN_NAME}
+
+  gluetun:
+    container_name: gluetun
+    image: qmcgaw/gluetun:latest
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    ports:
+      - 8080:8080
+    environment:
+      TZ: ${TZ}
+      VPN_SERVICE_PROVIDER: private internet access
+      VPN_TYPE: openvpn
+      OPENVPN_USER: ${PIA_USERNAME}
+      OPENVPN_PASSWORD: ${PIA_PASSWORD}
+      SERVER_REGIONS: ${PIA_REGION}
+      VPN_PORT_FORWARDING: on
+      PORT_FORWARD_ONLY: "true"
+      # Auto-syncs PIA's forwarded port → qBittorrent listen port
+      VPN_PORT_FORWARDING_UP_COMMAND: /bin/sh -c 'wget -O- -nv --retry-connrefused --post-data "json={\"listen_port\":{{PORT}},\"current_network_interface\":\"{{VPN_INTERFACE}}\",\"random_port\":false,\"upnp\":false}" http://127.0.0.1:8080/api/v2/app/setPreferences'
+      VPN_PORT_FORWARDING_DOWN_COMMAND: /bin/sh -c 'wget -O- -nv --retry-connrefused --post-data "json={\"listen_port\":0,\"current_network_interface\":\"lo\"}" http://127.0.0.1:8080/api/v2/app/setPreferences'
+    volumes:
+      - ${APP_DATA}/gluetun:/gluetun
+    restart: unless-stopped
+    labels:
+      net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/gluetun.png
 
   slskd:
     container_name: slskd
