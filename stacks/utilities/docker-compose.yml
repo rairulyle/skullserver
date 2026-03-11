@@ -176,3 +176,39 @@ services:
       npm.proxy.port: "7474"
       net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/autobrr.png
       net.unraid.docker.webui: https://autobrr.${DOMAIN_NAME}
+
+  znc:
+    container_name: znc
+    image: lscr.io/linuxserver/znc:latest
+    environment:
+      PUID: ${PUID}
+      PGID: ${PGID}
+      TZ: ${TZ}
+    volumes:
+      - ${APP_DATA}/znc:/config
+    ports:
+      - 6501:6501
+    restart: unless-stopped
+    labels:
+      npm.proxy.domain: znc.${DOMAIN_NAME}
+      npm.proxy.port: "6501"
+      net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/znc.png
+      net.unraid.docker.webui: https://znc.${DOMAIN_NAME}
+
+  thelounge:
+    container_name: thelounge
+    image: lscr.io/linuxserver/thelounge:latest
+    environment:
+      PUID: ${PUID}
+      PGID: ${PGID}
+      TZ: ${TZ}
+    volumes:
+      - ${APP_DATA}/thelounge:/config
+    ports:
+      - 9000:9000
+    restart: unless-stopped
+    labels:
+      npm.proxy.domain: irc.${DOMAIN_NAME}
+      npm.proxy.port: "9000"
+      net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/thelounge.png
+      net.unraid.docker.webui: https://irc.${DOMAIN_NAME}
