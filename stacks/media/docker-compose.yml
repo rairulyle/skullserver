@@ -13,7 +13,7 @@ services:
     healthcheck:
       disable: true
     tmpfs:
-      - /tmp:size=4G
+      - /tmp:size=16G
     devices:
       - /dev/dri:/dev/dri
     environment:
@@ -24,6 +24,7 @@ services:
     volumes:
       - ${APP_DATA}/plex:/config
       - ${DATA}:/data
+      - ${REMOTE1_DATA}:/remote/seedbox1/data
     restart: unless-stopped
     labels:
       npm.proxy.domain: plex.${DOMAIN_NAME}
@@ -103,26 +104,6 @@ services:
       npm.proxy.port: "7171"
       net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/agregarr.png
       net.unraid.docker.webui: https://agregarr.${DOMAIN_NAME} 
-
-  # music-assistant:
-  #   image: ghcr.io/music-assistant/server:beta
-  #   container_name: music-assistant
-  #   # Network mode must be set to host for MA to work correctly
-  #   network_mode: host
-  #   # privileged caps (and security-opt) needed to mount smb folders within the container
-  #   cap_add:
-  #     - SYS_ADMIN
-  #     - DAC_READ_SEARCH
-  #   security_opt:
-  #     - apparmor:unconfined
-  #   environment:
-  #     - LOG_LEVEL=info
-  #   volumes:
-  #     - ${APP_DATA}/music-assistant:/data
-  #     - ${DATA}/media/music:/music
-  #   # ports:
-  #   #   - 8095:8095
-  #   restart: unless-stopped
 
   prowlarr:
     container_name: prowlarr
@@ -204,6 +185,20 @@ services:
       npm.proxy.port: "8686"
       net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/lidarr.png
       net.unraid.docker.webui: https://lidarr.${DOMAIN_NAME}
+
+  seadexarr:
+    container_name: seadexarr
+    image: ghcr.io/bbtufty/seadexarr:latest
+    environment:
+      PGID: ${PGID}
+      PUID: ${PUID}
+      TZ: ${TZ}
+      SCHEDULE_TIME: 168   # weekly; override at runtime for manual runs
+    volumes:
+      - ${APP_DATA}/seadexarr:/config
+    restart: unless-stopped
+    labels:
+      net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/shokoanime.png
 
   bazarr:
     container_name: bazarr
@@ -291,7 +286,7 @@ services:
       - ${APP_DATA}/gluetun:/gluetun
     restart: unless-stopped
     labels:
-      net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/gluetun.png
+      net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/private-internet-access.png
 
   slskd:
     container_name: slskd
@@ -334,33 +329,14 @@ services:
       # SONARR
       - UN_SONARR_0_URL=http://sonarr:8989
       - UN_SONARR_0_API_KEY=${SONARR_API_KEY}
-      - UN_SONARR_0_PATHS=/data/torrent/tv
+      - UN_SONARR_0_PATHS=/data/torrents/tv
       # RADARR
       - UN_RADARR_0_URL=http://radarr:7878
       - UN_RADARR_0_API_KEY=${RADARR_API_KEY}
-      - UN_RADARR_0_PATHS=/data/torrent/movies
+      - UN_RADARR_0_PATHS=/data/torrents/movies
       # LIDARR
       - UN_LIDARR_0_URL=http://lidarr:8686
       - UN_LIDARR_0_API_KEY=${LIDARR_API_KEY}
-      - UN_LIDARR_0_PATHS=/data/torrent/music
+      - UN_LIDARR_0_PATHS=/data/torrents/music
     labels:
       net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/bookstack.png
-
-  aurral:
-    container_name: aurral
-    image: ghcr.io/lklynet/aurral:latest
-    ports:
-      - 3001:3001
-    environment:
-      PUID: ${PUID}
-      PGID: ${PGID}
-      DOWNLOAD_FOLDER: ${DATA}/downloads/aurral
-    volumes:
-      - ${DATA}/downloads/aurral:/app/downloads
-      - ${APP_DATA}/aurral:/app/backend/data
-    restart: unless-stopped
-    labels:
-      npm.proxy.domain: aurral.${DOMAIN_NAME}
-      npm.proxy.port: "3001"
-      net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/musicbrainz.png
-      net.unraid.docker.webui: https://aurral.${DOMAIN_NAME}
