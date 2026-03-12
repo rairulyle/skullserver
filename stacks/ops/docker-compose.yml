@@ -1,0 +1,77 @@
+name: ops
+
+networks:
+  default:
+    name: ${NETWORK_NAME}
+    external: true
+
+services:
+  watchtower:
+    container_name: watchtower
+    image: nickfedor/watchtower:latest
+    hostname: SKULLSERVER
+    environment:
+      WATCHTOWER_CLEANUP: true
+      WATCHTOWER_NOTIFICATIONS: shoutrrr
+      WATCHTOWER_NOTIFICATION_URL: "discord://${DISCORD_TOKEN}@${DISCORD_ID}"
+      TZ: ${TZ}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ${APP_DATA}/watchtower/config.json:/config.json
+    restart: unless-stopped
+    labels:
+      net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/watchtower.png
+
+  tautulli:
+    container_name: tautulli
+    image: lscr.io/linuxserver/tautulli:latest
+    ports:
+      - 8181:8181
+    environment:
+      PUID: ${PUID}
+      PGID: ${PGID}
+      TZ: ${TZ}
+    volumes:
+      - ${APP_DATA}/tautulli:/config
+    restart: unless-stopped
+    labels:
+      npm.proxy.domain: tautulli.${DOMAIN_NAME}
+      npm.proxy.port: "8181"
+      net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/tautulli.png
+      net.unraid.docker.webui: https://tautulli.${DOMAIN_NAME}
+
+  znc:
+    container_name: znc
+    image: lscr.io/linuxserver/znc:latest
+    environment:
+      PUID: ${PUID}
+      PGID: ${PGID}
+      TZ: ${TZ}
+    volumes:
+      - ${APP_DATA}/znc:/config
+    ports:
+      - 6501:6501
+    restart: unless-stopped
+    labels:
+      npm.proxy.domain: znc.${DOMAIN_NAME}
+      npm.proxy.port: "6501"
+      net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/znc.png
+      net.unraid.docker.webui: https://znc.${DOMAIN_NAME}
+
+  thelounge:
+    container_name: thelounge
+    image: lscr.io/linuxserver/thelounge:latest
+    environment:
+      PUID: ${PUID}
+      PGID: ${PGID}
+      TZ: ${TZ}
+    volumes:
+      - ${APP_DATA}/thelounge:/config
+    ports:
+      - 9000:9000
+    restart: unless-stopped
+    labels:
+      npm.proxy.domain: irc.${DOMAIN_NAME}
+      npm.proxy.port: "9000"
+      net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/thelounge.png
+      net.unraid.docker.webui: https://irc.${DOMAIN_NAME}
