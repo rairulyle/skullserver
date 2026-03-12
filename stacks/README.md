@@ -6,16 +6,16 @@ Docker Compose stacks for SKULLSERVER, managed by Unraid Compose Manager.
 
 ```
 stacks/
-├── .env                         # 🌍 Global variables (edit this)
-├── .env.example                 # Global variables template
 ├── media/                       # 🎬 Media services
 │   ├── docker-compose.yml
 │   ├── .env                     # ⚙️ Auto-generated (do not edit)
 │   ├── .env.example             # Stack variables template
 │   └── .env.local               # 🔧 Stack variables (edit this)
-├── network/                     # 🌐 Network services
+├── infra/                       # 🌐 Network infrastructure
 │   └── ...
-└── utilities/                   # 🛠️ Utility services
+├── ops/                         # ⚙️ Operations & comms
+│   └── ...
+└── o11y/                        # 📊 Observability
     └── ...
 ```
 
@@ -24,8 +24,9 @@ stacks/
 | Stack            | Description                              |
 | ---------------- | ---------------------------------------- |
 | 🎬 **media**     | Media server and content acquisition     |
-| 🌐 **network**   | Network infrastructure and reverse proxy |
-| 🛠️ **utilities** | Dashboard and monitoring tools           |
+| 🌐 **infra**     | Network infrastructure and reverse proxy |
+| ⚙️ **ops**       | Operations and communications            |
+| 📊 **o11y**      | Observability and monitoring             |
 
 ## ⚙️ Stack Management
 
@@ -80,8 +81,9 @@ docker compose down
 Global Variables (stacks/.env)
     ↓
     ├─→ Stack Variables (stacks/media/.env.local)
-    ├─→ Stack Variables (stacks/network/.env.local)
-    └─→ Stack Variables (stacks/utilities/.env.local)
+    ├─→ Stack Variables (stacks/infra/.env.local)
+    ├─→ Stack Variables (stacks/ops/.env.local)
+    └─→ Stack Variables (stacks/o11y/.env.local)
            ↓
     Auto-Generated (stacks/[stack]/.env) ← Used by Docker Compose
 ```

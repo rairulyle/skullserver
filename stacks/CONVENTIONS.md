@@ -4,9 +4,10 @@ This document defines the conventions and standards for all Docker Compose files
 
 ## File Organization
 
-- `compose.networking.yml` - Network-related services (proxy, DNS, etc.)
+- `compose.infra.yml` - Network infrastructure (proxy, DNS, VPN)
 - `compose.media.yml` - Media server and acquisition services
-- `compose.utilities.yml` - Utility and monitoring services
+- `compose.ops.yml` - Operations (watchtower, comms)
+- `compose.o11y.yml` - Observability and monitoring
 
 ## Service Definition Order
 
