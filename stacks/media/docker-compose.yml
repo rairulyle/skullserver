@@ -103,7 +103,7 @@ services:
       npm.proxy.domain: agregarr.${DOMAIN_NAME}
       npm.proxy.port: "7171"
       net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/agregarr.png
-      net.unraid.docker.webui: https://agregarr.${DOMAIN_NAME} 
+      net.unraid.docker.webui: https://agregarr.${DOMAIN_NAME}
 
   prowlarr:
     container_name: prowlarr
@@ -218,6 +218,24 @@ services:
       net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/bazarr.png
       net.unraid.docker.webui: https://bazarr.${DOMAIN_NAME}
 
+  profilarr:
+    container_name: profilarr
+    image: santiagosayshey/profilarr:latest
+    ports:
+      - 6868:6868
+    environment:
+      PUID: ${PUID}
+      PGID: ${PGID}
+      TZ: ${TZ}
+    volumes:
+      - ${APP_DATA}/profilarr:/config
+    restart: unless-stopped
+    labels:
+      npm.proxy.domain: profilarr.${DOMAIN_NAME}
+      npm.proxy.port: "6868"
+      net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/profilarr.png
+      net.unraid.docker.webui: https://profilarr.${DOMAIN_NAME}
+
   suwayomi:
     container_name: suwayomi
     image: ghcr.io/suwayomi/suwayomi-server:preview
@@ -237,6 +255,37 @@ services:
       npm.proxy.port: "4567"
       net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/suwayomi.png
       net.unraid.docker.webui: https://suwayomi.${DOMAIN_NAME}
+
+  gluetun:
+    container_name: gluetun
+    image: qmcgaw/gluetun:latest
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    ports:
+      - 8000:8000   # gluetun control server (slskd VPN integration)
+      - 8080:8080   # qbittorrent webui
+      - 5030:5030   # slskd webui
+      - 5031:5031   # slskd HTTPS webui
+    environment:
+      TZ: ${TZ}
+      VPN_SERVICE_PROVIDER: private internet access
+      VPN_TYPE: openvpn
+      OPENVPN_USER: ${PIA_USERNAME}
+      OPENVPN_PASSWORD: ${PIA_PASSWORD}
+      SERVER_REGIONS: ${PIA_REGION}
+      VPN_PORT_FORWARDING: on
+      PORT_FORWARD_ONLY: "true"
+      GLUETUN_HTTP_CONTROL_SERVER_ENABLE: on
+      HTTP_CONTROL_SERVER_AUTH_DEFAULT_ROLE: '{"auth":"apikey","apikey":"${ENCRYPTION_KEY}"}'
+      # Syncs PIA forwarded port → qBittorrent listen port only
+      VPN_PORT_FORWARDING_UP_COMMAND: /bin/sh -c 'wget -O- -nv --retry-connrefused --post-data "json={\"listen_port\":{{PORT}},\"current_network_interface\":\"{{VPN_INTERFACE}}\",\"random_port\":false,\"upnp\":false}" http://127.0.0.1:8080/api/v2/app/setPreferences'
+    volumes:
+      - ${APP_DATA}/gluetun:/gluetun
+    restart: unless-stopped
+    labels:
+      net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/private-internet-access.png
 
   qbittorrent:
     container_name: qbittorrent
@@ -260,41 +309,14 @@ services:
       net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/qbittorrent.png
       net.unraid.docker.webui: https://torrent.${DOMAIN_NAME}
 
-  gluetun:
-    container_name: gluetun
-    image: qmcgaw/gluetun:latest
-    cap_add:
-      - NET_ADMIN
-    devices:
-      - /dev/net/tun:/dev/net/tun
-    ports:
-      - 8080:8080
-    environment:
-      TZ: ${TZ}
-      VPN_SERVICE_PROVIDER: private internet access
-      VPN_TYPE: openvpn
-      OPENVPN_USER: ${PIA_USERNAME}
-      OPENVPN_PASSWORD: ${PIA_PASSWORD}
-      SERVER_REGIONS: ${PIA_REGION}
-      VPN_PORT_FORWARDING: on
-      PORT_FORWARD_ONLY: "true"
-      # Auto-syncs PIA's forwarded port → qBittorrent listen port
-      VPN_PORT_FORWARDING_UP_COMMAND: /bin/sh -c 'wget -O- -nv --retry-connrefused --post-data "json={\"listen_port\":{{PORT}},\"current_network_interface\":\"{{VPN_INTERFACE}}\",\"random_port\":false,\"upnp\":false}" http://127.0.0.1:8080/api/v2/app/setPreferences'
-      VPN_PORT_FORWARDING_DOWN_COMMAND: /bin/sh -c 'wget -O- -nv --retry-connrefused --post-data "json={\"listen_port\":0,\"current_network_interface\":\"lo\"}" http://127.0.0.1:8080/api/v2/app/setPreferences'
-    volumes:
-      - ${APP_DATA}/gluetun:/gluetun
-    restart: unless-stopped
-    labels:
-      net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/private-internet-access.png
-
   slskd:
     container_name: slskd
     image: slskd/slskd
     user: ${PUID}:${PGID}
-    ports:
-      - "5030:5030"
-      - "5031:5031"
-      - "50300:50300"
+    network_mode: "service:gluetun"
+    depends_on:
+      gluetun:
+        condition: service_healthy
     environment:
       SLSKD_DOWNLOADS_DIR: /data/downloads/slskd/complete
       SLSKD_INCOMPLETE_DIR: /data/downloads/slskd/incomplete
@@ -304,6 +326,11 @@ services:
       SLSKD_SLSK_USERNAME: ${SOULSEEK_USERNAME}
       SLSKD_USERNAME: ${DEFAULT_APP_USERNAME}
       TZ: ${TZ}
+      # Syncs PIA forwarded port → slskd listen port only
+      SLSKD_VPN: true
+      SLSKD_VPN_PORT_FORWARDING: true
+      SLSKD_VPN_GLUETUN_URL: http://127.0.0.1:8000
+      SLSKD_VPN_GLUETUN_API_KEY: ${ENCRYPTION_KEY}
     volumes:
       - ${APP_DATA}/slskd:/app
       - ${DATA}:/data
@@ -313,6 +340,41 @@ services:
       npm.proxy.port: "5030"
       net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/slskd.png
       net.unraid.docker.webui: https://slskd.${DOMAIN_NAME}
+
+  qui:
+    container_name: qui
+    image: ghcr.io/autobrr/qui:latest
+    user: ${PUID}:${PGID}
+    ports:
+      - 7476:7476
+    environment:
+      TZ: ${TZ}
+    volumes:
+      - ${APP_DATA}/qui:/config
+      - ${DATA}:/data
+    restart: unless-stopped
+    labels:
+      npm.proxy.domain: qui.${DOMAIN_NAME}
+      npm.proxy.port: "7476"
+      net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/qui.png
+      net.unraid.docker.webui: https://qui.${DOMAIN_NAME}
+
+  autobrr:
+    container_name: autobrr
+    image: ghcr.io/autobrr/autobrr:latest
+    user: ${PUID}:${PGID}
+    ports:
+      - 7474:7474
+    environment:
+      TZ: ${TZ}
+    volumes:
+      - ${APP_DATA}/autobrr:/config
+    restart: unless-stopped
+    labels:
+      npm.proxy.domain: autobrr.${DOMAIN_NAME}
+      npm.proxy.port: "7474"
+      net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/autobrr.png
+      net.unraid.docker.webui: https://autobrr.${DOMAIN_NAME}
 
   unpackerr:
     container_name: unpackerr
@@ -340,24 +402,6 @@ services:
     labels:
       net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/bookstack.png
 
-  profilarr:
-    container_name: profilarr
-    image: santiagosayshey/profilarr:latest
-    ports:
-        - 6868:6868
-    environment:
-        PUID: ${PUID}
-        PGID: ${PGID}
-        TZ: ${TZ}
-    volumes:
-        - ${APP_DATA}/profilarr:/config
-    restart: unless-stopped
-    labels:
-      npm.proxy.domain: profilarr.${DOMAIN_NAME}
-      npm.proxy.port: "6868"
-      net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/profilarr.png
-      net.unraid.docker.webui: https://profilarr.${DOMAIN_NAME}
-    
   tdarr:
     container_name: tdarr
     image: ghcr.io/haveagitgat/tdarr:latest
@@ -396,38 +440,3 @@ services:
       npm.proxy.port: "8265"
       net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/tdarr.png
       net.unraid.docker.webui: https://tdarr.${DOMAIN_NAME}
-
-  qui:
-    container_name: qui
-    image: ghcr.io/autobrr/qui:latest
-    user: ${PUID}:${PGID}
-    ports:
-      - 7476:7476
-    environment:
-      TZ: ${TZ}
-    volumes:
-      - ${APP_DATA}/qui:/config
-      - ${DATA}:/data
-    restart: unless-stopped
-    labels:
-      npm.proxy.domain: qui.${DOMAIN_NAME}
-      npm.proxy.port: "7476"
-      net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/qui.png
-      net.unraid.docker.webui: https://qui.${DOMAIN_NAME}
-
-  autobrr:
-    container_name: autobrr
-    image: ghcr.io/autobrr/autobrr:latest
-    user: ${PUID}:${PGID}
-    ports:
-      - 7474:7474
-    environment:
-      TZ: ${TZ}
-    volumes:
-      - ${APP_DATA}/autobrr:/config
-    restart: unless-stopped
-    labels:
-      npm.proxy.domain: autobrr.${DOMAIN_NAME}
-      npm.proxy.port: "7474"
-      net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/autobrr.png
-      net.unraid.docker.webui: https://autobrr.${DOMAIN_NAME}
