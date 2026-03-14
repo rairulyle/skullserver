@@ -10,8 +10,6 @@ services:
     container_name: plex
     image: lscr.io/linuxserver/plex:latest
     network_mode: host
-    healthcheck:
-      disable: true
     tmpfs:
       - /tmp:size=16G
     devices:
@@ -48,12 +46,12 @@ services:
   plexcache:
     container_name: plexcache
     image: brandonhaney/plexcache-r:latest
+    ports:
+      - 5757:5757
     environment:
       PGID: ${PGID}
       PUID: ${PUID}
       TZ: ${TZ}
-    ports:
-      - 5757:5757
     volumes:
       - ${APP_DATA}/plexcache:/config
       - /mnt/cache:/mnt/cache
@@ -67,6 +65,31 @@ services:
       npm.proxy.port: "5757"
       net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/plexdrive.png
       net.unraid.docker.webui: https://plexcache.${DOMAIN_NAME}
+
+  plex-previews:
+    container_name: plex-previews
+    image: stevezzau/plex_generate_vid_previews:latest
+    devices:
+      - /dev/dri:/dev/dri
+    ports:
+      - "8083:8080"
+    environment:
+      PUID: ${PUID}
+      PGID: ${PGID}
+      TZ: ${TZ}
+    volumes:
+      # Media share (read-only) — use the same path as your Plex container
+      - ${DATA}:/data
+      # Plex appdata (read-write for BIF files)
+      - ${APP_DATA}/plex/Library/Application Support/Plex Media Server:/plex:rw
+      # App config storage
+      - ${APP_DATA}/plex-previews:/config:rw
+    restart: unless-stopped
+    labels:
+      npm.proxy.domain: plexpreviews.${DOMAIN_NAME}
+      npm.proxy.port: "8083"
+      net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/plex-meta-manager-light.png
+      net.unraid.docker.webui: https://plexpreviews.${DOMAIN_NAME}
 
   seerr:
     container_name: seerr
@@ -107,7 +130,7 @@ services:
 
   prowlarr:
     container_name: prowlarr
-    image: lscr.io/linuxserver/prowlarr:latest
+    image: lscr.io/linuxserver/prowlarr:develop
     ports:
       - 9696:9696
     environment:
@@ -186,9 +209,23 @@ services:
       net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/lidarr.png
       net.unraid.docker.webui: https://lidarr.${DOMAIN_NAME}
 
+  seadexerr:
+    container_name: seadexerr
+    image: ghcr.io/ryder-c/seadexerr:latest
+    environment:
+      SONARR_BASE_URL: http://sonarr:8989/
+      SONARR_API_KEY: ${SONARR_API_KEY}
+      RADARR_BASE_URL: http://radarr:7878/
+      RADARR_API_KEY: ${RADARR_API_KEY}
+    restart: unless-stopped
+    labels:
+      net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/shokoanime.png
+
   seadexarr:
     container_name: seadexarr
     image: ghcr.io/bbtufty/seadexarr:latest
+    profiles:
+      - manual
     environment:
       PGID: ${PGID}
       PUID: ${PUID}
@@ -380,10 +417,6 @@ services:
     container_name: unpackerr
     image: golift/unpackerr
     user: ${PUID}:${PGID}
-    volumes:
-      - ${APP_DATA}/unpackerr/logs:/logs
-      - ${DATA}:/data
-    restart: unless-stopped
     environment:
       - TZ=${TZ}
       - UN_LOG_FILE=/logs/unpackerr.log
@@ -399,6 +432,10 @@ services:
       - UN_LIDARR_0_URL=http://lidarr:8686
       - UN_LIDARR_0_API_KEY=${LIDARR_API_KEY}
       - UN_LIDARR_0_PATHS=/data/torrents/music
+    volumes:
+      - ${APP_DATA}/unpackerr/logs:/logs
+      - ${DATA}:/data
+    restart: unless-stopped
     labels:
       net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/bookstack.png
 

@@ -43,14 +43,14 @@ services:
   znc:
     container_name: znc
     image: lscr.io/linuxserver/znc:latest
+    ports:
+      - 6501:6501
     environment:
       PUID: ${PUID}
       PGID: ${PGID}
       TZ: ${TZ}
     volumes:
       - ${APP_DATA}/znc:/config
-    ports:
-      - 6501:6501
     restart: unless-stopped
     labels:
       npm.proxy.domain: znc.${DOMAIN_NAME}
@@ -61,14 +61,14 @@ services:
   thelounge:
     container_name: thelounge
     image: lscr.io/linuxserver/thelounge:latest
+    ports:
+      - 9000:9000
     environment:
       PUID: ${PUID}
       PGID: ${PGID}
       TZ: ${TZ}
     volumes:
       - ${APP_DATA}/thelounge:/config
-    ports:
-      - 9000:9000
     restart: unless-stopped
     labels:
       npm.proxy.domain: irc.${DOMAIN_NAME}
