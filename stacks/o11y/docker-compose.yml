@@ -6,6 +6,25 @@ networks:
     external: true
 
 services:
+  dozzle:
+    container_name: dozzle
+    image: amir20/dozzle:latest
+    ports:
+      - "8081:8080"
+    environment:
+      TZ: ${TZ}
+      DOZZLE_ENABLE_ACTIONS: true
+      DOZZLE_AUTH_PROVIDER: simple
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ${APP_DATA}/dozzle:/data
+    restart: unless-stopped
+    labels:
+      npm.proxy.domain: logs.${DOMAIN_NAME}
+      npm.proxy.port: "8081"
+      net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/dozzle.png
+      net.unraid.docker.webui: https://logs.${DOMAIN_NAME}
+
   speedtest-tracker:
     container_name: speedtest-tracker
     image: lscr.io/linuxserver/speedtest-tracker:latest
