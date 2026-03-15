@@ -100,7 +100,6 @@ services:
     environment:
       PGID: ${PGID}
       PUID: ${PUID}
-      LOG_LEVEL: debug
       TZ: ${TZ}
     volumes:
       - ${APP_DATA}/seerr:/app/config
