@@ -302,6 +302,8 @@ services:
     image: qmcgaw/gluetun:latest
     cap_add:
       - NET_ADMIN
+    sysctls:
+      - net.ipv6.conf.all.disable_ipv6=1
     devices:
       - /dev/net/tun:/dev/net/tun
     ports:
@@ -318,7 +320,6 @@ services:
       SERVER_REGIONS: ${PIA_REGION}
       VPN_PORT_FORWARDING: on
       PORT_FORWARD_ONLY: "true"
-      HEALTH_VPN_DURATION_INITIAL: 120s
       GLUETUN_HTTP_CONTROL_SERVER_ENABLE: on
       HTTP_CONTROL_SERVER_AUTH_DEFAULT_ROLE: '{"auth":"apikey","apikey":"${ENCRYPTION_KEY}"}'
     volumes:
