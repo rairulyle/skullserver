@@ -25,6 +25,24 @@ services:
       net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/dozzle.png
       net.unraid.docker.webui: https://logs.${DOMAIN_NAME}
 
+  tautulli:
+    container_name: tautulli
+    image: lscr.io/linuxserver/tautulli:latest
+    ports:
+      - 8181:8181
+    environment:
+      PUID: ${PUID}
+      PGID: ${PGID}
+      TZ: ${TZ}
+    volumes:
+      - ${APP_DATA}/tautulli:/config
+    restart: unless-stopped
+    labels:
+      npm.proxy.domain: tautulli.${DOMAIN_NAME}
+      npm.proxy.port: "8181"
+      net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/tautulli.png
+      net.unraid.docker.webui: https://tautulli.${DOMAIN_NAME}
+
   speedtest-tracker:
     container_name: speedtest-tracker
     image: lscr.io/linuxserver/speedtest-tracker:latest

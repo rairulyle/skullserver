@@ -22,24 +22,6 @@ services:
     labels:
       net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/watchtower.png
 
-  tautulli:
-    container_name: tautulli
-    image: lscr.io/linuxserver/tautulli:latest
-    ports:
-      - 8181:8181
-    environment:
-      PUID: ${PUID}
-      PGID: ${PGID}
-      TZ: ${TZ}
-    volumes:
-      - ${APP_DATA}/tautulli:/config
-    restart: unless-stopped
-    labels:
-      npm.proxy.domain: tautulli.${DOMAIN_NAME}
-      npm.proxy.port: "8181"
-      net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/tautulli.png
-      net.unraid.docker.webui: https://tautulli.${DOMAIN_NAME}
-
   znc:
     container_name: znc
     image: lscr.io/linuxserver/znc:latest
