@@ -10,8 +10,6 @@ services:
     container_name: plex
     image: lscr.io/linuxserver/plex:latest
     network_mode: host
-    tmpfs:
-      - /tmp:size=16G
     devices:
       - /dev/dri:/dev/dri
     environment:
@@ -31,6 +29,18 @@ services:
       net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/plex.png
       net.unraid.docker.webui: https://plex.${DOMAIN_NAME}
 
+  plexautolanguages:
+    container_name: plexautolanguages
+    image: journeyover/plex-auto-languages:latest
+    environment:
+      PLEX_URL: http://${IP_ADDRESS}:32400
+      PLEX_TOKEN: ${PLEX_API_KEY}
+      TZ: ${TZ}
+    volumes:
+      - ${APP_DATA}/plexautolanguages:/config
+    labels:
+      net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/plex-meta-manager.png
+    
   plextraktsync:
     container_name: plextraktsync
     image: lscr.io/linuxserver-labs/plextraktsync:latest
@@ -92,6 +102,21 @@ services:
       net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/plex-meta-manager-light.png
       net.unraid.docker.webui: https://plexpreviews.${DOMAIN_NAME}
 
+  kometa:
+    container_name: kometa
+    image: lscr.io/linuxserver/kometa:latest
+    environment:
+      PUID: ${PUID}
+      PGID: ${PGID}
+      TZ: ${TZ}
+      KOMETA_TIME: 03:00
+      KOMETA_RUN: true
+    volumes:
+      - ${APP_DATA}/kometa:/config
+    restart: unless-stopped
+    labels:
+      net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/kometa.png
+
   seerr:
     container_name: seerr
     image: ghcr.io/seerr-team/seerr:latest
@@ -110,172 +135,6 @@ services:
       npm.proxy.port: "5055"
       net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/overseerr.png
       net.unraid.docker.webui: https://request.${DOMAIN_NAME}
-
-  agregarr:
-    container_name: agregarr
-    image: agregarr/agregarr:latest
-    ports:
-      - 7171:7171
-    environment:
-      TZ: ${TZ}
-    volumes:
-      - ${APP_DATA}/agregarr:/app/config
-      - ${DATA}:/data
-    restart: unless-stopped
-    labels:
-      npm.proxy.domain: agregarr.${DOMAIN_NAME}
-      npm.proxy.port: "7171"
-      net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/agregarr.png
-      net.unraid.docker.webui: https://agregarr.${DOMAIN_NAME}
-
-  prowlarr:
-    container_name: prowlarr
-    image: lscr.io/linuxserver/prowlarr:develop
-    ports:
-      - 9696:9696
-    environment:
-      PGID: ${PGID}
-      PUID: ${PUID}
-      TZ: ${TZ}
-    volumes:
-      - ${APP_DATA}/prowlarr:/config
-    restart: unless-stopped
-    labels:
-      npm.proxy.domain: prowlarr.${DOMAIN_NAME}
-      npm.proxy.port: "9696"
-      net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/prowlarr.png
-      net.unraid.docker.webui: https://prowlarr.${DOMAIN_NAME}
-
-  radarr:
-    container_name: radarr
-    image: lscr.io/linuxserver/radarr:latest
-    ports:
-      - 7878:7878
-    environment:
-      UMASK: ${UMASK}
-      PGID: ${PGID}
-      PUID: ${PUID}
-      TZ: ${TZ}
-    volumes:
-      - ${APP_DATA}/radarr:/config
-      - ${DATA}:/data
-      - ${APP_DATA}/radarr/custom-services.d:/custom-services.d
-      - ${APP_DATA}/radarr/custom-cont-init.d:/custom-cont-init.d
-    restart: unless-stopped
-    labels:
-      npm.proxy.domain: radarr.${DOMAIN_NAME}
-      npm.proxy.port: "7878"
-      net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/radarr.png
-      net.unraid.docker.webui: https://radarr.${DOMAIN_NAME}
-
-  sonarr:
-    container_name: sonarr
-    image: lscr.io/linuxserver/sonarr:latest
-    ports:
-      - 8989:8989
-    environment:
-      UMASK: ${UMASK}
-      PGID: ${PGID}
-      PUID: ${PUID}
-      TZ: ${TZ}
-    volumes:
-      - ${APP_DATA}/sonarr:/config
-      - ${DATA}:/data
-      - ${APP_DATA}/sonarr/custom-services.d:/custom-services.d
-      - ${APP_DATA}/sonarr/custom-cont-init.d:/custom-cont-init.d
-    restart: unless-stopped
-    labels:
-      npm.proxy.domain: sonarr.${DOMAIN_NAME}
-      npm.proxy.port: "8989"
-      net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/sonarr.png
-      net.unraid.docker.webui: https://sonarr.${DOMAIN_NAME}
-
-  lidarr:
-    container_name: lidarr
-    image: lscr.io/linuxserver/lidarr:nightly
-    ports:
-      - 8686:8686
-    environment:
-      UMASK: ${UMASK}
-      PGID: ${PGID}
-      PUID: ${PUID}
-      TZ: ${TZ}
-    volumes:
-      - ${APP_DATA}/lidarr:/config
-      - ${DATA}:/data
-      - ${APP_DATA}/lidarr/custom-services.d:/custom-services.d
-      - ${APP_DATA}/lidarr/custom-cont-init.d:/custom-cont-init.d
-    restart: unless-stopped
-    labels:
-      npm.proxy.domain: lidarr.${DOMAIN_NAME}
-      npm.proxy.port: "8686"
-      net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/lidarr.png
-      net.unraid.docker.webui: https://lidarr.${DOMAIN_NAME}
-
-  seadexerr:
-    container_name: seadexerr
-    image: ghcr.io/ryder-c/seadexerr:latest
-    environment:
-      SONARR_BASE_URL: http://sonarr:8989/
-      SONARR_API_KEY: ${SONARR_API_KEY}
-      RADARR_BASE_URL: http://radarr:7878/
-      RADARR_API_KEY: ${RADARR_API_KEY}
-    restart: unless-stopped
-    labels:
-      net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/manga-dex.png
-
-  seadexarr:
-    container_name: seadexarr
-    image: ghcr.io/bbtufty/seadexarr:latest
-    profiles:
-      - manual
-    environment:
-      PGID: ${PGID}
-      PUID: ${PUID}
-      TZ: ${TZ}
-    volumes:
-      - ${APP_DATA}/seadexarr:/config
-    restart: unless-stopped
-    labels:
-      net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/manga-dex.png
-
-  bazarr:
-    container_name: bazarr
-    image: lscr.io/linuxserver/bazarr:latest
-    ports:
-      - 6767:6767
-    environment:
-      UMASK: ${UMASK}
-      PGID: ${PGID}
-      PUID: ${PUID}
-      TZ: ${TZ}
-    volumes:
-      - ${APP_DATA}/bazarr:/config
-      - ${DATA}:/data
-    restart: unless-stopped
-    labels:
-      npm.proxy.domain: bazarr.${DOMAIN_NAME}
-      npm.proxy.port: "6767"
-      net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/bazarr.png
-      net.unraid.docker.webui: https://bazarr.${DOMAIN_NAME}
-
-  profilarr:
-    container_name: profilarr
-    image: santiagosayshey/profilarr:latest
-    ports:
-      - 6868:6868
-    environment:
-      PUID: ${PUID}
-      PGID: ${PGID}
-      TZ: ${TZ}
-    volumes:
-      - ${APP_DATA}/profilarr:/config
-    restart: unless-stopped
-    labels:
-      npm.proxy.domain: profilarr.${DOMAIN_NAME}
-      npm.proxy.port: "6868"
-      net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/profilarr.png
-      net.unraid.docker.webui: https://profilarr.${DOMAIN_NAME}
 
   suwayomi:
     container_name: suwayomi
@@ -296,193 +155,3 @@ services:
       npm.proxy.port: "4567"
       net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/suwayomi.png
       net.unraid.docker.webui: https://suwayomi.${DOMAIN_NAME}
-
-  gluetun:
-    container_name: gluetun
-    image: qmcgaw/gluetun:latest
-    cap_add:
-      - NET_ADMIN
-    sysctls:
-      - net.ipv6.conf.all.disable_ipv6=1
-    devices:
-      - /dev/net/tun:/dev/net/tun
-    ports:
-      - 8000:8000   # gluetun control server (slskd VPN integration)
-      - 8080:8080   # qbittorrent webui
-      - 5030:5030   # slskd webui
-      - 5031:5031   # slskd HTTPS webui
-    environment:
-      TZ: ${TZ}
-      VPN_SERVICE_PROVIDER: private internet access
-      VPN_TYPE: openvpn
-      OPENVPN_USER: ${PIA_USERNAME}
-      OPENVPN_PASSWORD: ${PIA_PASSWORD}
-      SERVER_REGIONS: ${PIA_REGION}
-      VPN_PORT_FORWARDING: on
-      PORT_FORWARD_ONLY: "true"
-      GLUETUN_HTTP_CONTROL_SERVER_ENABLE: on
-      HTTP_CONTROL_SERVER_AUTH_DEFAULT_ROLE: '{"auth":"apikey","apikey":"${ENCRYPTION_KEY}"}'
-    volumes:
-      - ${APP_DATA}/gluetun:/gluetun
-    restart: unless-stopped
-    labels:
-      net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/private-internet-access.png
-
-  qbittorrent:
-    container_name: qbittorrent
-    image: lscr.io/linuxserver/qbittorrent:latest
-    network_mode: "service:gluetun"
-    depends_on:
-      gluetun:
-        condition: service_healthy
-    environment:
-      UMASK: ${UMASK}  
-      PGID: ${PGID}
-      PUID: ${PUID}
-      TZ: ${TZ}
-      WEBUI_PORT: 8080
-      DOCKER_MODS: ghcr.io/t-anc/gsp-qbittorent-gluetun-sync-port-mod:main
-      GSP_GTN_API_KEY: ${ENCRYPTION_KEY}
-      GSP_QBITTORRENT_PORT: 8080
-      GSP_MINIMAL_LOGS: false
-    volumes:
-      - ${APP_DATA}/qbittorrent:/config
-      - ${DATA}:/data
-    restart: unless-stopped
-    labels:
-      npm.proxy.domain: torrent.${DOMAIN_NAME}
-      npm.proxy.port: "8080"
-      net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/qbittorrent.png
-      net.unraid.docker.webui: https://torrent.${DOMAIN_NAME}
-
-  slskd:
-    container_name: slskd
-    image: slskd/slskd
-    user: ${PUID}:${PGID}
-    network_mode: "service:gluetun"
-    depends_on:
-      gluetun:
-        condition: service_healthy
-    environment:
-      SLSKD_DOWNLOADS_DIR: /data/downloads/slskd/complete
-      SLSKD_INCOMPLETE_DIR: /data/downloads/slskd/incomplete
-      SLSKD_PASSWORD: ${DEFAULT_APP_PASSWORD}
-      SLSKD_REMOTE_CONFIGURATION: true
-      SLSKD_SLSK_PASSWORD: ${SOULSEEK_PASSWORD}
-      SLSKD_SLSK_USERNAME: ${SOULSEEK_USERNAME}
-      SLSKD_USERNAME: ${DEFAULT_APP_USERNAME}
-      TZ: ${TZ}
-      # Syncs PIA forwarded port → slskd listen port only
-      SLSKD_VPN: true
-      SLSKD_VPN_PORT_FORWARDING: true
-      SLSKD_VPN_GLUETUN_URL: http://127.0.0.1:8000
-      SLSKD_VPN_GLUETUN_API_KEY: ${ENCRYPTION_KEY}
-    volumes:
-      - ${APP_DATA}/slskd:/app
-      - ${DATA}:/data
-    restart: unless-stopped
-    labels:
-      npm.proxy.domain: slskd.${DOMAIN_NAME}
-      npm.proxy.port: "5030"
-      net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/slskd.png
-      net.unraid.docker.webui: https://slskd.${DOMAIN_NAME}
-
-  qui:
-    container_name: qui
-    image: ghcr.io/autobrr/qui:latest
-    user: ${PUID}:${PGID}
-    ports:
-      - 7476:7476
-    environment:
-      TZ: ${TZ}
-    volumes:
-      - ${APP_DATA}/qui:/config
-      - ${DATA}:/data
-    restart: unless-stopped
-    labels:
-      npm.proxy.domain: qui.${DOMAIN_NAME}
-      npm.proxy.port: "7476"
-      net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/qui.png
-      net.unraid.docker.webui: https://qui.${DOMAIN_NAME}
-
-  autobrr:
-    container_name: autobrr
-    image: ghcr.io/autobrr/autobrr:latest
-    user: ${PUID}:${PGID}
-    ports:
-      - 7474:7474
-    environment:
-      TZ: ${TZ}
-    volumes:
-      - ${APP_DATA}/autobrr:/config
-    restart: unless-stopped
-    labels:
-      npm.proxy.domain: autobrr.${DOMAIN_NAME}
-      npm.proxy.port: "7474"
-      net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/autobrr.png
-      net.unraid.docker.webui: https://autobrr.${DOMAIN_NAME}
-
-  unpackerr:
-    container_name: unpackerr
-    image: golift/unpackerr
-    user: ${PUID}:${PGID}
-    environment:
-      - TZ=${TZ}
-      - UN_LOG_FILE=/logs/unpackerr.log
-      # SONARR
-      - UN_SONARR_0_URL=http://sonarr:8989
-      - UN_SONARR_0_API_KEY=${SONARR_API_KEY}
-      - UN_SONARR_0_PATHS=/data/torrents/tv
-      # RADARR
-      - UN_RADARR_0_URL=http://radarr:7878
-      - UN_RADARR_0_API_KEY=${RADARR_API_KEY}
-      - UN_RADARR_0_PATHS=/data/torrents/movies
-      # LIDARR
-      - UN_LIDARR_0_URL=http://lidarr:8686
-      - UN_LIDARR_0_API_KEY=${LIDARR_API_KEY}
-      - UN_LIDARR_0_PATHS=/data/torrents/music
-    volumes:
-      - ${APP_DATA}/unpackerr/logs:/logs
-      - ${DATA}:/data
-    restart: unless-stopped
-    labels:
-      net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/bookstack.png
-
-  tdarr:
-    container_name: tdarr
-    image: ghcr.io/haveagitgat/tdarr:latest
-    profiles:
-      - manual
-    ports:
-      - 8265:8265 # webUI port
-      - 8266:8266 # server port
-    environment:
-      TZ: ${TZ}
-      PUID: ${PUID}
-      PGID: ${PGID}
-      UMASK_SET: 002
-      serverIP: 0.0.0.0
-      serverPort: 8266
-      webUIPort: 8265
-      internalNode: false
-      inContainer: true
-      ffmpegVersion: 7
-      auth: false
-      openBrowser: true
-      maxLogSizeMB: 10
-      cronPluginUpdate: ""
-      NVIDIA_DRIVER_CAPABILITIES: all
-      NVIDIA_VISIBLE_DEVICES: all
-    volumes:
-      - ${APP_DATA}/tdarr/server:/app/server
-      - ${APP_DATA}/tdarr/configs:/app/configs
-      - ${APP_DATA}/tdarr/logs:/app/logs
-      - ${DATA}:/mnt/data
-      - /mnt/user/mosou:/mnt/mosou
-      - ${DATA}/cache:/temp
-    restart: unless-stopped
-    labels:
-      npm.proxy.domain: tdarr.${DOMAIN_NAME}
-      npm.proxy.port: "8265"
-      net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/tdarr.png
-      net.unraid.docker.webui: https://tdarr.${DOMAIN_NAME}

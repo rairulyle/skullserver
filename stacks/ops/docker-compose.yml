@@ -75,3 +75,21 @@ services:
       npm.proxy.port: "9000"
       net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/thelounge.png
       net.unraid.docker.webui: https://irc.${DOMAIN_NAME}
+  
+  obsidian-ls:
+    container_name: obsidian-ls
+    image: couchdb:latest
+    user: ${PUID}:${PGID}
+    environment:
+      COUCHDB_USER: ${DEFAULT_APP_USERNAME}
+      COUCHDB_PASSWORD: ${DEFAULT_APP_PASSWORD}
+    volumes:
+      - ${APP_DATA}/obsidian-ls/couchdb-data:/opt/couchdb/data
+      - ${APP_DATA}/obsidian-ls/couchdb-etc:/opt/couchdb/etc/local.d
+    ports:
+      - 5984:5984
+    restart: unless-stopped
+    labels:
+      npm.proxy.domain: obsidian-ls.${DOMAIN_NAME}
+      npm.proxy.port: "5984"
+      net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/obsidian.png
