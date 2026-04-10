@@ -1,0 +1,3 @@
+# Override file for UI labels (icon, webui, shell)
+# This file is managed by Compose Manager
+services: {}
