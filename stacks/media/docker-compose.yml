@@ -56,7 +56,7 @@ services:
 
   plexcache:
     container_name: plexcache
-    image: brandonhaney/plexcache-r:latest
+    image: ghcr.io/studionirin/plexcache-d:latest
     ports:
       - 5757:5757
     environment:
@@ -109,7 +109,7 @@ services:
       PUID: ${PUID}
       PGID: ${PGID}
       TZ: ${TZ}
-      KOMETA_TIME: 03:00
+      KOMETA_TIME: 05:00
       KOMETA_RUN: true
     volumes:
       - ${APP_DATA}/kometa:/config
