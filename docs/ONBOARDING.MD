@@ -2,7 +2,7 @@
 
 **Welcome to my Plex Home** (SKULLSERVER). I’m the one running the box — you’re here for movies, TV, and music without paying a dozen subscriptions. Read this once, do the steps, don’t make me explain it twice. No geek cred required.
 
-**Links:** I don’t put URLs in this doc — my **Plex** (web) and **Seer** (requests) endpoints are on the public internet, and I’d rather not paste them where they’re easy to scrape or pass around. **I’ll send you the actual links directly** (DM, text, whatever we use). If you lose them, ask me again.
+**Links:** I don’t put URLs in this doc — my **Plex** (web) and **Seerr** (requests) endpoints are on the public internet, and I’d rather not paste them where they’re easy to scrape or pass around. **I’ll send you the actual links directly** (DM, text, whatever we use). If you lose them, ask me again.
 
 ---
 
@@ -62,9 +62,9 @@ Sick of Plex asking **who’s watching** every time? Turn on **auto sign in** so
 
 ---
 
-## 📝 Part 3 — Requesting movies & shows (Seer)
+## 📝 Part 3 — Requesting movies & shows (Seerr)
 
-I run **Seer** against **my** libraries. You want something new? Use the **Seer** request app (browser). I’m not your personal shopper for stuff you’ll never watch.
+I run **Seerr** against **my** libraries. You want something new? Use the **Seerr** request app (browser). I’m not your personal shopper for stuff you’ll never watch.
 
 ### ⏳ Before you request
 
@@ -79,7 +79,7 @@ I run **Seer** against **my** libraries. You want something new? Use the **Seer*
 
 ### 💬 Discord — request status updates
 
-**Seer** can ping you on Discord when a request moves (approved, available, whatever) — but only if you’re on **my** server and **I** can tie your Discord to your account.
+**Seerr** can ping you on Discord when a request moves (approved, available, whatever) — but only if you’re on **my** server and **I** can tie your Discord to your account.
 
 **Send me your Discord username**. I’ll drag you into the server if you’re not there yet and wire up notifications.
 
@@ -91,4 +91,5 @@ I run **Seer** against **my** libraries. You want something new? Use the **Seer*
 2. **Sign in with Plex**.
 3. Search the title. If it’s not already there, hit **request**. Done.
 
+![Seerr Request](images/seerr-request.png)
 ---
