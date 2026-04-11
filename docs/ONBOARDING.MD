@@ -28,11 +28,19 @@ In the Plex app or on the web, pick what shows on your home screen (**pinned** l
 
 If you’re lost: dig around **library settings**, **home screen**, or **pin** / **customize** in the sidebar or settings.
 
-### 🎉 3. You’re all set on Plex
+### 📲 3. Install the Plex app
 
-Account works, those three libraries are pinned — cool, you can actually use the thing now.
+Grab the Plex app for whatever you're watching on:
 
-### ⚡ 4. One habit that helps everyone — video quality
+- [Plex (official)](https://www.plex.tv/media-server-downloads/?cat=plex+desktop&plat=windows#plex-app)
+- [Plezy (alternative)](https://plezy.app/)
+
+### 🎉 4. You're all set on Plex
+
+Account works, those three libraries are pinned, app installed — cool, you can actually use the thing now.
+
+
+### ⚡ 5. One habit that helps everyone — video quality
 
 **Use the Plex app, not the browser, when you’re actually watching** — especially on a TV. The **web player** is fine for a quick peek; for real streaming it’s more likely to **transcode**, cap weird stuff, or just feel janky. Install **Plex** on the device and watch there.
 
