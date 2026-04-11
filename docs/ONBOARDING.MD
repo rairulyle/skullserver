@@ -24,6 +24,7 @@ In the Plex app or on the web, pick what shows on your home screen (**pinned** l
 | **Pin these three** | **Movies**, **TV Shows**, and **Music** — these are **required** so everything works the way I expect. |
 | **Everything else** | Optional. Pin it if you’ll use it; don’t clutter your home with crap you ignore.                       |
 
+![Recommended pinned sources](images/recommended-pinned-sources.png)
 
 If you’re lost: dig around **library settings**, **home screen**, or **pin** / **customize** in the sidebar or settings.
 
@@ -72,11 +73,17 @@ I run **Seer** against **my** libraries. You want something new? Use the **Seer*
 - Stuff that sits there unwatched for 30 days **gets deleted** — I need the disk.
 - Requests are for **real viewing**, not a “maybe someday” fantasy list. **Exception:** I keep **my own** favorites **forever** for archival purposes. I’m allowed; you’re not the one paying for the drives.
 
+![Unwatched Movies](images/unwatched-movies.png)
+
+![Unwatched TV shows](images/unwatched-tv-shows.png)
+
 ### 💬 Discord — request status updates
 
 **Seer** can ping you on Discord when a request moves (approved, available, whatever) — but only if you’re on **my** server and **I** can tie your Discord to your account.
 
 **Send me your Discord username**. I’ll drag you into the server if you’re not there yet and wire up notifications.
+
+![Seerr Discord Notification](images/seerr-discord.png)
 
 ### 🙋 How to request
 
