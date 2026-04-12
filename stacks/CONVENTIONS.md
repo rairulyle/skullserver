@@ -2,6 +2,12 @@
 
 This document defines the conventions and standards for all Docker Compose files in this project.
 
+## Scope (read this first)
+
+- **When normalizing stacks, only reorder YAML keys** — primarily the **top-level keys under each service** (`container_name`, `image`, optional modifiers, `ports`, `environment`, `volumes`, `depends_on`, `restart`, `labels`, etc.) to match [Service Definition Order](#service-definition-order).
+- **Do not change** the compose project `name:` field (or folder names / `docker-compose.yml` filenames) when “applying conventions.” Those values are tied to Unraid Compose Manager and historical stack identity; “wrong” `name:` vs folder is intentional in some cases.
+- **Do not bulk-edit** image tags, icon URLs, volume host paths, or ports unless the task explicitly asks for it. Those drift for operational reasons; property order is the mechanical standard we enforce repo-wide.
+
 ## File Organization
 
 - `compose.infra.yml` - Network infrastructure (proxy, DNS, VPN)
@@ -29,6 +35,7 @@ services:
     ports:
       - "{host}:{container}"
     environment:
+      UMASK: ${UMASK}                       # Optional: only if needed; list before PUID/PGID/TZ when set
       PUID: ${PUID}
       PGID: ${PGID}
       TZ: ${TZ}
@@ -36,6 +43,8 @@ services:
     volumes:
       - ${APP_DATA}/{service-name}:{container-path}
       - ${DATA}:{container-data-path}
+    depends_on:                            # Optional: only if needed; place after volumes, before restart
+      - {dependency}
     restart: unless-stopped
     labels:
       npm.proxy.domain: {subdomain}.${DOMAIN_NAME}
@@ -58,13 +67,15 @@ services:
 ### 2. Environment Variables
 - **Format**: Non-array (key-value pairs)
 - **Order**:
-  1. `PUID: ${PUID}` (if applicable)
-  2. `PGID: ${PGID}` (if applicable)
-  3. `TZ: ${TZ}` (if applicable)
-  4. Other variables in alphabetical order
+  1. `UMASK: ${UMASK}` (if applicable)
+  2. `PUID: ${PUID}` (if applicable)
+  3. `PGID: ${PGID}` (if applicable)
+  4. `TZ: ${TZ}` (if applicable)
+  5. Other variables in alphabetical order
 - **Example**:
   ```yaml
   environment:
+    UMASK: ${UMASK}
     PUID: ${PUID}
     PGID: ${PGID}
     TZ: ${TZ}
@@ -150,8 +161,10 @@ services:
 ### Standard User/Group
 ```yaml
 environment:
+  UMASK: ${UMASK}
   PUID: ${PUID}
   PGID: ${PGID}
+  TZ: ${TZ}
 ```
 
 ### Unraid Docker Labels
@@ -208,6 +221,7 @@ Document any exceptions with inline comments explaining why.
 - [ ] Labels use non-array format (no hyphens)
 - [ ] Volumes follow `${APP_DATA}/{service-name}` convention
 - [ ] `restart: unless-stopped` is set
+- [ ] `UMASK` / `UMASK_SET` before PUID/PGID/TZ (if applicable)
 - [ ] PUID/PGID set to `${PUID}`/`${PGID}` (if applicable)
 - [ ] TZ set to `${TZ}` (if applicable)
 - [ ] Unraid docker labels added (icon and webui)

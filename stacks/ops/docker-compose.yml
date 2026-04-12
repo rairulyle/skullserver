@@ -6,6 +6,21 @@ networks:
     external: true
 
 services:
+  autoheal:
+    container_name: autoheal
+    deploy:
+      replicas: 1
+    environment:
+      AUTOHEAL_CONTAINER_LABEL: all
+    image: willfarrell/autoheal:latest
+    network_mode: none
+    restart: unless-stopped
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+    labels:
+      net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/healthchecks.png
+    
   watchtower:
     container_name: watchtower
     image: nickfedor/watchtower:latest
