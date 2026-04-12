@@ -12,9 +12,9 @@ services:
     ports:
       - "8084:8080"
     environment:
-      TZ: ${TZ}
-      DOZZLE_ENABLE_ACTIONS: true
       DOZZLE_AUTH_PROVIDER: simple
+      DOZZLE_ENABLE_ACTIONS: true
+      TZ: ${TZ}
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - ${APP_DATA}/dozzle:/data
@@ -28,10 +28,10 @@ services:
   uptime-kuma:
     container_name: uptime-kuma
     image: louislam/uptime-kuma:2
-    volumes:
-      - ./data:/app/data
     ports:
       - "3001:3001"
+    volumes:
+      - ./data:/app/data
     restart: unless-stopped
     labels:
       npm.proxy.domain: uptime-kuma.${DOMAIN_NAME}
@@ -65,10 +65,10 @@ services:
     environment:
       PUID: ${PUID}
       PGID: ${PGID}
-      SPEEDTEST_SCHEDULE: 0 */2 * * *
-      PRUNE_RESULTS_OLDER_THAN: 90
       TZ: ${TZ}
       APP_KEY: ${SPEEDTEST_APP_KEY}
+      PRUNE_RESULTS_OLDER_THAN: 90
+      SPEEDTEST_SCHEDULE: 0 */2 * * *
     volumes:
       - ${APP_DATA}/speedtest-tracker:/config
     restart: unless-stopped
