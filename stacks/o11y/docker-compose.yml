@@ -31,7 +31,7 @@ services:
     ports:
       - "3001:3001"
     volumes:
-      - ./data:/app/data
+      - ${APP_DATA}/uptime-kuma:/app/data
     restart: unless-stopped
     labels:
       npm.proxy.domain: uptime-kuma.${DOMAIN_NAME}

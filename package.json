@@ -5,7 +5,8 @@
   "scripts": {
     "init-network": "docker network create skullserver",
     "clean": "docker image prune -a -f",
-    "sync-env": "node scripts/sync-env.js"
+    "sync-env": "node scripts/sync-env.js",
+    "stacks": "node scripts/stacks.js"
   },
   "repository": {
     "type": "git",
