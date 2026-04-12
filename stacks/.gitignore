@@ -1,3 +1,9 @@
+# Compose Manager Plus
+autostart
+has_build
+profiles
+services
+services_cache_mode
+started_at
 last_cmd.log
 last_result.json
-started_at
