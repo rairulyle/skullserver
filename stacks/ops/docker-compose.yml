@@ -8,16 +8,16 @@ networks:
 services:
   autoheal:
     container_name: autoheal
+    image: willfarrell/autoheal:latest
     deploy:
       replicas: 1
     environment:
       AUTOHEAL_CONTAINER_LABEL: all
-    image: willfarrell/autoheal:latest
     network_mode: none
-    restart: unless-stopped
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /var/run/docker.sock:/var/run/docker.sock
+    restart: unless-stopped
     labels:
       net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/healthchecks.png
     
@@ -26,10 +26,10 @@ services:
     image: nickfedor/watchtower:latest
     hostname: SKULLSERVER
     environment:
+      TZ: ${TZ}
       WATCHTOWER_CLEANUP: true
       WATCHTOWER_NOTIFICATIONS: shoutrrr
       WATCHTOWER_NOTIFICATION_URL: "discord://${DISCORD_TOKEN}@${DISCORD_ID}"
-      TZ: ${TZ}
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ${APP_DATA}/watchtower/config.json:/config.json
@@ -77,14 +77,14 @@ services:
     container_name: obsidian-ls
     image: couchdb:latest
     user: ${PUID}:${PGID}
+    ports:
+      - 5984:5984
     environment:
       COUCHDB_USER: ${DEFAULT_APP_USERNAME}
       COUCHDB_PASSWORD: ${DEFAULT_APP_PASSWORD}
     volumes:
       - ${APP_DATA}/obsidian-ls/couchdb-data:/opt/couchdb/data
       - ${APP_DATA}/obsidian-ls/couchdb-etc:/opt/couchdb/etc/local.d
-    ports:
-      - 5984:5984
     restart: unless-stopped
     labels:
       npm.proxy.domain: obsidian-ls.${DOMAIN_NAME}

@@ -12,8 +12,9 @@ services:
     ports:
       - 9696:9696
     environment:
-      PGID: ${PGID}
+      UMASK: ${UMASK}
       PUID: ${PUID}
+      PGID: ${PGID}
       TZ: ${TZ}
     volumes:
       - ${APP_DATA}/prowlarr:/config
@@ -31,8 +32,8 @@ services:
       - 7878:7878
     environment:
       UMASK: ${UMASK}
-      PGID: ${PGID}
       PUID: ${PUID}
+      PGID: ${PGID}
       TZ: ${TZ}
     volumes:
       - ${APP_DATA}/radarr:/config
@@ -53,8 +54,8 @@ services:
       - 8989:8989
     environment:
       UMASK: ${UMASK}
-      PGID: ${PGID}
       PUID: ${PUID}
+      PGID: ${PGID}
       TZ: ${TZ}
     volumes:
       - ${APP_DATA}/sonarr:/config
@@ -75,8 +76,8 @@ services:
       - 8686:8686
     environment:
       UMASK: ${UMASK}
-      PGID: ${PGID}
       PUID: ${PUID}
+      PGID: ${PGID}
       TZ: ${TZ}
     volumes:
       - ${APP_DATA}/lidarr:/config
@@ -108,15 +109,15 @@ services:
       net.unraid.docker.webui: https://agregarr.${DOMAIN_NAME}
 
   maintainerr:
-    image: ghcr.io/maintainerr/maintainerr:latest
     container_name: maintainerr
+    image: ghcr.io/maintainerr/maintainerr:latest
     user: ${PUID}:${PGID}
     ports:
       - 6246:6246
-    volumes:
-      - ${APP_DATA}/maintainerr:/opt/data
     environment:
       TZ: ${TZ}
+    volumes:
+      - ${APP_DATA}/maintainerr:/opt/data
     restart: unless-stopped
     labels:
       npm.proxy.domain: maintainerr.${DOMAIN_NAME}
@@ -128,10 +129,10 @@ services:
     container_name: seadexerr
     image: ghcr.io/ryder-c/seadexerr:latest
     environment:
-      SONARR_BASE_URL: http://sonarr:8989/
-      SONARR_API_KEY: ${SONARR_API_KEY}
-      RADARR_BASE_URL: http://radarr:7878/
       RADARR_API_KEY: ${RADARR_API_KEY}
+      RADARR_BASE_URL: http://radarr:7878/
+      SONARR_API_KEY: ${SONARR_API_KEY}
+      SONARR_BASE_URL: http://sonarr:8989/
     restart: unless-stopped
     labels:
       net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/manga-dex.png
@@ -142,8 +143,8 @@ services:
     profiles:
       - manual
     environment:
-      PGID: ${PGID}
       PUID: ${PUID}
+      PGID: ${PGID}
       TZ: ${TZ}
     volumes:
       - ${APP_DATA}/seadexarr:/config
@@ -158,8 +159,8 @@ services:
       - 6767:6767
     environment:
       UMASK: ${UMASK}
-      PGID: ${PGID}
       PUID: ${PUID}
+      PGID: ${PGID}
       TZ: ${TZ}
     volumes:
       - ${APP_DATA}/bazarr:/config
@@ -225,22 +226,22 @@ services:
     container_name: qbittorrent
     image: lscr.io/linuxserver/qbittorrent:latest
     network_mode: "service:gluetun"
-    depends_on:
-      gluetun:
-        condition: service_healthy
     environment:
-      UMASK: ${UMASK}  
-      PGID: ${PGID}
+      UMASK: ${UMASK}
       PUID: ${PUID}
+      PGID: ${PGID}
       TZ: ${TZ}
-      WEBUI_PORT: 8080
       DOCKER_MODS: ghcr.io/t-anc/gsp-qbittorent-gluetun-sync-port-mod:main
       GSP_GTN_API_KEY: ${ENCRYPTION_KEY}
-      GSP_QBITTORRENT_PORT: 8080
       GSP_MINIMAL_LOGS: false
+      GSP_QBITTORRENT_PORT: 8080
+      WEBUI_PORT: 8080
     volumes:
       - ${APP_DATA}/qbittorrent:/config
       - ${DATA}:/data
+    depends_on:
+      gluetun:
+        condition: service_healthy
     restart: unless-stopped
     labels:
       npm.proxy.domain: torrent.${DOMAIN_NAME}
@@ -253,9 +254,6 @@ services:
     image: slskd/slskd
     user: ${PUID}:${PGID}
     network_mode: "service:gluetun"
-    depends_on:
-      gluetun:
-        condition: service_healthy
     environment:
       SLSKD_DOWNLOADS_DIR: /data/downloads/slskd/complete
       SLSKD_INCOMPLETE_DIR: /data/downloads/slskd/incomplete
@@ -273,6 +271,9 @@ services:
     volumes:
       - ${APP_DATA}/slskd:/app
       - ${DATA}:/data
+    depends_on:
+      gluetun:
+        condition: service_healthy
     restart: unless-stopped
     labels:
       npm.proxy.domain: slskd.${DOMAIN_NAME}
@@ -350,22 +351,22 @@ services:
       - 8265:8265 # webUI port
       - 8266:8266 # server port
     environment:
-      TZ: ${TZ}
+      UMASK: ${UMASK}
       PUID: ${PUID}
       PGID: ${PGID}
-      UMASK_SET: 002
+      TZ: ${TZ}
+      auth: false
+      cronPluginUpdate: ""
+      ffmpegVersion: 7
+      inContainer: true
+      internalNode: false
+      maxLogSizeMB: 10
+      NVIDIA_DRIVER_CAPABILITIES: all
+      NVIDIA_VISIBLE_DEVICES: all
+      openBrowser: true
       serverIP: 0.0.0.0
       serverPort: 8266
       webUIPort: 8265
-      internalNode: false
-      inContainer: true
-      ffmpegVersion: 7
-      auth: false
-      openBrowser: true
-      maxLogSizeMB: 10
-      cronPluginUpdate: ""
-      NVIDIA_DRIVER_CAPABILITIES: all
-      NVIDIA_VISIBLE_DEVICES: all
     volumes:
       - ${APP_DATA}/tdarr/server:/app/server
       - ${APP_DATA}/tdarr/configs:/app/configs

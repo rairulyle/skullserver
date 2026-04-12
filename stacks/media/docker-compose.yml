@@ -14,8 +14,8 @@ services:
       - /dev/dri:/dev/dri
     environment:
       UMASK: ${UMASK}
-      PGID: ${PGID}
       PUID: ${PUID}
+      PGID: ${PGID}
       TZ: ${TZ}
       VERSION: latest
     volumes:
@@ -45,8 +45,8 @@ services:
     container_name: plextraktsync
     image: lscr.io/linuxserver-labs/plextraktsync:latest
     environment:
-      PGID: ${PGID}
       PUID: ${PUID}
+      PGID: ${PGID}
       TZ: ${TZ}
     volumes:
       - ${APP_DATA}/plextraktsync:/config
@@ -60,8 +60,8 @@ services:
     ports:
       - 5757:5757
     environment:
-      PGID: ${PGID}
       PUID: ${PUID}
+      PGID: ${PGID}
       TZ: ${TZ}
     volumes:
       - ${APP_DATA}/plexcache:/config
@@ -109,8 +109,8 @@ services:
       PUID: ${PUID}
       PGID: ${PGID}
       TZ: ${TZ}
-      KOMETA_TIME: 05:00
       KOMETA_RUN: true
+      KOMETA_TIME: 05:00
     volumes:
       - ${APP_DATA}/kometa:/config
     restart: unless-stopped
@@ -124,8 +124,8 @@ services:
     ports:
       - 5055:5055
     environment:
-      PGID: ${PGID}
       PUID: ${PUID}
+      PGID: ${PGID}
       TZ: ${TZ}
     volumes:
       - ${APP_DATA}/seerr:/app/config
@@ -143,9 +143,9 @@ services:
     ports:
       - "4567:4567"
     environment:
-      TZ: ${TZ}
       FLARESOLVERR_ENABLED: true
       FLARESOLVERR_URL: http://flaresolverr:8191
+      TZ: ${TZ}
     volumes:
       - ${APP_DATA}/suwayomi:/home/suwayomi/.local/share/Tachidesk
       - ${DATA}:/data
