@@ -25,6 +25,20 @@ services:
       net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/dozzle.png
       net.unraid.docker.webui: https://logs.${DOMAIN_NAME}
 
+  uptime-kuma:
+    container_name: uptime-kuma
+    image: louislam/uptime-kuma:2
+    volumes:
+      - ./data:/app/data
+    ports:
+      - "3001:3001"
+    restart: unless-stopped
+    labels:
+      npm.proxy.domain: uptime-kuma.${DOMAIN_NAME}
+      npm.proxy.port: "3001"
+      net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/uptime-kuma.png
+      net.unraid.docker.webui: https://uptime-kuma.${DOMAIN_NAME}
+
   tautulli:
     container_name: tautulli
     image: lscr.io/linuxserver/tautulli:latest
@@ -63,14 +77,3 @@ services:
       npm.proxy.port: "8081"
       net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/speedtest-tracker.png
       net.unraid.docker.webui: https://speedtest.${DOMAIN_NAME}
-
-  meralco-ph:
-    container_name: meralco-ph
-    image: ghcr.io/rairulyle/meralco-ph:latest
-    ports:
-      - "5000:5000"
-    environment:
-      TZ: ${TZ}
-    restart: unless-stopped
-    labels:
-      net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/xmr.png
