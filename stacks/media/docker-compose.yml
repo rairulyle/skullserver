@@ -22,6 +22,12 @@ services:
       - ${APP_DATA}/plex:/config
       - ${DATA}:/data
       - ${REMOTE1_DATA}:/remote/seedbox1/data
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:32400/identity"]
+      start_period: 30s
+      interval: 60s
+      timeout: 10s
+      retries: 5
     restart: unless-stopped
     labels:
       npm.proxy.domain: plex.${DOMAIN_NAME}
@@ -143,9 +149,9 @@ services:
     ports:
       - "4567:4567"
     environment:
+      TZ: ${TZ}
       FLARESOLVERR_ENABLED: true
       FLARESOLVERR_URL: http://flaresolverr:8191
-      TZ: ${TZ}
     volumes:
       - ${APP_DATA}/suwayomi:/home/suwayomi/.local/share/Tachidesk
       - ${DATA}:/data
