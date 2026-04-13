@@ -30,6 +30,8 @@ services:
     image: louislam/uptime-kuma:2
     ports:
       - "3001:3001"
+    environment:
+      TZ: ${TZ}
     volumes:
       - ${APP_DATA}/uptime-kuma:/app/data
     restart: unless-stopped
