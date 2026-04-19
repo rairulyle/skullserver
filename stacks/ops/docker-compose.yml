@@ -12,7 +12,7 @@ services:
     deploy:
       replicas: 1
     environment:
-      AUTOHEAL_CONTAINER_LABEL: all
+      AUTOHEAL_CONTAINER_LABEL: autoheal
     network_mode: none
     volumes:
       - /etc/localtime:/etc/localtime:ro
@@ -28,6 +28,7 @@ services:
     environment:
       TZ: ${TZ}
       WATCHTOWER_CLEANUP: true
+      WATCHTOWER_SCHEDULE: "0 0 * * *"
       WATCHTOWER_NOTIFICATIONS: shoutrrr
       WATCHTOWER_NOTIFICATION_URL: "discord://${DISCORD_TOKEN}@${DISCORD_ID}"
     volumes:
