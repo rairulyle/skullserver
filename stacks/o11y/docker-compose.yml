@@ -67,10 +67,13 @@ services:
     environment:
       PUID: ${PUID}
       PGID: ${PGID}
-      TZ: ${TZ}
       APP_KEY: ${SPEEDTEST_APP_KEY}
+      APP_URL: https://speedtest.${DOMAIN_NAME}
+      APP_TIMEZONE: ${TZ}
+      DISPLAY_TIMEZONE: ${TZ}
       PRUNE_RESULTS_OLDER_THAN: 90
       SPEEDTEST_SCHEDULE: 0 */2 * * *
+      SPEEDTEST_SERVERS: 41188
     volumes:
       - ${APP_DATA}/speedtest-tracker:/config
     restart: unless-stopped

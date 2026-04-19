@@ -137,20 +137,18 @@ services:
     labels:
       net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/manga-dex.png
 
-  seadexarr:
-    container_name: seadexarr
-    image: ghcr.io/bbtufty/seadexarr:latest
-    profiles:
-      - manual
-    environment:
-      PUID: ${PUID}
-      PGID: ${PGID}
-      TZ: ${TZ}
-    volumes:
-      - ${APP_DATA}/seadexarr:/config
-    restart: unless-stopped
-    labels:
-      net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/manga-dex.png
+  # seadexarr:
+  #   container_name: seadexarr
+  #   image: ghcr.io/bbtufty/seadexarr:latest
+  #   environment:
+  #     PUID: ${PUID}
+  #     PGID: ${PGID}
+  #     TZ: ${TZ}
+  #   volumes:
+  #     - ${APP_DATA}/seadexarr:/config
+  #   restart: unless-stopped
+  #   labels:
+  #     net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/manga-dex.png
 
   bazarr:
     container_name: bazarr
@@ -342,41 +340,39 @@ services:
     labels:
       net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/bookstack.png
 
-  tdarr:
-    container_name: tdarr
-    image: ghcr.io/haveagitgat/tdarr:latest
-    profiles:
-      - manual
-    ports:
-      - 8265:8265 # webUI port
-      - 8266:8266 # server port
-    environment:
-      UMASK: ${UMASK}
-      PUID: ${PUID}
-      PGID: ${PGID}
-      TZ: ${TZ}
-      auth: false
-      cronPluginUpdate: ""
-      ffmpegVersion: 7
-      inContainer: true
-      internalNode: false
-      maxLogSizeMB: 10
-      NVIDIA_DRIVER_CAPABILITIES: all
-      NVIDIA_VISIBLE_DEVICES: all
-      openBrowser: true
-      serverIP: 0.0.0.0
-      serverPort: 8266
-      webUIPort: 8265
-    volumes:
-      - ${APP_DATA}/tdarr/server:/app/server
-      - ${APP_DATA}/tdarr/configs:/app/configs
-      - ${APP_DATA}/tdarr/logs:/app/logs
-      - ${DATA}:/mnt/data
-      - /mnt/user/mosou:/mnt/mosou
-      - ${DATA}/cache:/temp
-    restart: unless-stopped
-    labels:
-      npm.proxy.domain: tdarr.${DOMAIN_NAME}
-      npm.proxy.port: "8265"
-      net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/tdarr.png
-      net.unraid.docker.webui: https://tdarr.${DOMAIN_NAME}
+  # tdarr:
+  #   container_name: tdarr
+  #   image: ghcr.io/haveagitgat/tdarr:latest
+  #   ports:
+  #     - 8265:8265 # webUI port
+  #     - 8266:8266 # server port
+  #   environment:
+  #     UMASK: ${UMASK}
+  #     PUID: ${PUID}
+  #     PGID: ${PGID}
+  #     TZ: ${TZ}
+  #     auth: false
+  #     cronPluginUpdate: ""
+  #     ffmpegVersion: 7
+  #     inContainer: true
+  #     internalNode: false
+  #     maxLogSizeMB: 10
+  #     NVIDIA_DRIVER_CAPABILITIES: all
+  #     NVIDIA_VISIBLE_DEVICES: all
+  #     openBrowser: true
+  #     serverIP: 0.0.0.0
+  #     serverPort: 8266
+  #     webUIPort: 8265
+  #   volumes:
+  #     - ${APP_DATA}/tdarr/server:/app/server
+  #     - ${APP_DATA}/tdarr/configs:/app/configs
+  #     - ${APP_DATA}/tdarr/logs:/app/logs
+  #     - ${DATA}:/mnt/data
+  #     - /mnt/user/mosou:/mnt/mosou
+  #     - ${DATA}/cache:/temp
+  #   restart: unless-stopped
+  #   labels:
+  #     npm.proxy.domain: tdarr.${DOMAIN_NAME}
+  #     npm.proxy.port: "8265"
+  #     net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/tdarr.png
+  #     net.unraid.docker.webui: https://tdarr.${DOMAIN_NAME}
