@@ -134,6 +134,9 @@ services:
     labels:
       npm.proxy.domain: maintainerr.${DOMAIN_NAME}
       npm.proxy.port: "6246"
+      npm.proxy.advanced.config: |
+        proxy_send_timeout 10m;
+        proxy_read_timeout 30m;
       net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/maintainerr.png
       net.unraid.docker.webui: https://maintainerr.${DOMAIN_NAME}
 
