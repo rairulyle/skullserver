@@ -29,6 +29,8 @@ services:
     labels:
       npm.proxy.domain: photos.${DOMAIN_NAME}
       npm.proxy.port: "2283"
+      npm.proxy.advanced.config: |
+        client_max_body_size 0;
       net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/immich.png
       net.unraid.docker.webui: https://photos.${DOMAIN_NAME}
 

@@ -22,6 +22,9 @@ services:
     labels:
       npm.proxy.domain: prowlarr.${DOMAIN_NAME}
       npm.proxy.port: "9696"
+      npm.proxy.advanced.config: |
+        proxy_send_timeout 10m;
+        proxy_read_timeout 30m;
       net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/prowlarr.png
       net.unraid.docker.webui: https://prowlarr.${DOMAIN_NAME}
 
@@ -44,6 +47,9 @@ services:
     labels:
       npm.proxy.domain: radarr.${DOMAIN_NAME}
       npm.proxy.port: "7878"
+      npm.proxy.advanced.config: |
+        proxy_send_timeout 10m;
+        proxy_read_timeout 30m;
       net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/radarr.png
       net.unraid.docker.webui: https://radarr.${DOMAIN_NAME}
 
@@ -66,6 +72,9 @@ services:
     labels:
       npm.proxy.domain: sonarr.${DOMAIN_NAME}
       npm.proxy.port: "8989"
+      npm.proxy.advanced.config: |
+        proxy_send_timeout 10m;
+        proxy_read_timeout 30m;
       net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/sonarr.png
       net.unraid.docker.webui: https://sonarr.${DOMAIN_NAME}
 
@@ -88,6 +97,9 @@ services:
     labels:
       npm.proxy.domain: lidarr.${DOMAIN_NAME}
       npm.proxy.port: "8686"
+      npm.proxy.advanced.config: |
+        proxy_send_timeout 10m;
+        proxy_read_timeout 30m;
       net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/lidarr.png
       net.unraid.docker.webui: https://lidarr.${DOMAIN_NAME}
 
@@ -210,6 +222,7 @@ services:
       OPENVPN_PASSWORD: ${PIA_PASSWORD}
       SERVER_REGIONS: ${PIA_REGION}
       VPN_PORT_FORWARDING: on
+      VPN_ENDPOINT_PORT: "8080"
       PORT_FORWARD_ONLY: "true"
       UPDATER_PERIOD: 24h
       GLUETUN_HTTP_CONTROL_SERVER_ENABLE: on
