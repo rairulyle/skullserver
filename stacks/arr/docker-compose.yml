@@ -23,6 +23,7 @@ services:
       npm.proxy.domain: prowlarr.${DOMAIN_NAME}
       npm.proxy.port: "9696"
       npm.proxy.advanced.config: |
+        send_timeout 10m;
         proxy_send_timeout 10m;
         proxy_read_timeout 30m;
       net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/prowlarr.png
@@ -48,6 +49,7 @@ services:
       npm.proxy.domain: radarr.${DOMAIN_NAME}
       npm.proxy.port: "7878"
       npm.proxy.advanced.config: |
+        send_timeout 10m;
         proxy_send_timeout 10m;
         proxy_read_timeout 30m;
       net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/radarr.png
@@ -73,6 +75,7 @@ services:
       npm.proxy.domain: sonarr.${DOMAIN_NAME}
       npm.proxy.port: "8989"
       npm.proxy.advanced.config: |
+        send_timeout 10m;
         proxy_send_timeout 10m;
         proxy_read_timeout 30m;
       net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/sonarr.png
@@ -98,6 +101,7 @@ services:
       npm.proxy.domain: lidarr.${DOMAIN_NAME}
       npm.proxy.port: "8686"
       npm.proxy.advanced.config: |
+        send_timeout 10m;
         proxy_send_timeout 10m;
         proxy_read_timeout 30m;
       net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/lidarr.png
@@ -135,6 +139,7 @@ services:
       npm.proxy.domain: maintainerr.${DOMAIN_NAME}
       npm.proxy.port: "6246"
       npm.proxy.advanced.config: |
+        send_timeout 10m;
         proxy_send_timeout 10m;
         proxy_read_timeout 30m;
       net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/maintainerr.png
@@ -214,7 +219,7 @@ services:
       - /dev/net/tun:/dev/net/tun
     ports:
       - 8000:8000   # gluetun control server (slskd VPN integration)
-      - 8080:8080   # qbittorrent webui
+      - 8085:8085   # qbittorrent webui
       - 5030:5030   # slskd webui
       - 5031:5031   # slskd HTTPS webui
     environment:
@@ -248,8 +253,8 @@ services:
       DOCKER_MODS: ghcr.io/t-anc/gsp-qbittorent-gluetun-sync-port-mod:main
       GSP_GTN_API_KEY: ${ENCRYPTION_KEY}
       GSP_MINIMAL_LOGS: false
-      GSP_QBITTORRENT_PORT: 8080
-      WEBUI_PORT: 8080
+      GSP_QBITTORRENT_PORT: 8085
+      WEBUI_PORT: 8085
     volumes:
       - ${APP_DATA}/qbittorrent:/config
       - ${DATA}:/data
@@ -259,7 +264,7 @@ services:
     restart: unless-stopped
     labels:
       npm.proxy.domain: torrent.${DOMAIN_NAME}
-      npm.proxy.port: "8080"
+      npm.proxy.port: "8085"
       net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/qbittorrent.png
       net.unraid.docker.webui: https://torrent.${DOMAIN_NAME}
 
