@@ -200,6 +200,7 @@ services:
       PUID: ${PUID}
       PGID: ${PGID}
       TZ: ${TZ}
+      ORIGIN: https://profilarr.${DOMAIN_NAME}
     volumes:
       - ${APP_DATA}/profilarr:/config
     restart: unless-stopped
