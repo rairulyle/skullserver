@@ -192,12 +192,13 @@ services:
 
   profilarr:
     container_name: profilarr
-    image: santiagosayshey/profilarr:latest
+    image: ghcr.io/dictionarry-hub/profilarr:latest
     ports:
       - 6868:6868
     environment:
       PUID: ${PUID}
       PGID: ${PGID}
+UMASK: ${UMASK}
       TZ: ${TZ}
     volumes:
       - ${APP_DATA}/profilarr:/config
