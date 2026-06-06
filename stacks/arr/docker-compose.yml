@@ -278,9 +278,9 @@ services:
       TZ: ${TZ}
       SLSKD_DOWNLOADS_DIR: /data/downloads/slskd/complete
       SLSKD_INCOMPLETE_DIR: /data/downloads/slskd/incomplete
-      SLSKD_SLSK_USERNAME: ${SOULSEEK_USERNAME}
       SLSKD_PASSWORD: ${DEFAULT_APP_PASSWORD}
       SLSKD_REMOTE_CONFIGURATION: true
+      SLSKD_SLSK_USERNAME: ${SOULSEEK_USERNAME}
       SLSKD_USERNAME: ${DEFAULT_APP_USERNAME}
       SLSKD_SLSK_PASSWORD: ${SOULSEEK_PASSWORD}
       # Syncs PIA forwarded port → slskd listen port only
