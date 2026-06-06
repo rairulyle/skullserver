@@ -39,13 +39,13 @@ services:
     environment:
       DOCKER_HOST: unix:///var/run/docker.sock
       DOCKER_HOST_IP: ${IP_ADDRESS}
-      NPM_URL: http://${IP_ADDRESS}:81
       NPM_EMAIL: ${NPM_USERNAME}
       NPM_PASSWORD: ${DEFAULT_APP_PASSWORD}
-      NPM_PROXY_SSL_FORCE: true
       NPM_PROXY_BLOCK_EXPLOITS: true
-      NPM_PROXY_WEBSOCKETS: true
       NPM_PROXY_HTTP2: true
+      NPM_PROXY_SSL_FORCE: true
+      NPM_PROXY_WEBSOCKETS: true
+      NPM_URL: http://${IP_ADDRESS}:81
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
     depends_on:
@@ -91,7 +91,7 @@ services:
       npm.proxy.port: "8082"
       net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/adguard-home.png
       net.unraid.docker.webui: https://adguard-sync.${DOMAIN_NAME}
-    
+
   upsnap:
     container_name: upsnap
     image: ghcr.io/seriousm4x/upsnap:5
@@ -121,10 +121,10 @@ services:
     ports:
       - "8191:8191"
     environment:
+      TZ: ${TZ}
       CAPTCHA_SOLVER: none
       LOG_HTML: false
       LOG_LEVEL: info
-      TZ: ${TZ}
     restart: unless-stopped
     labels:
       net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/flaresolverr.png

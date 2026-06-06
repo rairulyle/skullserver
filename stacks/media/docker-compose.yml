@@ -23,31 +23,31 @@ services:
       - ${DATA}:/data
       - ${REMOTE1_DATA}:/remote/seedbox1/data
     healthcheck:
-      test: ["CMD", "curl", "-fsS", "http://localhost:32400/identity"]
+      test: [ "CMD", "curl", "-fsS", "http://localhost:32400/identity" ]
       start_period: 30s
       interval: 60s
       timeout: 10s
       retries: 5
     restart: unless-stopped
     labels:
-      autoheal: true
       npm.proxy.domain: plex.${DOMAIN_NAME}
       npm.proxy.port: "32400"
       net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/plex.png
       net.unraid.docker.webui: https://plex.${DOMAIN_NAME}
+      autoheal: true
 
   plexautolanguages:
     container_name: plexautolanguages
     image: journeyover/plex-auto-languages:latest
     environment:
-      PLEX_URL: http://${IP_ADDRESS}:32400
-      PLEX_TOKEN: ${PLEX_API_KEY}
       TZ: ${TZ}
+      PLEX_TOKEN: ${PLEX_API_KEY}
+      PLEX_URL: http://${IP_ADDRESS}:32400
     volumes:
       - ${APP_DATA}/plexautolanguages:/config
     labels:
       net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/plex-meta-manager.png
-    
+
   plextraktsync:
     container_name: plextraktsync
     image: lscr.io/linuxserver-labs/plextraktsync:latest

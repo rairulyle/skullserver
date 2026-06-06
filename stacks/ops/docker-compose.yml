@@ -9,18 +9,18 @@ services:
   autoheal:
     container_name: autoheal
     image: willfarrell/autoheal:latest
+    network_mode: none
     deploy:
       replicas: 1
     environment:
       TZ: ${TZ}
       AUTOHEAL_CONTAINER_LABEL: autoheal
-    network_mode: none
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     restart: unless-stopped
     labels:
       net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/healthchecks.png
-    
+
   watchtower:
     container_name: watchtower
     image: nickfedor/watchtower:latest
@@ -28,9 +28,9 @@ services:
     environment:
       TZ: ${TZ}
       WATCHTOWER_CLEANUP: true
-      WATCHTOWER_SCHEDULE: "0 0 * * *"
-      WATCHTOWER_NOTIFICATIONS: shoutrrr
       WATCHTOWER_NOTIFICATION_URL: "discord://${DISCORD_TOKEN}@${DISCORD_ID}"
+      WATCHTOWER_NOTIFICATIONS: shoutrrr
+      WATCHTOWER_SCHEDULE: "0 0 * * *"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ${APP_DATA}/watchtower/config.json:/config.json
@@ -73,7 +73,7 @@ services:
       npm.proxy.port: "9000"
       net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/thelounge.png
       net.unraid.docker.webui: https://irc.${DOMAIN_NAME}
-  
+
   obsidian-ls:
     container_name: obsidian-ls
     image: couchdb:latest
