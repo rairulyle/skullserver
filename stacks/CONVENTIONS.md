@@ -24,33 +24,36 @@ services:
   {service-name}:
     container_name: {service-name}
     image: {image:tag}
-    # hostname: {hostname}                  # Optional: only if needed
-    # network_mode: {mode}                  # Optional: only if needed (e.g., host)
-    # cap_add:                              # Optional: only if needed
-    #   - {CAPABILITY}
-    # security_opt:                         # Optional: only if needed
-    #   - {option}
-    # devices:                              # Optional: only if needed
+    # user: ${PUID}:${PGID}                 # Optional
+    # hostname: {hostname}                  # Optional
+    # network_mode: {mode}                  # Optional
+    # devices:                              # Optional
     #   - {device}
+    # Other properties in alphabetical order
     ports:
       - "{host}:{container}"
     environment:
-      UMASK: ${UMASK}                       # Optional: only if needed; list before PUID/PGID/TZ when set
+      UMASK: ${UMASK}                       # Optional
       PUID: ${PUID}
       PGID: ${PGID}
       TZ: ${TZ}
-      {OTHER_ENV_VARS}
+      # Other environments in alphabetical order
     volumes:
       - ${APP_DATA}/{service-name}:{container-path}
       - ${DATA}:{container-data-path}
-    depends_on:                            # Optional: only if needed; place after volumes, before restart
-      - {dependency}
+    # depends_on:                            # Optional
+    #   - {dependency}
+    # env_file:                              # Optional
+    #   - .env
+    # healthcheck:                           # Optional
+    #   disable: false
     restart: unless-stopped
     labels:
       npm.proxy.domain: {subdomain}.${DOMAIN_NAME}
       npm.proxy.port: "{port}"
       net.unraid.docker.icon: https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/png/{icon}.png
       net.unraid.docker.webui: https://{subdomain}.${DOMAIN_NAME}
+      # Other labels in alphabetical order
 ```
 
 ## Formatting Rules

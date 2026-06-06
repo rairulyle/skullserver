@@ -1,12 +1,16 @@
 {
   "name": "skullpluggery-nas",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "rairulyle's personal nas",
   "scripts": {
     "init-network": "docker network create skullserver",
     "clean": "docker image prune -a -f",
     "sync-env": "node scripts/sync-env.js",
-    "stacks": "node scripts/stacks.js"
+    "stacks": "node scripts/stacks.js",
+    "yaml:check": "node scripts/yaml-conventions.js --check",
+    "yaml:fix": "node scripts/yaml-conventions.js --fix",
+    "test": "node --test",
+    "prepare": "husky"
   },
   "repository": {
     "type": "git",
@@ -19,5 +23,13 @@
   ],
   "author": "Lyle Vince A. Dela Cuesta",
   "license": "ISC",
-  "homepage": "https://github.com/rairulyle/skullserver#readme"
+  "homepage": "https://github.com/rairulyle/skullserver#readme",
+  "devDependencies": {
+    "husky": "^9.1.7",
+    "lint-staged": "^16.4.0",
+    "yaml": "^2.9.0"
+  },
+  "lint-staged": {
+    "stacks/**/*.{yml,yaml}": "npm run yaml:fix --"
+  }
 }
