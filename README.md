@@ -8,9 +8,12 @@ This repository contains the complete Docker Compose configuration for my home U
 
 | Stack            | Description                              |
 | ---------------- | ---------------------------------------- |
-| 🎬 **media**     | Media server and content acquisition     |
-| 🌐 **network**   | Network infrastructure and reverse proxy |
-| 🛠️ **utilities** | Dashboard and monitoring tools           |
+| 🎬 **media**     | Media server, libraries, and readers     |
+| 📡 **arr**       | Indexers, download clients, and automation |
+| 📷 **immich**    | Photo and video backup                   |
+| 🌐 **infra**     | Network infrastructure and reverse proxy |
+| ⚙️ **ops**       | Operations and communications            |
+| 📊 **o11y**      | Observability and monitoring             |
 
 ## 📚 Documentation
 

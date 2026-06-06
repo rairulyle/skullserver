@@ -11,6 +11,10 @@ stacks/
 │   ├── .env                     # ⚙️ Auto-generated (do not edit)
 │   ├── .env.example             # Stack variables template
 │   └── .env.local               # 🔧 Stack variables (edit this)
+├── arr/                         # 📡 Indexers and download clients
+│   └── ...
+├── immich/                      # 📷 Photo management
+│   └── ...
 ├── infra/                       # 🌐 Network infrastructure
 │   └── ...
 ├── ops/                         # ⚙️ Operations & comms
@@ -23,7 +27,9 @@ stacks/
 
 | Stack            | Description                              |
 | ---------------- | ---------------------------------------- |
-| 🎬 **media**     | Media server and content acquisition     |
+| 🎬 **media**     | Media server, libraries, and readers     |
+| 📡 **arr**       | Indexers, download clients, and automation |
+| 📷 **immich**    | Photo and video backup                   |
 | 🌐 **infra**     | Network infrastructure and reverse proxy |
 | ⚙️ **ops**       | Operations and communications            |
 | 📊 **o11y**      | Observability and monitoring             |
@@ -103,6 +109,8 @@ Common variables: `TZ`, `IP_ADDRESS`, `DOMAIN_NAME`, `APP_DATA`, `DATA`, etc.
 Unique to each stack. Retrieve from **Bitwarden → `SKULLSERVER <stack> Env`**
 
 Example for media stack: `PLEX_API_KEY`, `RADARR_API_KEY`, `SONARR_API_KEY`, etc.
+
+`plex-previews` uses the shared `DEFAULT_APP_PASSWORD` as `WEB_AUTH_TOKEN`.
 
 ### ⚙️ Auto-Generated Files
 
