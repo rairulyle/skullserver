@@ -95,6 +95,7 @@ services:
       PUID: ${PUID}
       PGID: ${PGID}
       TZ: ${TZ}
+      WEB_AUTH_TOKEN: ${DEFAULT_APP_PASSWORD}
     volumes:
       # Media share (read-only) — use the same path as your Plex container
       - ${DATA}:/data

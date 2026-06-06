@@ -12,10 +12,10 @@ services:
     deploy:
       replicas: 1
     environment:
+      TZ: ${TZ}
       AUTOHEAL_CONTAINER_LABEL: autoheal
     network_mode: none
     volumes:
-      - /etc/localtime:/etc/localtime:ro
       - /var/run/docker.sock:/var/run/docker.sock
     restart: unless-stopped
     labels:
