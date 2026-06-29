@@ -1,0 +1,40 @@
+name: qol
+
+networks:
+  default:
+    name: ${NETWORK_NAME}
+    external: true
+
+services:
+  ynab-mcp:
+    container_name: ynab-mcp
+    image: ghcr.io/rairulyle/ynab-mcp-server:latest
+    ports:
+      - "3002:3000"
+    environment:
+      MCP_AUTH_TOKEN: ${MCP_AUTH_TOKEN}
+      YNAB_API_TOKEN: ${YNAB_API_TOKEN}
+      YNAB_BUDGET_ID: ${YNAB_BUDGET_ID}
+    restart: unless-stopped
+    labels:
+      npm.proxy.domain: ynab-mcp.${DOMAIN_NAME}
+      npm.proxy.port: "3002"
+      net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/ynab.png
+      net.unraid.docker.webui: https://ynab-mcp.${DOMAIN_NAME}
+
+  nova-ph-bot:
+    container_name: nova-ph-bot
+    image: ghcr.io/rairulyle/nova-ph-bot:latest
+    environment:
+      ADMIN_ROLE_IDS: ${NOVA_PH_BOT_ADMIN_ROLE_IDS}
+      DISCORD_TOKEN: ${NOVA_PH_BOT_DISCORD_TOKEN}
+      GUILD_IDS: ${NOVA_PH_BOT_GUILD_IDS}
+      LINK_CHANNEL_IDS: ${NOVA_PH_BOT_LINK_CHANNEL_IDS}
+      OWNER_ID: ${NOVA_PH_BOT_OWNER_ID}
+      SCAN_ALERT_CHANNEL_ID: ${NOVA_PH_BOT_SCAN_ALERT_CHANNEL_ID}
+      WARERA_API_KEY: ${WARERA_API_KEY}
+    volumes:
+      - ${APP_DATA}/nova-ph-bot:/data/db
+    restart: unless-stopped
+    labels:
+      net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/discord.png
