@@ -1,0 +1,55 @@
+name: nginx
+
+networks:
+  default:
+    name: ${NETWORK_NAME}
+    external: true
+
+services:
+  nginx-proxy-manager:
+    container_name: nginx-proxy-manager
+    image: "docker.io/jc21/nginx-proxy-manager:latest"
+    dns:
+      - 192.168.0.10
+      - 192.168.10.10
+      - 8.8.8.8
+      - 1.1.1.1
+    ports:
+      - "80:80"
+      - "81:81"
+      - "443:443"
+    environment:
+      UMASK: ${UMASK}
+      PUID: ${PUID}
+      PGID: ${PGID}
+      TZ: ${TZ}
+    volumes:
+      - ${APP_DATA}/nginx-proxy-manager/data:/data
+      - ${APP_DATA}/nginx-proxy-manager/letsencrypt:/etc/letsencrypt
+    restart: unless-stopped
+    labels:
+      npm.proxy.domain: nginx.${DOMAIN_NAME}
+      npm.proxy.port: "81"
+      net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/nginx-proxy-manager.png
+      net.unraid.docker.webui: https://nginx.${DOMAIN_NAME}
+
+  npm-docker-sync:
+    container_name: npm-docker-sync
+    image: ghcr.io/redth/npm-docker-sync:latest
+    environment:
+      DOCKER_HOST: unix:///var/run/docker.sock
+      DOCKER_HOST_IP: ${IP_ADDRESS}
+      NPM_EMAIL: ${NPM_USERNAME}
+      NPM_PASSWORD: ${DEFAULT_APP_PASSWORD}
+      NPM_PROXY_BLOCK_EXPLOITS: true
+      NPM_PROXY_HTTP2: true
+      NPM_PROXY_SSL_FORCE: true
+      NPM_PROXY_WEBSOCKETS: true
+      NPM_URL: http://${IP_ADDRESS}:81
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    depends_on:
+      - nginx-proxy-manager
+    restart: unless-stopped
+    labels:
+      net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/nginx-proxy-manager.png
