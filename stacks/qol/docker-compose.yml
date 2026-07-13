@@ -38,3 +38,18 @@ services:
     restart: unless-stopped
     labels:
       net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/discord.png
+
+  hoyolab-auto:
+    container_name: hoyolab-auto
+    image: ghcr.io/rairulyle/hoyolab-auto:latest
+    environment:
+      PUID: ${PUID}
+      PGID: ${PGID}
+      DISCORD_TOKEN: ${HOYOLAB_AUTO_DISCORD_TOKEN}
+      GUILD_IDS: ${HOYOLAB_AUTO_GUILD_IDS}
+    volumes:
+      - ${APP_DATA}/hoyolab-auto/data:/app/data
+      - ${APP_DATA}/hoyolab-auto/logs:/app/logs
+    restart: unless-stopped
+    labels:
+      net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/discord.png
