@@ -86,7 +86,7 @@ services:
 
   plex-previews:
     container_name: plex-previews
-    image: stevezzau/plex_generate_vid_previews:latest
+    image: stevezzau/media_preview_generator:latest
     devices:
       - /dev/dri:/dev/dri
     ports:
