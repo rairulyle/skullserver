@@ -32,6 +32,9 @@ services:
       npm.proxy.port: "81"
       net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/nginx-proxy-manager.png
       net.unraid.docker.webui: https://nginx.${DOMAIN_NAME}
+      # Excluded from watchtower so the proxy + sync pipeline stays up while
+      # other containers are updated; update manually via compose pull/up
+      com.centurylinklabs.watchtower.enable: "false"
 
   npm-docker-sync:
     container_name: npm-docker-sync
@@ -53,3 +56,4 @@ services:
     restart: unless-stopped
     labels:
       net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/nginx-proxy-manager.png
+      com.centurylinklabs.watchtower.enable: "false"
