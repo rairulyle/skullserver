@@ -32,7 +32,6 @@ services:
       npm.proxy.port: "81"
       net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/nginx-proxy-manager.png
       net.unraid.docker.webui: https://nginx.${DOMAIN_NAME}
-      com.centurylinklabs.watchtower.enable: "false"
 
   npm-docker-sync:
     container_name: npm-docker-sync
@@ -54,7 +53,6 @@ services:
     restart: unless-stopped
     labels:
       net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/nginx-proxy-manager.png
-      com.centurylinklabs.watchtower.enable: "false"
 
   npm-sync-guard:
     container_name: npm-sync-guard
@@ -74,4 +72,3 @@ services:
     restart: unless-stopped
     labels:
       net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/nginx-proxy-manager.png
-      com.centurylinklabs.watchtower.enable: "false"

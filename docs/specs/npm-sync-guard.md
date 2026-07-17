@@ -115,7 +115,6 @@ Repo convention: no comments in compose files.
       - nginx-proxy-manager
     restart: unless-stopped
     labels:
-      com.centurylinklabs.watchtower.enable: "false"
       net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/nginx-proxy-manager.png
 ```
 
