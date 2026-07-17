@@ -55,3 +55,23 @@ services:
     labels:
       net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/nginx-proxy-manager.png
       com.centurylinklabs.watchtower.enable: "false"
+
+  npm-sync-guard:
+    container_name: npm-sync-guard
+    image: python:3-alpine
+    command: python -u /npm-sync-guard.py
+    environment:
+      TZ: ${TZ}
+      KUMA_PUSH_URL: ${NPM_SYNC_GUARD_KUMA_PUSH_URL:-}
+      NPM_EMAIL: ${NPM_USERNAME}
+      NPM_PASSWORD: ${DEFAULT_APP_PASSWORD}
+      NPM_URL: http://${IP_ADDRESS}:81
+    volumes:
+      - ./npm-sync-guard.py:/npm-sync-guard.py:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+    depends_on:
+      - nginx-proxy-manager
+    restart: unless-stopped
+    labels:
+      net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/nginx-proxy-manager.png
+      com.centurylinklabs.watchtower.enable: "false"
