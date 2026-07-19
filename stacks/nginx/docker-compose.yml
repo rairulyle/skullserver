@@ -65,7 +65,7 @@ services:
       NPM_PASSWORD: ${DEFAULT_APP_PASSWORD}
       NPM_URL: http://${IP_ADDRESS}:81
     volumes:
-      - ./npm-sync-guard.py:/npm-sync-guard.py:ro
+      - ../../scripts/npm-sync-guard.py:/npm-sync-guard.py:ro
       - /var/run/docker.sock:/var/run/docker.sock
     depends_on:
       - nginx-proxy-manager
