@@ -38,6 +38,7 @@ services:
     restart: unless-stopped
     labels:
       net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/discord.png
+      com.centurylinklabs.watchtower.enable: "false"
 
   hoyolab-auto:
     container_name: hoyolab-auto

@@ -94,9 +94,10 @@ persistent failure alerts once instead of restart-looping the sync or spamming D
   restart policy brings it back and its startup rescan recovers everything. The GRACE re-check
   plus the changed-set heal rule tolerate this window without false alarms.
 
-## 7. Deployment (stacks/nginx/)
+## 7. Deployment
 
-Two files: npm-sync-guard.py and a service entry in docker-compose.yml. The webhook URL is
+Two files in stacks/nginx/: scripts/npm-sync-guard.py and a service entry in docker-compose.yml.
+The webhook URL is
 assembled from the existing DISCORD_ID/DISCORD_TOKEN env vars (same pair watchtower uses).
 Repo convention: no comments in compose files.
 
@@ -112,7 +113,7 @@ Repo convention: no comments in compose files.
       NPM_PASSWORD: ${DEFAULT_APP_PASSWORD}
       NPM_URL: http://${IP_ADDRESS}:81
     volumes:
-      - ./npm-sync-guard.py:/npm-sync-guard.py:ro
+      - ./scripts/npm-sync-guard.py:/npm-sync-guard.py:ro
       - /var/run/docker.sock:/var/run/docker.sock
     depends_on:
       - nginx-proxy-manager
