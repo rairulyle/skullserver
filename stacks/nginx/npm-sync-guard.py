@@ -6,13 +6,12 @@ import os
 import re
 import socket
 import time
-import urllib.parse
 import urllib.request
 
 NPM_URL = os.environ["NPM_URL"].rstrip("/")
 NPM_EMAIL = os.environ["NPM_EMAIL"]
 NPM_PASSWORD = os.environ["NPM_PASSWORD"]
-KUMA_PUSH_URL = os.environ.get("KUMA_PUSH_URL", "").rstrip("/")
+DISCORD_WEBHOOK_URL = os.environ.get("DISCORD_WEBHOOK_URL", "")
 SYNC_CONTAINER = os.environ.get("SYNC_CONTAINER", "npm-docker-sync")
 CHECK_INTERVAL = int(os.environ.get("CHECK_INTERVAL", "300"))
 GRACE = int(os.environ.get("GRACE", "30"))
@@ -20,6 +19,7 @@ HEAL_WAIT = int(os.environ.get("HEAL_WAIT", "45"))
 AUTO_HEAL = os.environ.get("AUTO_HEAL", "true").lower() == "true"
 
 DOMAIN_LABEL = re.compile(r"^npm\.proxy(\.\d+)?\.domain$")
+CHECK_FAILED = "__check_failed__"
 
 
 def log(msg):
@@ -75,39 +75,52 @@ def npm_api(path, retry=True):
 
 
 def snapshot():
-    """(missing domains, total expected) — labels on running containers vs enabled NPM hosts."""
-    expected = set()
+    """dict of missing domain -> container name, from labels vs enabled NPM hosts."""
+    expected = {}
     for c in docker_api("GET", "/containers/json"):
         for key, value in (c.get("Labels") or {}).items():
             if DOMAIN_LABEL.match(key):
-                expected.update(d.lower() for d in re.split(r"[,\s]+", value.strip()) if d)
+                for d in re.split(r"[,\s]+", value.strip()):
+                    if d:
+                        expected[d.lower()] = c["Names"][0].lstrip("/")
     actual = {
         d.lower()
         for h in npm_api("/api/nginx/proxy-hosts")
         if h.get("enabled")
         for d in h.get("domain_names", [])
     }
-    return expected - actual, len(expected)
+    missing = {d: c for d, c in expected.items() if d not in actual}
+    return missing, len(expected)
 
 
-def push_kuma(up, msg):
-    if not KUMA_PUSH_URL:
+def notify_discord(title, description, color):
+    if not DISCORD_WEBHOOK_URL:
         return
-    query = urllib.parse.urlencode({"status": "up" if up else "down", "msg": msg[:250]})
+    payload = {"embeds": [{"title": title, "description": description[:4000], "color": color}]}
+    req = urllib.request.Request(
+        DISCORD_WEBHOOK_URL,
+        data=json.dumps(payload).encode(),
+        # Discord sits behind Cloudflare, which rejects urllib's default UA
+        headers={"Content-Type": "application/json", "User-Agent": "npm-sync-guard/1.0"},
+    )
     try:
-        urllib.request.urlopen(f"{KUMA_PUSH_URL}?{query}", timeout=15).read()
+        urllib.request.urlopen(req, timeout=15).read()
     except Exception as e:
-        log(f"kuma push failed: {e}")
+        log(f"discord notify failed: {e}")
 
 
-def check_cycle(prev_missing):
+def fmt(missing):
+    return "\n".join(f"- `{d}` ({c})" for d, c in sorted(missing.items()))
+
+
+def check_cycle(prev_state):
     missing, total = snapshot()
     if missing:
         log(f"possible drift, re-checking in {GRACE}s: {sorted(missing)}")
         time.sleep(GRACE)
         missing, total = snapshot()
 
-    if missing and AUTO_HEAL and missing != prev_missing:
+    if missing and AUTO_HEAL and set(missing) != prev_state:
         log(f"drift confirmed, restarting {SYNC_CONTAINER}: {sorted(missing)}")
         try:
             docker_api("POST", f"/containers/{SYNC_CONTAINER}/restart?t=10")
@@ -116,37 +129,59 @@ def check_cycle(prev_missing):
         time.sleep(HEAL_WAIT)
         before = missing
         missing, total = snapshot()
-        healed = sorted(before - missing)
+        healed = {d: c for d, c in before.items() if d not in missing}
         if healed and not missing:
-            log(f"auto-healed: {healed}")
-            push_kuma(True, f"auto-healed: {', '.join(healed)}")
+            log(f"auto-healed: {sorted(healed)}")
+            notify_discord(
+                "\U0001f527 NPM sync drift auto-healed",
+                f"Proxy hosts were missing and have been recreated by restarting "
+                f"`{SYNC_CONTAINER}`:\n{fmt(healed)}",
+                0xE67E22,
+            )
             return set()
         if healed:
-            log(f"partially healed: {healed}")
+            log(f"partially healed: {sorted(healed)}")
 
     if missing:
         log(f"missing from NPM: {sorted(missing)}")
-        push_kuma(False, f"missing: {', '.join(sorted(missing))}")
-        return missing
+        if set(missing) != prev_state:
+            notify_discord(
+                "\U0001f6a8 NPM proxy hosts missing",
+                f"These domains have no proxy host in NPM (auto-heal "
+                f"{'failed' if AUTO_HEAL else 'disabled'}):\n{fmt(missing)}",
+                0xE74C3C,
+            )
+        return set(missing)
 
     log(f"in sync ({total} domains)")
-    push_kuma(True, f"in sync ({total} domains)")
+    if prev_state:
+        notify_discord(
+            "✅ NPM sync recovered",
+            "All labeled domains are registered in NPM again.",
+            0x2ECC71,
+        )
     return set()
 
 
 def main():
     log(
         f"npm-sync-guard starting: npm={NPM_URL}, interval={CHECK_INTERVAL}s, "
-        f"auto_heal={AUTO_HEAL}, kuma={'on' if KUMA_PUSH_URL else 'off'}"
+        f"auto_heal={AUTO_HEAL}, discord={'on' if DISCORD_WEBHOOK_URL else 'off'}"
     )
-    prev_missing = set()
+    prev_state = set()
     once = os.environ.get("ONCE", "") == "1"
     while True:
         try:
-            prev_missing = check_cycle(prev_missing)
+            prev_state = check_cycle(prev_state)
         except Exception as e:
             log(f"check failed: {e}")
-            push_kuma(False, f"check failed: {e}")
+            if prev_state != {CHECK_FAILED}:
+                notify_discord(
+                    "\U0001f6a8 NPM sync check failed",
+                    f"npm-sync-guard could not complete its check:\n```{e}```",
+                    0xE74C3C,
+                )
+            prev_state = {CHECK_FAILED}
         if once:
             break
         time.sleep(CHECK_INTERVAL)

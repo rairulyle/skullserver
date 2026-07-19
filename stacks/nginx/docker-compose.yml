@@ -60,7 +60,7 @@ services:
     command: python -u /npm-sync-guard.py
     environment:
       TZ: ${TZ}
-      KUMA_PUSH_URL: ${NPM_SYNC_GUARD_KUMA_PUSH_URL:-}
+      DISCORD_WEBHOOK_URL: https://discord.com/api/webhooks/${DISCORD_ID}/${DISCORD_TOKEN}
       NPM_EMAIL: ${NPM_USERNAME}
       NPM_PASSWORD: ${DEFAULT_APP_PASSWORD}
       NPM_URL: http://${IP_ADDRESS}:81

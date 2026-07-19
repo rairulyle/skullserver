@@ -18,15 +18,15 @@ with no proxy host in NPM.
 
 A polling sidecar. Every CHECK_INTERVAL seconds it compares expected domains (labels on
 running containers) against actual domains (NPM API). On drift it restarts npm-docker-sync,
-whose startup rescan recreates anything missing (verified working). Every cycle reports to an
-Uptime Kuma push monitor; Kuma owns alerting (Discord) and also alarms if the guard itself
-dies, because the heartbeat stops.
+whose startup rescan recreates anything missing (verified working). State changes (drift,
+heal, recovery, check failure) are announced directly to a Discord webhook. Silent while
+healthy; there is deliberately no heartbeat channel.
 
 ```
 docker.sock labels ──▶ guard (compare) ──▶ NPM API proxy hosts
                           │
                           ├─ drift ──▶ restart npm-docker-sync ──▶ re-verify
-                          └─ result ─▶ Uptime Kuma push ──▶ Discord
+                          └─ state change ─▶ Discord webhook
 ```
 
 ## 3. Check cycle
@@ -38,14 +38,15 @@ docker.sock labels ──▶ guard (compare) ──▶ NPM API proxy hosts
 4. If missing: wait GRACE seconds, recompute (avoids false positives mid-event).
 5. If still missing, AUTO_HEAL is on, AND the missing set changed since the previous cycle:
    restart SYNC_CONTAINER, wait HEAL_WAIT seconds, recompute.
-6. Push to Kuma:
-   - up   "in sync (N domains)"
-   - up   "auto-healed: <domains>"
-   - down "missing: <domains>"
+6. Notify Discord ONLY on state changes (never per-cycle, so no spam):
+   - 🔧 "NPM sync drift auto-healed" + healed domain list (orange)
+   - 🚨 "NPM proxy hosts missing" + missing list, when heal failed/disabled (red)
+   - ✅ "NPM sync recovered", when a previously-bad state clears (green)
+   - 🚨 "NPM sync check failed", once per failure episode, e.g. NPM API down (red)
 7. Sleep CHECK_INTERVAL, repeat. Log one timestamped line per cycle (flush=True).
 
-Design rule: heal only when the missing set CHANGED since the previous cycle — a persistent
-failure alerts once through Kuma instead of restart-looping the sync container every cycle.
+Design rule: heal and notify only when the missing set CHANGED since the previous cycle — a
+persistent failure alerts once instead of restart-looping the sync or spamming Discord.
 
 ## 4. External interfaces
 
@@ -60,11 +61,13 @@ failure alerts once through Kuma instead of restart-looping the sync container e
   each host has domain_names[] and enabled.
 - Cache the token across cycles; on 401/403 re-authenticate once and retry.
 
-### Uptime Kuma push monitor
-- GET {KUMA_PUSH_URL}?status=up|down&msg=<url-encoded, max 250 chars>
-- Empty KUMA_PUSH_URL → skip silently.
-- Set the monitor's heartbeat interval to ~2× CHECK_INTERVAL (660s for 300s checks) so a dead
-  guard raises a missed-heartbeat alert.
+### Discord webhook
+- POST {DISCORD_WEBHOOK_URL} with JSON {"embeds": [{"title", "description", "color"}]}.
+- MUST send a custom User-Agent header — Discord sits behind Cloudflare, which 403s
+  python-urllib's default UA (verified live).
+- Empty DISCORD_WEBHOOK_URL → skip silently.
+- Trade-off (accepted): no heartbeat means a dead guard is indistinguishable from a healthy
+  quiet one.
 
 ## 5. Configuration (env vars)
 
@@ -73,7 +76,7 @@ failure alerts once through Kuma instead of restart-looping the sync container e
 | NPM_URL        | required        | NPM base URL, e.g. http://192.168.0.10:81      |
 | NPM_EMAIL      | required        | NPM admin login                                |
 | NPM_PASSWORD   | required        | NPM admin password                             |
-| KUMA_PUSH_URL  | ""              | Kuma push URL; empty disables reporting        |
+| DISCORD_WEBHOOK_URL | ""         | Discord webhook; empty disables notifications  |
 | SYNC_CONTAINER | npm-docker-sync | container restarted on drift                   |
 | CHECK_INTERVAL | 300             | seconds between checks                         |
 | GRACE          | 30              | re-check delay before treating drift as real   |
@@ -83,9 +86,9 @@ failure alerts once through Kuma instead of restart-looping the sync container e
 
 ## 6. Failure handling
 
-- NPM API unreachable/erroring → push down "check failed: …", retry next cycle
+- NPM API unreachable/erroring → 🚨 Discord notification once per episode, retry next cycle
   (doubles as an NPM-is-down monitor).
-- Docker socket errors → log and push down.
+- Docker socket errors → same path.
 - No exception may kill the main loop; catch broadly per cycle.
 - Known behavior: npm-docker-sync exits fatally if NPM isn't ready when it starts; docker's
   restart policy brings it back and its startup rescan recovers everything. The GRACE re-check
@@ -93,8 +96,8 @@ failure alerts once through Kuma instead of restart-looping the sync container e
 
 ## 7. Deployment (stacks/nginx/)
 
-Two files: npm-sync-guard.py and a service entry in docker-compose.yml. New env var
-NPM_SYNC_GUARD_KUMA_PUSH_URL goes in .env, .env.local, and .env.example.
+Two files: npm-sync-guard.py and a service entry in docker-compose.yml. The webhook URL is
+assembled from the existing DISCORD_ID/DISCORD_TOKEN env vars (same pair watchtower uses).
 Repo convention: no comments in compose files.
 
 ```yaml
@@ -104,7 +107,7 @@ Repo convention: no comments in compose files.
     command: python -u /npm-sync-guard.py
     environment:
       TZ: ${TZ}
-      KUMA_PUSH_URL: ${NPM_SYNC_GUARD_KUMA_PUSH_URL:-}
+      DISCORD_WEBHOOK_URL: https://discord.com/api/webhooks/${DISCORD_ID}/${DISCORD_TOKEN}
       NPM_EMAIL: ${NPM_USERNAME}
       NPM_PASSWORD: ${DEFAULT_APP_PASSWORD}
       NPM_URL: http://${IP_ADDRESS}:81
@@ -118,24 +121,21 @@ Repo convention: no comments in compose files.
       net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/nginx-proxy-manager.png
 ```
 
-Setup order: create the Kuma push monitor (type Push, heartbeat 660s, attach the Discord
-notification) → paste its URL into NPM_SYNC_GUARD_KUMA_PUSH_URL → docker compose up -d.
+Setup: docker compose up -d. No external setup needed.
 
 ## 8. Acceptance tests (on server)
 
-1. Healthy path — logs show "in sync (N domains)" each cycle; Kuma monitor is green.
-2. Drift + heal — delete one low-risk proxy host in the NPM UI (e.g. speedtest). Within
-   CHECK_INTERVAL + GRACE + HEAL_WAIT the host is recreated, its URL works, and Kuma logs an
-   up-beat with "auto-healed: …".
-3. Guard death — docker stop npm-sync-guard → Discord alert via Kuma after the missed
-   heartbeat; docker start clears it.
-4. NPM outage — stop NPM briefly → Kuma goes down with "check failed"; recovery is automatic.
+1. Healthy path — logs show "in sync (N domains)" each cycle; no Discord messages.
+2. Drift + heal — stage a labeled container with the sync stopped (or delete a low-risk proxy
+   host in the NPM UI). Within CHECK_INTERVAL + GRACE + HEAL_WAIT the host is recreated and a
+   🔧 auto-healed embed arrives on Discord.
+3. NPM outage — stop NPM briefly → one 🚨 check-failed embed; ✅ recovery embed after restart.
 
 ## 9. Out of scope
 
-- Direct Discord webhooks — Kuma owns all alerting.
+- Uptime Kuma integration — removed by decision 2026-07-18; Discord-only, no heartbeat.
 - npm.stream.* (TCP/UDP stream) labels — none in use on this server.
-- Multiple NPM instances, multi-host sync, creating the Kuma monitor via API.
+- Multiple NPM instances, multi-host sync.
 
 ## 10. Validated facts from the live prototype (2026-07-16)
 
