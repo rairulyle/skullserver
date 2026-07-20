@@ -243,6 +243,7 @@ services:
     restart: unless-stopped
     labels:
       net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/private-internet-access.png
+      com.centurylinklabs.watchtower.enable: "false"
 
   qbittorrent:
     container_name: qbittorrent
