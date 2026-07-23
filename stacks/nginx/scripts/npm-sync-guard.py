@@ -29,10 +29,11 @@ def log(msg):
 
 class DockerConnection(http.client.HTTPConnection):
     def __init__(self):
-        super().__init__("docker")
+        super().__init__("docker", timeout=60)
 
     def connect(self):
         self.sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+        self.sock.settimeout(self.timeout)
         self.sock.connect("/var/run/docker.sock")
 
 
