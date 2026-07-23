@@ -47,6 +47,9 @@ def resolve_sections():
                     log(f"FATAL: library '{title}' not found in Plex (have: {sorted(by_title)})")
                     raise SystemExit(1)
                 d = by_title[title]
+                if d["type"] not in TYPE_FOR_SECTION:
+                    log(f"FATAL: library '{title}' has unsupported type '{d['type']}'")
+                    raise SystemExit(1)
                 sections[title] = (str(d["key"]), TYPE_FOR_SECTION[d["type"]])
             log(f"resolved sections: {{{', '.join(f'{t}: {s[0]}' for t, s in sections.items())}}}")
             return sections
@@ -227,7 +230,10 @@ def main():
                 for t in ripe:
                     state[t] = seen[t]
                     pending.pop(t)
-                save_state(state)
+                try:
+                    save_state(state)
+                except Exception as e:
+                    log(f"state persist failed ({e}); continuing with in-memory watermarks")
                 trigger_run(ripe)
         if once:
             break
