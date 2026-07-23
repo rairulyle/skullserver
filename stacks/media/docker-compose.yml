@@ -117,10 +117,31 @@ services:
       PUID: ${PUID}
       PGID: ${PGID}
       TZ: ${TZ}
-      KOMETA_RUN: true
-      KOMETA_TIME: 05:00
+      KOMETA_TIME: 02:00
     volumes:
       - ${APP_DATA}/kometa:/config
+    restart: unless-stopped
+    labels:
+      net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/kometa.png
+
+  kometa-trigger:
+    container_name: kometa-trigger
+    image: python:3-alpine
+    user: ${PUID}:${PGID}
+    command: python -u /kometa-trigger.py
+    group_add:
+      - "0"
+    environment:
+      TZ: ${TZ}
+      DISCORD_WEBHOOK_URL: https://discord.com/api/webhooks/${DISCORD_ID}/${DISCORD_TOKEN}
+      PLEX_TOKEN: ${PLEX_TOKEN}
+      PLEX_URL: http://${IP_ADDRESS}:32400
+    volumes:
+      - ./scripts/kometa-trigger.py:/kometa-trigger.py:ro
+      - ${APP_DATA}/kometa-trigger:/data
+      - /var/run/docker.sock:/var/run/docker.sock
+    depends_on:
+      - kometa
     restart: unless-stopped
     labels:
       net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/kometa.png
