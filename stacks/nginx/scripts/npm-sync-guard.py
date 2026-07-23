@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""Watchdog for npm-docker-sync. Design: docs/specs/npm-sync-guard.md"""
+"""Watchdog for npm-docker-sync: restarts it when npm.proxy-labeled containers
+are missing their NPM proxy hosts, and reports state changes to Discord."""
 import http.client
 import json
 import os
@@ -68,7 +69,8 @@ def npm_api(path, retry=True):
         with urllib.request.urlopen(req, timeout=15) as resp:
             return json.load(resp)
     except urllib.error.HTTPError as e:
-        if e.code in (401, 403) and retry:
+        # NPM answers 400 (not 401) to expired bearer tokens
+        if e.code in (400, 401, 403) and retry:
             _npm_token = None
             return npm_api(path, retry=False)
         raise
