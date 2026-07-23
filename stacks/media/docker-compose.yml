@@ -130,7 +130,7 @@ services:
     user: ${PUID}:${PGID}
     command: python -u /kometa-trigger.py
     group_add:
-      - "0"
+      - "${DOCKER_GID}"
     environment:
       TZ: ${TZ}
       DISCORD_WEBHOOK_URL: https://discord.com/api/webhooks/${DISCORD_ID}/${DISCORD_TOKEN}
