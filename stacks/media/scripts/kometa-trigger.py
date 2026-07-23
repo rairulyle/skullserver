@@ -115,8 +115,79 @@ def notify_discord(title, description, color):
         log(f"discord notify failed: {e}")
 
 
+class DockerConnection(http.client.HTTPConnection):
+    def __init__(self):
+        super().__init__("docker")
+
+    def connect(self):
+        self.sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+        self.sock.connect("/var/run/docker.sock")
+
+
+def docker_api(method, path, body=None):
+    conn = DockerConnection()
+    try:
+        data = json.dumps(body).encode() if body is not None else None
+        conn.request(method, path, body=data, headers={"Content-Type": "application/json"})
+        resp = conn.getresponse()
+        raw = resp.read()
+        if resp.status >= 300:
+            raise RuntimeError(f"docker {method} {path} -> {resp.status}: {raw[:200]}")
+        return json.loads(raw) if raw else None
+    finally:
+        conn.close()
+
+
+def kometa_run(scope, timeout=3600):
+    exec_id = docker_api(
+        "POST",
+        f"/containers/{KOMETA_CONTAINER}/exec",
+        {
+            "AttachStdout": False,
+            "AttachStderr": False,
+            "Cmd": [
+                "python3", "/app/kometa/kometa.py",
+                "--config", "/config/config.yml",
+                "--run", "--run-libraries", scope,
+            ],
+        },
+    )["Id"]
+    docker_api("POST", f"/exec/{exec_id}/start", {"Detach": True})
+    waited = 0
+    while waited < timeout:
+        time.sleep(15)
+        waited += 15
+        info = docker_api("GET", f"/exec/{exec_id}/json")
+        if not info.get("Running"):
+            return info.get("ExitCode")
+    raise RuntimeError(f"kometa run still going after {timeout}s")
+
+
 def trigger_run(libraries):
-    log(f"DRY STUB: would exec kometa for {'|'.join(libraries)}")
+    scope = "|".join(libraries)
+    if DRY_RUN:
+        log(f"DRY RUN: would exec kometa for {scope}")
+        return
+    log(f"triggering kometa run for {scope}")
+    try:
+        code = kometa_run(scope)
+    except Exception as e:
+        log(f"triggered run failed to execute: {e}")
+        notify_discord(
+            "\U0001f6a8 Kometa triggered run failed",
+            f"Could not exec run for `{scope}`:\n```{e}```",
+            0xE74C3C,
+        )
+        return
+    if code == 0:
+        log(f"triggered run for {scope} finished ok")
+    else:
+        log(f"triggered run for {scope} exited {code}")
+        notify_discord(
+            "\U0001f6a8 Kometa triggered run failed",
+            f"Run for `{scope}` exited with code {code}.",
+            0xE74C3C,
+        )
 
 
 def main():
