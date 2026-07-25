@@ -146,6 +146,25 @@ services:
     labels:
       net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/kometa.png
 
+  seedbox-trigger:
+    container_name: seedbox-trigger
+    image: python:3-alpine
+    user: ${PUID}:${PGID}
+    network_mode: host
+    command: python -u /seedbox-trigger.py
+    environment:
+      TZ: ${TZ}
+      PLEX_TOKEN: ${PLEX_TOKEN}
+      SEEDBOX_TRIGGER_TOKEN: ${SEEDBOX_TRIGGER_TOKEN}
+    volumes:
+      - ./scripts/seedbox-trigger.py:/seedbox-trigger.py:ro
+      - ${REMOTE1_DATA}:/remote/seedbox1/data:ro
+    restart: unless-stopped
+    labels:
+      npm.proxy.domain: hook.${DOMAIN_NAME}
+      npm.proxy.port: "9595"
+      net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/rclone.png
+
   seerr:
     container_name: seerr
     image: ghcr.io/seerr-team/seerr:latest
