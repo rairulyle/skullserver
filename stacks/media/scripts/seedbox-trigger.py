@@ -60,10 +60,11 @@ def refresh_dir(rel, recursive=True):
     return False
 
 
-def plex_api(path):
+def plex_api(path, method="GET"):
     req = urllib.request.Request(
         f"{PLEX_URL}{path}",
         headers={"X-Plex-Token": PLEX_TOKEN, "Accept": "application/json"},
+        method=method,
     )
     with urllib.request.urlopen(req, timeout=30) as resp:
         body = resp.read()
@@ -147,6 +148,12 @@ def process(event, folder, file_path):
     _, key, title = section
     plex_api(f"/library/sections/{key}/refresh?path={urllib.parse.quote(scan_path)}")
     log(f"{event}: triggered scan of {title!r} at {scan_path}")
+    if "Delete" in event:
+        # global auto-empty-trash is off so a dead mount can't purge
+        # libraries; arr-confirmed deletes clean up their section instead
+        time.sleep(15)
+        plex_api(f"/library/sections/{key}/emptyTrash", method="PUT")
+        log(f"{event}: emptied trash for {title!r}")
 
 
 def worker():
