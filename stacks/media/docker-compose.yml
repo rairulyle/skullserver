@@ -154,7 +154,7 @@ services:
     command: python -u /seedbox-trigger.py
     environment:
       TZ: ${TZ}
-      PLEX_TOKEN: ${PLEX_TOKEN}
+      PLEX_TOKEN: ${PLEX_API_KEY}
       SEEDBOX_TRIGGER_TOKEN: ${SEEDBOX_TRIGGER_TOKEN}
     volumes:
       - ./scripts/seedbox-trigger.py:/seedbox-trigger.py:ro
