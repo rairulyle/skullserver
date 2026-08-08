@@ -295,6 +295,20 @@ services:
       net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/slskd.png
       net.unraid.docker.webui: https://slskd.${DOMAIN_NAME}
 
+  vpn-guard:
+    container_name: vpn-guard
+    image: python:3-alpine
+    command: python -u /vpn-guard.py
+    environment:
+      TZ: ${TZ}
+      DISCORD_WEBHOOK_URL: https://discord.com/api/webhooks/${DISCORD_ID}/${DISCORD_TOKEN}
+    volumes:
+      - ./scripts/vpn-guard.py:/vpn-guard.py:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: unless-stopped
+    labels:
+      net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/private-internet-access.png
+
   qui:
     container_name: qui
     image: ghcr.io/autobrr/qui:latest
