@@ -10,7 +10,7 @@ services:
     container_name: nginx-proxy-manager
     image: "docker.io/jc21/nginx-proxy-manager:latest"
     dns:
-      - 192.168.0.10
+      - 192.168.1.10
       - 192.168.10.10
       - 8.8.8.8
       - 1.1.1.1
