@@ -107,6 +107,26 @@ services:
       net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/lidarr.png
       net.unraid.docker.webui: https://lidarr.${DOMAIN_NAME}
 
+  autotaggerr:
+    container_name: autotaggerr
+    image: ghcr.io/aunefyren/autotaggerr:beta
+    ports:
+      - 8080:8080
+    environment:
+      UMASK: ${UMASK}
+      PUID: ${PUID}
+      PGID: ${PGID}
+      TZ: ${TZ}
+    volumes:
+      - ${APP_DATA}/autotaggerr:/app/config
+      - ${DATA}/media/music:/music
+    restart: unless-stopped
+    labels:
+      npm.proxy.domain: autotaggerr.${DOMAIN_NAME}
+      npm.proxy.port: "8080"
+      net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/musicbrainz.png
+      net.unraid.docker.webui: https://autotaggerr.${DOMAIN_NAME}
+
   agregarr:
     container_name: agregarr
     image: agregarr/agregarr:latest
