@@ -3,4 +3,5 @@
 node_modules/
 docs/superpowers/
 .superpowers/
-.claude/
+.claude
+__pycache__/
