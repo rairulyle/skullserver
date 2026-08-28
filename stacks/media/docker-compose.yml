@@ -164,6 +164,44 @@ services:
       net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/overseerr.png
       net.unraid.docker.webui: https://request.${DOMAIN_NAME}
 
+  music-assistant:
+    container_name: music-assistant
+    image: ghcr.io/music-assistant/server:latest
+    network_mode: host
+    environment:
+      TZ: ${TZ}
+      LOG_LEVEL: info
+    volumes:
+      - ${APP_DATA}/music-assistant:/data
+      - ${DATA}/media/music:/music:ro
+    restart: unless-stopped
+    labels:
+      npm.proxy.domain: music.${DOMAIN_NAME}
+      npm.proxy.port: "8095"
+      net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/music-assistant.png
+      net.unraid.docker.webui: https://music.${DOMAIN_NAME}
+
+  ma-playlist-sync:
+    container_name: ma-playlist-sync
+    image: python:3-alpine
+    user: ${PUID}:${PGID}
+    command: sh -c "pip install -q --user music-assistant-client && python -u
+      /ma-playlist-sync.py"
+    environment:
+      TZ: ${TZ}
+      HOME: /tmp
+      MA_API_TOKEN: ${MA_API_TOKEN}
+      MA_URL: http://${IP_ADDRESS}:8095
+      SYNC_INTERVAL_HOURS: "6"
+    volumes:
+      - ./scripts/ma-playlist-sync.py:/ma-playlist-sync.py:ro
+      - ${APP_DATA}/ma-playlist-sync:/data
+    depends_on:
+      - music-assistant
+    restart: unless-stopped
+    labels:
+      net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/music-assistant.png
+
   suwayomi:
     container_name: suwayomi
     image: ghcr.io/suwayomi/suwayomi-server:preview
