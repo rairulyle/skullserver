@@ -78,8 +78,14 @@ I run **Seerr** against **my** libraries. You want something new? Use the **Seer
 
 **Only request it if you’re actually going to watch it in the next ~30 days.**
 
-- Stuff that sits there unwatched for 30 days **gets deleted** — I need the disk.
-- Requests are for **real viewing**, not a “maybe someday” fantasy list. **Exception:** I keep **my own** favorites **forever** for archival purposes. I’m allowed; you’re not the one paying for the drives.
+Cleanup is **automated**. Here’s the lifecycle — learn it once and nothing will ever surprise you:
+
+- **Unwatched for 30 days** → it lands in the **“Leaving Soon”** collection on the Plex home screen. That’s your warning shot.
+- **30 more days in Leaving Soon** → **deleted**. I need the disk.
+- **Want to save something?** Just **watch it** — or hit **Watchlist** (the 🔖 bookmark) to buy time. It drops out of Leaving Soon automatically. No need to ask me.
+- **Watchlist is a deadline extension, not a vault.** Watchlisted-but-never-watched stuff still leaves after **~3 months**. Watchlisting everything won’t save your hoard — the only way to keep media around is to actually watch it.
+- **Watched stuff isn’t immortal either** — once nobody’s touched it for 30 days, the clock starts again (watch it or watchlist it to reset).
+- Requests are for **real viewing**, not a “maybe someday” fantasy list. **Exception:** I keep **my own** favorites **forever** for archival purposes. I’m allowed; you’re not the one paying for the drives. If something deserves permanent-keep status, make your case and I can pin it.
 
 ![Unwatched Movies](images/unwatched-movies.png)
 
