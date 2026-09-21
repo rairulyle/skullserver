@@ -108,7 +108,7 @@ Common variables: `TZ`, `IP_ADDRESS`, `DOMAIN_NAME`, `APP_DATA`, `DATA`, etc.
 
 Unique to each stack. Retrieve from **Bitwarden → `SKULLSERVER <stack> Env`**
 
-Example for media stack: `PLEX_API_KEY`, `RADARR_API_KEY`, `SONARR_API_KEY`, etc.
+Example for media stack: `PLEX_TOKEN`, `RADARR_API_KEY`, `SONARR_API_KEY`, etc.
 
 `plex-previews` uses the shared `DEFAULT_APP_PASSWORD` as `WEB_AUTH_TOKEN`.
 

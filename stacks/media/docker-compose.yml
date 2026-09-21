@@ -40,7 +40,7 @@ services:
     image: journeyover/plex-auto-languages:latest
     environment:
       TZ: ${TZ}
-      PLEX_TOKEN: ${PLEX_API_KEY}
+      PLEX_TOKEN: ${PLEX_TOKEN}
       PLEX_URL: http://${IP_ADDRESS}:32400
     volumes:
       - ${APP_DATA}/plexautolanguages:/config
