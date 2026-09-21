@@ -157,7 +157,7 @@ services:
 ### Service-Specific Variables
 - Use SCREAMING_SNAKE_CASE
 - Prefix with service name when applicable
-- **Examples**: `${PLEX_API_KEY}`, `${RADARR_API_KEY}`, `${DISCORD_TOKEN}`
+- **Examples**: `${PLEX_TOKEN}`, `${RADARR_API_KEY}`, `${DISCORD_TOKEN}`
 
 ## Common Patterns
 
