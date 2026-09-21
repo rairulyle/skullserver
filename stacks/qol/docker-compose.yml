@@ -6,6 +6,29 @@ networks:
     external: true
 
 services:
+  bitchord-selfhosted-addon:
+    container_name: bitchord-selfhosted-addon
+    image: ghcr.io/rairulyle/bitchord-selfhosted-addon:latest
+    ports:
+      - "3003:8080"
+    environment:
+      ADDON_SECRET: ${BITCHORD_SELFHOSTED_ADDON_SECRET}
+      LOG_LEVEL: ${BITCHORD_SELFHOSTED_ADDON_LOG_LEVEL}
+      PLEX_TOKEN: ${BITCHORD_SELFHOSTED_ADDON_PLEX_TOKEN}
+      PLEX_URL: ${BITCHORD_SELFHOSTED_ADDON_PLEX_URL}
+      PUBLIC_URL: ${BITCHORD_SELFHOSTED_ADDON_PUBLIC_URL}
+    restart: unless-stopped
+    labels:
+      npm.proxy.domain: bitchord-selfhosted-addon.${DOMAIN_NAME}
+      npm.proxy.port: "3003"
+      npm.proxy.advanced.config: |
+        send_timeout 10m;
+        proxy_send_timeout 10m;
+        proxy_read_timeout 30m;
+        proxy_buffering off;
+        proxy_request_buffering off;
+      net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/youtube-dl.svg
+
   ynab-mcp:
     container_name: ynab-mcp
     image: ghcr.io/rairulyle/ynab-mcp-server:latest
