@@ -1,0 +1,43 @@
+name: nvr
+
+networks:
+  default:
+    name: ${NETWORK_NAME}
+    external: true
+
+services:
+  frigate:
+    container_name: frigate
+    image: ghcr.io/blakeblackshear/frigate:stable
+    devices:
+      - /dev/dri/renderD128:/dev/dri/renderD128 # Intel iGPU (VAAPI decode + OpenVINO detector)
+    # ~40MB per 1280x720 detect stream (8x) + ~17MB doorbell + ~58MB overhead ≈ 390MB; raise if logs show "Bus error"
+    shm_size: 512mb
+    stop_grace_period: 30s
+    ports:
+      - "8971:8971" # UI/API (auth enabled, TLS disabled in config.yml; NPM terminates TLS)
+      - "8554:8554" # go2rtc RTSP restream
+      - "8555:8555/tcp" # WebRTC
+      - "8555:8555/udp" # WebRTC
+    environment:
+      TZ: ${TZ}
+      FRIGATE_MQTT_USER: ${FRIGATE_MQTT_USER}
+      FRIGATE_RTSP_USER: ${FRIGATE_RTSP_USER}
+      FRIGATE_MQTT_PASSWORD: ${FRIGATE_MQTT_PASSWORD}
+      FRIGATE_RTSP_PASSWORD: ${FRIGATE_RTSP_PASSWORD}
+      FRIGATE_RTSP_PASSWORD_URLENCODED: ${FRIGATE_RTSP_PASSWORD_URLENCODED}
+    # Exception: recordings go to the dedicated "nvr" share (array-only, no cache/mover), not ${DATA};
+    # tmpfs keeps the segment cache off disk
+    volumes:
+      - ${APP_DATA}/frigate:/config
+      - /mnt/user/nvr/frigate:/media/frigate
+      - type: tmpfs
+        target: /tmp/cache
+        tmpfs:
+          size: 1000000000
+    restart: unless-stopped
+    labels:
+      npm.proxy.domain: frigate.${DOMAIN_NAME}
+      npm.proxy.port: "8971"
+      net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/frigate.png
+      net.unraid.docker.webui: https://frigate.${DOMAIN_NAME}

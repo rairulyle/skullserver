@@ -11,6 +11,7 @@ This repository contains the complete Docker Compose configuration for my home U
 | 🎬 **media**     | Media server, libraries, and readers     |
 | 📡 **arr**       | Indexers, download clients, and automation |
 | 📷 **immich**    | Photo and video backup                   |
+| 📹 **nvr**       | Frigate NVR and object detection         |
 | 🌐 **infra**     | Network infrastructure and reverse proxy |
 | ⚙️ **ops**       | Operations and communications            |
 | 📊 **o11y**      | Observability and monitoring             |
@@ -19,6 +20,7 @@ This repository contains the complete Docker Compose configuration for my home U
 
 - 📁 [Stacks README](stacks/README.md) - Complete stack management guide
 - 📖 [Conventions](stacks/CONVENTIONS.md) - Docker Compose standards and best practices
+- 📹 [Frigate](docs/FRIGATE.md) - NVR setup, Hikvision camera settings, and detection model
 
 ---
 
