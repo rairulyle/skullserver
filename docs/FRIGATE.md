@@ -116,6 +116,7 @@ Set via the HTTP API (`/api.cgi`). Enable HTTP, RTMP, RTSP and ONVIF in the Reol
 - **Per-camera `face_recognition.enabled` / `lpr.enabled` default to false**, so set them explicitly on every camera.
 - **Objects:** pets (`dog`, `cat`) everywhere, `car` only on vehicle-facing cameras.
 - **Review:** alerts are `person` only. Cars and pets are logged as detections, so street traffic doesn't spam alerts.
+- **Audio events:** `audio.enabled: false` globally with a shared `listen` list, then `audio.enabled: true` per camera plus the `audio` role on the main-stream input (it already carries AAC). Keep it off in private rooms. Ambient noise below `min_volume` (500 RMS) isn't analyzed.
 - **Motion masks:** mask each camera's timestamp OSD (`motion.mask.<name>.coordinates`, relative 0–1 coordinates). Otherwise the ticking clock registers as motion every second.
 
 ## 💾 Storage
