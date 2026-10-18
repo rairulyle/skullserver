@@ -91,3 +91,71 @@ services:
       npm.proxy.domain: obsidian-ls.${DOMAIN_NAME}
       npm.proxy.port: "5984"
       net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/obsidian.png
+
+  # Two-way sync between the vault's Claude/ folder (via obsidian-ls) and
+  # ${APP_DATA}/obsidian-notes/Claude on the host. No published image, so it is
+  # built from upstream source pinned to a commit.
+  livesync-bridge:
+    container_name: livesync-bridge
+    image: livesync-bridge:fc0e028
+    user: ${PUID}:${PGID}
+    build:
+      context: https://github.com/vrtmrz/livesync-bridge.git#fc0e028d33b3a12ddee1322951375e05107edc55
+    configs:
+      - source: livesync-bridge
+        target: /app/dat/config.json
+    environment:
+      TZ: ${TZ}
+    # Exception: two mounts. location_data holds the offline-scan state and
+    # must survive container recreation; obsidian-notes is the synced folder.
+    volumes:
+      - ${APP_DATA}/livesync-bridge:/deno-dir/location_data
+      - ${APP_DATA}/obsidian-notes:/app/data
+    depends_on:
+      - obsidian-ls
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "deno",
+          "eval",
+          "const h =
+            JSON.parse(Deno.readTextFileSync('/tmp/lsb-health.json'));
+            Deno.exit(Date.now() - h.ts < 60000 && !h.restartWorthy ? 0 : 1)"
+        ]
+      interval: 60s
+      start_period: 120s
+    restart: unless-stopped
+    labels:
+      net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/obsidian.png
+      autoheal: "true"
+      com.centurylinklabs.watchtower.enable: "false"
+
+configs:
+  # Rendered from .env at deploy time; secrets stay in .env.local. Values are
+  # inserted into JSON as-is, so the passphrase must not contain " or \.
+  livesync-bridge:
+    content: |
+      {
+        "peers": [
+          {
+            "type": "couchdb",
+            "name": "vault",
+            "url": "http://obsidian-ls:5984",
+            "database": "obsidian",
+            "username": "${DEFAULT_APP_USERNAME}",
+            "password": "${DEFAULT_APP_PASSWORD}",
+            "passphrase": "${LIVESYNC_PASSPHRASE}",
+            "obfuscatePassphrase": "${LIVESYNC_PASSPHRASE}",
+            "baseDir": "Claude/",
+            "useRemoteTweaks": true
+          },
+          {
+            "type": "storage",
+            "name": "server",
+            "baseDir": "./data/Claude/",
+            "scanOfflineChanges": true,
+            "ignore": ["**/.git/**", "**/*.swp", "**/*.tmp", "**/.DS_Store"]
+          }
+        ]
+      }
