@@ -11,12 +11,8 @@ services:
     image: ghcr.io/rairulyle/bitchord-selfhosted-addon:latest
     ports:
       - "3003:8080"
-    environment:
-      ADDON_SECRET: ${BITCHORD_SELFHOSTED_ADDON_SECRET}
-      LOG_LEVEL: ${BITCHORD_SELFHOSTED_ADDON_LOG_LEVEL}
-      PLEX_TOKEN: ${BITCHORD_SELFHOSTED_ADDON_PLEX_TOKEN}
-      PLEX_URL: ${BITCHORD_SELFHOSTED_ADDON_PLEX_URL}
-      PUBLIC_URL: ${BITCHORD_SELFHOSTED_ADDON_PUBLIC_URL}
+    volumes:
+      - ${APP_DATA}/bitchord-selfhosted-addon:/data
     restart: unless-stopped
     labels:
       npm.proxy.domain: bitchord-selfhosted-addon.${DOMAIN_NAME}
