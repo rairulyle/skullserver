@@ -21,11 +21,11 @@ services:
       - "8555:8555/udp" # WebRTC
     environment:
       TZ: ${TZ}
+      FRIGATE_GEMINI_API_KEY: ${FRIGATE_GEMINI_API_KEY}
       FRIGATE_MQTT_USER: ${FRIGATE_MQTT_USER}
       FRIGATE_RTSP_USER: ${FRIGATE_RTSP_USER}
       FRIGATE_MQTT_PASSWORD: ${FRIGATE_MQTT_PASSWORD}
       FRIGATE_RTSP_PASSWORD: ${FRIGATE_RTSP_PASSWORD}
-      FRIGATE_RTSP_PASSWORD_URLENCODED: ${FRIGATE_RTSP_PASSWORD_URLENCODED}
     # Exception: recordings go to the dedicated "nvr" share (array-only, no cache/mover), not ${DATA};
     # tmpfs keeps the segment cache off disk
     volumes:
