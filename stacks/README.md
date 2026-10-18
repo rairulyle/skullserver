@@ -30,6 +30,7 @@ stacks/
 | 🎬 **media**     | Media server, libraries, and readers     |
 | 📡 **arr**       | Indexers, download clients, and automation |
 | 📷 **immich**    | Photo and video backup                   |
+| 📹 **nvr**       | Frigate NVR and object detection         |
 | 🌐 **infra**     | Network infrastructure and reverse proxy |
 | ⚙️ **ops**       | Operations and communications            |
 | 📊 **o11y**      | Observability and monitoring             |
