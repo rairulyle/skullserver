@@ -18,7 +18,6 @@ Frigate runs in the **`nvr`** stack ([`stacks/nvr/docker-compose.yml`](../stacks
 | --- | --- |
 | `FRIGATE_MQTT_USER` / `FRIGATE_MQTT_PASSWORD` | Broker login |
 | `FRIGATE_RTSP_USER` / `FRIGATE_RTSP_PASSWORD` | Camera admin login. Used raw by the setup script and camera APIs |
-| `FRIGATE_RTSP_PASSWORD_URLENCODED` | Same password, URL-encoded, for RTSP URLs in `config.yml`. Regenerate with `python3 -c 'import urllib.parse,sys;print(urllib.parse.quote(sys.argv[1],safe=""))' 'PASSWORD'` |
 | `FRIGATE_NTP_SERVER` | NTP server the setup script points cameras at (the cameras have no internet) |
 
 Frigate substitutes any `FRIGATE_*` env var into `config.yml` as `{FRIGATE_VAR}`. After editing, run `npm run sync-env` and restart the stack.
@@ -80,13 +79,15 @@ Set via the HTTP API (`/api.cgi`). Enable HTTP, RTMP, RTSP and ONVIF in the Reol
 | Main stream | 15 fps, interframe 1x, max bitrate |
 | Sub stream (detect) | 10 fps, interframe 1x, max bitrate. Override `detect` to the sub-stream size in `config.yml` |
 | OSD | Time only |
-| Cloud / P2P / push / email / FTP / UPnP | Off (offline network) |
+| Email / FTP / UPnP | Off |
+| P2P / push | On **only** if the vendor app's visitor call is wanted. That requires internet for the doorbell alone (see Network) |
 | On-camera recording | Off. Frigate is the only recorder |
 
 - Get value ranges from `GetEnc` with `"action": 1`.
 - **Only send commands listed by `GetAbility`**, and prefer the `…V20` variants. Unknown commands can wedge the API until the device restarts.
 - Frigate uses RTSP without an `ffmpeg:` prefix so go2rtc can use the backchannel for two-way talk. HTTP-FLV is Frigate's preferred Reolink stream, but it only works if the password has no special characters.
-- Doorbell button presses aren't video events, so Frigate can't see them. Getting them into Home Assistant needs the HA Reolink integration and a firewall allow from HA to the doorbell.
+- Doorbell button presses aren't video events, so Frigate can't see them. Getting them into Home Assistant needs the HA Reolink integration (API + event port) and a firewall allow from HA to the doorbell. In HA, disable the integration's own camera entities so only Frigate pulls streams.
+- Vendor-app visitor calls on Android: the full call screen only appears with the app open. Otherwise a "visitor is calling" notification must be tapped within ~20 s.
 
 ### ⬆️ Firmware upgrades (Hikvision)
 
@@ -138,7 +139,8 @@ Cameras live on an **isolated VLAN with no internet**. Only the NVR host may ope
 - Zone-based firewall: give the cameras their **own zone**, so it starts deny-all both ways. Turn **off** the network's "Isolate Network" toggle, because it would also block the NVR.
 - **Auto Allow Return Traffic** must be on for the NVR → cameras policy, or connections time out.
 - Docker containers on a bridge network are masqueraded to the host IP, so the policy should use the host as the source.
-- The built-in "no internet" block is IPv4-only. Keep IPv6 off on the camera network.
+- **Exceptions (e.g. letting only the doorbell reach the internet for vendor-app calls):** a network-level "no internet" toggle can't be overridden by a custom allow. Leave the toggle on and block internet with custom policies instead: *allow device* **above** *block whole zone*. First match wins. Use IP version **Both** so IPv6 is covered too. Give the exception DNS to the gateway as well.
+- Use the firewall's **hit counters** to debug. A device's own "connectivity test" may be unreliable.
 - After moving cameras to the VLAN, PoE power-cycle their ports so they request a new DHCP lease.
 
 ## ⚙️ Frigate settings worth knowing
