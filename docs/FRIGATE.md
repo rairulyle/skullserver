@@ -18,6 +18,7 @@ Frigate runs in the **`nvr`** stack ([`stacks/nvr/docker-compose.yml`](../stacks
 | --- | --- |
 | `FRIGATE_MQTT_USER` / `FRIGATE_MQTT_PASSWORD` | Broker login |
 | `FRIGATE_RTSP_USER` / `FRIGATE_RTSP_PASSWORD` | Camera admin login. Used raw by the setup script and camera APIs |
+| `FRIGATE_GEMINI_API_KEY` | Gemini API key for GenAI. Free tier vs paid is set by Google API billing, not by a Google One subscription |
 | `FRIGATE_NTP_SERVER` | NTP server the setup script points cameras at (the cameras have no internet) |
 
 Frigate substitutes any `FRIGATE_*` env var into `config.yml` as `{FRIGATE_VAR}`. After editing, run `npm run sync-env` and restart the stack.
@@ -119,6 +120,14 @@ Set via the HTTP API (`/api.cgi`). Enable HTTP, RTMP, RTSP and ONVIF in the Reol
 - **Review:** alerts are `person` only. Cars and pets are logged as detections, so street traffic doesn't spam alerts.
 - **Audio events:** `audio.enabled: false` globally with a shared `listen` list, then `audio.enabled: true` per camera plus the `audio` role on the main-stream input (it already carries AAC). Keep it off in private rooms. Ambient noise below `min_volume` (500 RMS) isn't analyzed.
 - **Motion masks:** mask each camera's timestamp OSD (`motion.mask.<name>.coordinates`, relative 0–1 coordinates). Otherwise the ticking clock registers as motion every second.
+
+## ✨ Generative AI (Gemini)
+
+- `genai.<name>: {provider: gemini, api_key: "{FRIGATE_GEMINI_API_KEY}", model: <flash or flash-lite>, roles: [descriptions, chat]}`. Pin a model version rather than a `-latest` alias.
+- **Free tier:** Google may use submitted images to improve its products, and rate limits are low. So only enable it on outdoor cameras, use **review summaries for alerts only**, and keep per-object descriptions off. Flash-Lite gets more free requests per day.
+- Scope per camera with `review.genai.enabled` / `objects.genai.enabled`, set explicitly on every camera.
+- A local alternative is Ollama. CPU-only it's slow (tens of seconds per summary with a 3–4B vision model); good local AI needs plenty of RAM or a GPU.
+- Keep the camera password URL-safe: Reolink HTTP-FLV and RTSP URLs embed it directly.
 
 ## 💾 Storage
 
