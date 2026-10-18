@@ -2,7 +2,7 @@
 
 Frigate runs in the **`nvr`** stack ([`stacks/nvr/docker-compose.yml`](../stacks/nvr/docker-compose.yml)). It records the IP cameras and runs object detection on the host's Intel iGPU.
 
-> 🔒 Site-specific details live in **`${APP_DATA}/frigate/NOTES.md`**, which is not in git: addresses, VLAN and firewall rules, camera models and firmware, and the camera inventory. Keep them out of this public repo.
+> 🔒 Site-specific details live in **`${APP_DATA}/obsidian-notes/Claude/NVR/Frigate.md`** (synced to the private Obsidian vault, not in git): addresses, VLAN and firewall rules, camera models and firmware, and the camera inventory. Keep them out of this public repo.
 
 | What | Where |
 | --- | --- |
