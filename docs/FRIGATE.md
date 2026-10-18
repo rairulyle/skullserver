@@ -108,6 +108,16 @@ Set via the HTTP API (`/api.cgi`). Enable HTTP, RTMP, RTSP and ONVIF in the Reol
 3. Add a `cameras.<name>` entry with the `record` input from `rtsp://127.0.0.1:8554/<name>` and the `detect` input from `rtsp://127.0.0.1:8554/<name>_sub`, both with `input_args: preset-rtsp-restream`. Set `ui.order` for its position in the UI.
 4. Recheck `shm_size`.
 
+## 🧠 Enrichments and objects
+
+- **Semantic search:** `jinav1`, `small` (CPU). Large adds little and would compete with detection for the iGPU. Press *Reindex* once after enabling.
+- **Face recognition:** `large` (ArcFace, runs on the iGPU via OpenVINO). Enable it per camera where faces matter. Recognition uses the detect stream, so close-range cameras (doorbell) work best. Train by uploading one front photo per person, then sorting the faces it catches in the Train tab (20–30 per person).
+- **LPR:** `small` (single-line Latin plates). It must be enabled globally, then **enabled per camera only where vehicles are visible**, together with `car` in that camera's `objects.track`.
+- **Per-camera `face_recognition.enabled` / `lpr.enabled` default to false**, so set them explicitly on every camera.
+- **Objects:** pets (`dog`, `cat`) everywhere, `car` only on vehicle-facing cameras.
+- **Review:** alerts are `person` only. Cars and pets are logged as detections, so street traffic doesn't spam alerts.
+- **Motion masks:** mask each camera's timestamp OSD (`motion.mask.<name>.coordinates`, relative 0–1 coordinates). Otherwise the ticking clock registers as motion every second.
+
 ## 💾 Storage
 
 Recordings go to a dedicated Unraid share named **`nvr`** (generic in case Frigate is replaced). Frigate uses the `frigate/` subfolder.
@@ -135,6 +145,5 @@ Cameras live on an **isolated VLAN with no internet**. Only the NVR host may ope
 - **TLS off in Frigate:** NPM terminates HTTPS. Port 8971 still enforces login. Port 5000 (no auth) is not published.
 - **WebRTC:** set the host IP as a candidate, plus `stun:8555`. Ports 8555/tcp+udp are published.
 - **Retention:** no continuous recording. Motion, alerts, detections and snapshots are kept for 14 days.
-- **Objects:** Frigate's default (`person`). Add `car` per camera together with zones, otherwise parked cars become constant detections.
 - **First login / reset:** the admin password is printed in `docker logs frigate` on first start. A recreated container loses that log. To reset, set `auth.reset_admin_password: true`, restart, read the log, then remove the option.
 - **No `/etc/localtime` mount:** on Unraid it's a dangling symlink, and Docker fails with `mkdir /etc/localtime: file exists`. `TZ: ${TZ}` is enough.
