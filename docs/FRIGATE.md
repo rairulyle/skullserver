@@ -27,15 +27,15 @@ Frigate substitutes any `FRIGATE_*` env var into `config.yml` as `{FRIGATE_VAR}`
 
 - **iGPU:** only `/dev/dri/renderD128` is passed through, no `privileged`. GPU stats work without extra caps on kernel ≥ 6.5.
 - **Decode:** `ffmpeg.hwaccel_args: preset-vaapi`.
-- **Detector:** OpenVINO on `GPU` with **YOLOv9-t @ 320** (`model_type: yolo-generic`, `coco-80` labelmap). OpenVINO ships no bundled model. The "Mobiledet" option in the docs' model picker is for Coral EdgeTPU only.
+- **Detector:** OpenVINO on `GPU` with **YOLOv9-s @ 320** (the tiny `t` model mislabelled crouching people as dogs and cats; `s` takes ~17 ms vs ~11 ms on an Intel iGPU and is far more accurate) (`model_type: yolo-generic`, `coco-80` labelmap). OpenVINO ships no bundled model. The "Mobiledet" option in the docs' model picker is for Coral EdgeTPU only.
 - **shm:** each 1280x720 detect stream needs ~40 MB: `(1280*720*1.5 + 270480) / 1048576 * 25`. Add ~58 MB of overhead and raise `shm_size` when adding cameras or if logs show `Bus error`.
 
 ### Rebuilding the model
 
-Run the YOLOv9 export from the [Frigate docs](https://docs.frigate.video/configuration/object_detectors#yolov9) in an empty temp dir with `MODEL_SIZE=t` and `IMG_SIZE=320`, then:
+Run the YOLOv9 export from the [Frigate docs](https://docs.frigate.video/configuration/object_detectors#yolov9) in an empty temp dir with `MODEL_SIZE=s` and `IMG_SIZE=320`, then:
 
 ```bash
-cp yolov9-t-320.onnx /mnt/user/appdata/frigate/model_cache/yolo.onnx
+cp yolov9-s-320.onnx /mnt/user/appdata/frigate/model_cache/yolo.onnx
 docker builder prune -af   # the export leaves ~7 GB of build cache
 ```
 
@@ -116,7 +116,7 @@ Set via the HTTP API (`/api.cgi`). Enable HTTP, RTMP, RTSP and ONVIF in the Reol
 - **Face recognition:** `large` (ArcFace, runs on the iGPU via OpenVINO). Enable it per camera where faces matter. Recognition uses the detect stream, so close-range cameras (doorbell) work best. Train by uploading one front photo per person, then sorting the faces it catches in the Train tab (20–30 per person).
 - **LPR:** `small` (single-line Latin plates). It must be enabled globally, then **enabled per camera only where vehicles are visible**, together with `car` in that camera's `objects.track`.
 - **Per-camera `face_recognition.enabled` / `lpr.enabled` default to false**, so set them explicitly on every camera.
-- **Objects:** pets (`dog`, `cat`) everywhere, `car` only on vehicle-facing cameras.
+- **Objects:** pets (`dog`, `cat`) everywhere, `car` only on vehicle-facing cameras. Pets get stricter filters (`min_score: 0.7`, `threshold: 0.85`) because people crouching or kneeling get misread as animals.
 - **Review:** alerts are `person` only. Cars and pets are logged as detections, so street traffic doesn't spam alerts.
 - **Audio events:** `audio.enabled: false` globally with a shared `listen` list, then `audio.enabled: true` per camera plus the `audio` role on the main-stream input (it already carries AAC). Keep it off in private rooms. Ambient noise below `min_volume` (500 RMS) isn't analyzed.
 - **Motion masks:** mask each camera's timestamp OSD (`motion.mask.<name>.coordinates`, relative 0–1 coordinates). Otherwise the ticking clock registers as motion every second.
