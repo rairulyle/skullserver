@@ -114,7 +114,7 @@ Set via the HTTP API (`/api.cgi`). Enable HTTP, RTMP, RTSP and ONVIF in the Reol
 
 - **Semantic search:** `jinav1`, `small` (CPU). Large adds little and would compete with detection for the iGPU. Press *Reindex* once after enabling.
 - **Face recognition:** `large` (ArcFace, runs on the iGPU via OpenVINO). Enable it per camera where faces matter. Recognition uses the detect stream, so close-range cameras (doorbell) work best. Train by uploading one front photo per person, then sorting the faces it catches in the Train tab (20–30 per person).
-- **LPR:** `small` (single-line Latin plates). It must be enabled globally, then **enabled per camera only where vehicles are visible**, together with `car` in that camera's `objects.track`.
+- **LPR:** currently **disabled**. If re-enabled: `small` model (single-line Latin plates), enabled globally, then **enabled per camera only where vehicles are visible**, together with `car` in that camera's `objects.track`.
 - **Per-camera `face_recognition.enabled` / `lpr.enabled` default to false**, so set them explicitly on every camera.
 - **Objects:** pets (`dog`, `cat`) everywhere, `car` only on vehicle-facing cameras. Pets get stricter filters (`min_score: 0.7`, `threshold: 0.85`) because people crouching or kneeling get misread as animals.
 - **Review:** alerts are `person` only. Cars and pets are logged as detections, so street traffic doesn't spam alerts.
