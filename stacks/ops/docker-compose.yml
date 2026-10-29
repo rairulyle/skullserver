@@ -30,7 +30,7 @@ services:
       WATCHTOWER_CLEANUP: true
       WATCHTOWER_NOTIFICATION_URL: "discord://${DISCORD_TOKEN}@${DISCORD_ID}"
       WATCHTOWER_NOTIFICATIONS: shoutrrr
-      WATCHTOWER_SCHEDULE: "0 0 * * *"
+      WATCHTOWER_SCHEDULE: "0 6 * * *"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ${APP_DATA}/watchtower/config.json:/config.json

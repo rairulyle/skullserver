@@ -12,16 +12,22 @@ import urllib.request
 
 ENV_FILE = pathlib.Path(__file__).resolve().parent.parent / ".env.local"
 
-# (ISAPI path, [(regex, replacement)]) applied in order. Sub stream resolution is
-# set in its own PUT because the camera resets frame rate on resolution change.
+# (ISAPI path, [(regex, replacement)]) applied in order. Main stream codec and sub stream
+# resolution get their own PUTs because the camera resets the bitrate cap on codec change
+# and the frame rate on resolution change.
 def steps(ntp_server):
     return [
+        ("/ISAPI/Streaming/channels/101", [  # main/record: H.265
+            (r"<videoCodecType>[^<]*<", "<videoCodecType>H.265<"),
+        ]),
         ("/ISAPI/Streaming/channels/101", [  # main/record: 15 fps, 2 s keyframes, highest VBR quality, AAC audio
             (r"<maxFrameRate>\d+<", "<maxFrameRate>1500<"),
             (r"<GovLength>\d+<", "<GovLength>30<"),
             (r"<videoQualityControlType>[^<]*<", "<videoQualityControlType>VBR<"),
             (r"<fixedQuality>\d+<", "<fixedQuality>100<"),
-            (r"<vbrUpperCap>\d+<", "<vbrUpperCap>8192<"),
+            # The cap is what sets the H.265 bitrate: at 8192 it runs ~7 Mbps (more than H.264
+            # did), at 4096 ~3.7 Mbps, about 38% below H.264 at 8192 with similar detail
+            (r"<vbrUpperCap>\d+<", "<vbrUpperCap>4096<"),
             (r"(<Audio>\s*<enabled>)false", r"\1true"),
             (r"<audioCompressionType>[^<]*<", "<audioCompressionType>AAC<"),
         ]),

@@ -16,6 +16,7 @@ services:
     stop_grace_period: 30s
     ports:
       - "8971:8971" # UI/API (auth enabled, TLS disabled in config.yml; NPM terminates TLS)
+      - "${IP_ADDRESS}:5000:5000" # Internal API, NO auth: for Home Assistant only; a host firewall rule drops other sources
       - "8554:8554" # go2rtc RTSP restream
       - "8555:8555/tcp" # WebRTC
       - "8555:8555/udp" # WebRTC
