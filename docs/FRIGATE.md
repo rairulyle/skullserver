@@ -54,12 +54,12 @@ python3 stacks/nvr/scripts/hikvision-frigate-setup.py CAMERA_IP [CAMERA_IP ...]
 
 | Setting | Value | Why |
 | --- | --- | --- |
-| Main stream — record + live | Full resolution, **15 fps, GOP 30** (2 s), H.264 | Frigate recommends 15 fps for recording. 2 s keyframes keep segment cuts and live start fast |
-| Main stream quality | **VBR, quality Highest, cap 8192 kbps** | Sharper faces/plates. VBR keeps still scenes small |
+| Main stream — record + live | Full resolution, **15 fps, GOP 30** (2 s), **H.265** | Frigate recommends 15 fps for recording. 2 s keyframes keep segment cuts and live start fast. H.265 at a 4096 kbps cap records ~38% less than H.264 at 8192, with similar detail. They play in Chrome/Edge and Safari (with `ffmpeg.apple_compatibility: true`), not in Firefox |
+| Main stream quality | **VBR, quality Highest, cap 4096 kbps** | VBR keeps still scenes small. With H.265 the cap sets the bitrate: at 8192 the camera runs near the cap and records more than H.264 did. The camera resets the cap when the codec changes, so the script sets the codec in its own request first |
 | Main stream audio | **On, AAC** | Recorded with `preset-record-generic-audio-copy`, so no transcode |
-| Sub stream — detect | **1280x720, 6 fps, GOP 6** | 5 fps isn't offered; Frigate samples to 5 |
+| Sub stream — detect | **1280x720, 6 fps, GOP 6**, H.264 | 5 fps isn't offered; Frigate samples to 5. Kept H.264: it is decoded continuously for detection |
 | Sub stream quality | **VBR, Highest, cap 2048 kbps** | Snapshots, thumbnails and face/plate crops come from the detect stream. Not recorded |
-| Smart Codec (H.264+) | **Off** | Smart codecs stretch keyframe intervals, which breaks segmenting and live view |
+| Smart Codec (H.264+/H.265+) | **Off** | Smart codecs stretch keyframe intervals, which breaks segmenting and live view |
 | RTSP auth | Digest, MD5 | Required by newer firmware for Frigate |
 | Time | NTP by IP (`FRIGATE_NTP_SERVER`), hourly | No internet or DNS on the camera network |
 | Channel-name OSD | **Off** (date/time stays) | Frigate shows the real camera name |
@@ -154,7 +154,8 @@ Cameras live on an **isolated VLAN with no internet**. Only the NVR host may ope
 
 ## ⚙️ Frigate settings worth knowing
 
-- **TLS off in Frigate:** NPM terminates HTTPS. Port 8971 still enforces login. Port 5000 (no auth) is not published.
+- **TLS off in Frigate:** NPM terminates HTTPS. Port 8971 still enforces login.
+- **Port 5000 (no auth) is published on the server's LAN IP only, for the Home Assistant integration.** Anyone who reaches it is a Frigate admin, so limit who can reach it at the router firewall.
 - **WebRTC:** set the host IP as a candidate, plus `stun:8555`. Ports 8555/tcp+udp are published.
 - **Retention:** no continuous recording. Motion, alerts, detections and snapshots are kept for 14 days.
 - **First login / reset:** the admin password is printed in `docker logs frigate` on first start. A recreated container loses that log. To reset, set `auth.reset_admin_password: true`, restart, read the log, then remove the option.
