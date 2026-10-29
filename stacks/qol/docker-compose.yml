@@ -41,6 +41,23 @@ services:
       net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/ynab.png
       net.unraid.docker.webui: https://ynab-mcp.${DOMAIN_NAME}
 
+  actual-budget:
+    container_name: actual-budget
+    image: actualbudget/actual-server:latest
+    user: ${PUID}:${PGID}
+    ports:
+      - "5006:5006"
+    environment:
+      TZ: ${TZ}
+    volumes:
+      - ${APP_DATA}/actual-budget:/data
+    restart: unless-stopped
+    labels:
+      npm.proxy.domain: actual.${DOMAIN_NAME}
+      npm.proxy.port: "5006"
+      net.unraid.docker.icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/actual-budget.png
+      net.unraid.docker.webui: https://actual.${DOMAIN_NAME}
+
   nova-ph-bot:
     container_name: nova-ph-bot
     image: ghcr.io/rairulyle/nova-ph-bot:latest
